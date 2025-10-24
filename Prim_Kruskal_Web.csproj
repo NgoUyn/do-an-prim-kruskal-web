@@ -121,6 +121,7 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+<<<<<<< HEAD
     <Compile Include="Controllers\KruskalController.cs" />
     <Compile Include="Controllers\PrimController.cs" />
     <Compile Include="Controllers\TourController.cs" />
@@ -138,6 +139,12 @@
     <Compile Include="Services\Kruskal.cs" />
     <Compile Include="Services\Prim.cs" />
     <Compile Include="Services\TourOptimizationService.cs" />
+=======
+    <Compile Include="Global.asax.cs">
+      <DependentUpon>Global.asax</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+>>>>>>> 7a5034054b259649d0fb9ed2b9c787325844cee4
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap-grid.css" />
@@ -156,6 +163,7 @@
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\bootstrap.rtl.css" />
     <Content Include="Content\bootstrap.rtl.min.css" />
+<<<<<<< HEAD
     <Content Include="Content\css\indexAlgorithm.css" />
 <<<<<<< Updated upstream
     <Content Include="Content\css\layouttemp.css" />
@@ -171,6 +179,8 @@
     <Content Include="Content\IMG\kruskal.png" />
     <Content Include="Content\IMG\nen.jpg" />
     <Content Include="Content\IMG\prim.png" />
+=======
+>>>>>>> 7a5034054b259649d0fb9ed2b9c787325844cee4
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
@@ -190,7 +200,10 @@
     <Content Include="Scripts\jquery.validate.min.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
+<<<<<<< HEAD
     <Content Include="Scripts\js\script.js" />
+=======
+>>>>>>> 7a5034054b259649d0fb9ed2b9c787325844cee4
     <Content Include="Scripts\modernizr-2.8.3.js" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
@@ -206,6 +219,7 @@
     <Content Include="Views\Home\About.cshtml" />
     <Content Include="Views\Home\Contact.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
+<<<<<<< HEAD
     <Content Include="Views\Home\MoPhong.cshtml" />
     <Content Include="Views\Home\UngDung.cshtml" />
     <Content Include="Views\Algorithm\Index.cshtml" />
@@ -216,6 +230,12 @@
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Views\Tour\" />
+=======
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="App_Data\" />
+    <Folder Include="Models\" />
+>>>>>>> 7a5034054b259649d0fb9ed2b9c787325844cee4
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap.rtl.min.css.map" />

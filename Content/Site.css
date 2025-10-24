@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ﻿/* 🌈 HERO */
 .hero {
     background: linear-gradient(135deg, #007bff, #6f42c1, #ff6f61);
@@ -105,3 +106,25 @@
     .tour-info h6 {
         font-weight: 700;
     }
+=======
+﻿/* Set padding to keep content from hitting the edges */
+.body-content {
+    margin-top: 15px;
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+/* Override the default bootstrap behavior where horizontal description lists 
+   will truncate terms that are too long to fit in the left column 
+*/
+.dl-horizontal dt {
+    white-space: normal;
+}
+
+/* Set width on the form input elements since they're 100% wide by default */
+input,
+select,
+textarea {
+    max-width: 280px;
+}
+>>>>>>> 7a5034054b259649d0fb9ed2b9c787325844cee4

@@ -157,8 +157,13 @@
     <Content Include="Content\bootstrap.rtl.css" />
     <Content Include="Content\bootstrap.rtl.min.css" />
     <Content Include="Content\css\indexAlgorithm.css" />
+<<<<<<< Updated upstream
     <Content Include="Content\css\layouttemp.css" />
+=======
+    <Content Include="Content\css\mst_style.css" />
+>>>>>>> Stashed changes
     <Content Include="Content\css\style.css" />
+    <Content Include="Content\css\trangchu.css" />
     <Content Include="Content\IMG\0f327dc40093452b10bd7a8c1986216e.jpg" />
     <Content Include="Content\IMG\24e28da0bdea8c4f01f1c6fce73d653d.jpg" />
     <Content Include="Content\IMG\6a2ac027eac90e902970726b4f0f394a.jpg" />

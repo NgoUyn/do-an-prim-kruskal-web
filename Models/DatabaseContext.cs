@@ -9,7 +9,11 @@ namespace Prim_Kruskal_Web.Models
 {
     public class DatabaseContext // Lấy dữ liệu từ databse và API, quản lí dữ liệu
     {
-        static string strcon = "Data Source = MSI; database = PRIM_KRUSKAL_Tour; User ID = sa;Password = 123456";
+
+        //static string strcon = "Data Source = MSI; database = PRIM_KRUSKAL_Tour; User ID = sa;Password = 123456";
+        public static string strcon = "Data Source=PC\\SQLEXPRESS;Initial Catalog=PRIM_KRUSKAL_Tour;Integrated Security=True;TrustServerCertificate=True;";
+
+
         SqlConnection con = new SqlConnection(strcon);
         public List<Graph> dsGraph = new List<Graph>();
 

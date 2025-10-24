@@ -1,0 +1,78 @@
+﻿
+@{
+    ViewBag.Title = "UngDung";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container-fluid">
+    <h2 class="text-primary text-center mt-3">
+        Ứng dụng thực tiễn vào mô hình du lịch của 2 thuật toán
+    </h2>
+
+    <p class="text-muted text-center">
+        Minh họa cách thuật toán Prim và Kruskal tối ưu hóa chi phí di chuyển giữa các điểm du lịch.
+    </p>
+    <hr />
+
+    <div class="alert alert-info">
+        <strong>Bối cảnh:</strong> Một công ty du lịch muốn tổ chức tour tham quan 5 địa điểm:
+        <b>Hà Nội, Đà Nẵng, Nha Trang, Đà Lạt, TP. Hồ Chí Minh</b>.
+        Mỗi tuyến đường giữa hai điểm có một chi phí nhất định (tính theo vé máy bay hoặc chi phí đi lại).
+        Mục tiêu là tìm lộ trình kết nối tất cả các điểm với tổng chi phí nhỏ nhất.
+    </div>
+    <table class="table table-bordered text-center mt-3">
+        <thead class="table-primary">
+            <tr>
+                <th>Điểm A</th>
+                <th>Điểm B</th>
+                <th>Chi phí (VNĐ)</th>
+                <th>Chọn Tuyến</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Hà Nội</td>
+                <td>Đà Nẵng</td>
+                <td>3,000,000</td>
+                <td class="btn btn-outline-primary  ">@Html.ActionLink("Chọn tuyến", "Index", "Algorithm")</td> <!--  disabled để vô hiệu hóa btn-->
+            </tr>
+
+            <tr>
+                <td>Hà Nội</td>
+                <td>Nha Trang</td>
+                <td>4,500,000</td>
+                <td class="btn btn-outline-primary  ">@Html.ActionLink("Chọn tuyến", "Index", "Algorithm")</td> <!--  disabled để vô hiệu hóa btn-->
+            </tr>
+
+            <tr>
+                <td>Đà Nẵng</td>
+                <td>Đà Lạt</td>
+                <td>2,000,000</td>
+                <td class="btn btn-outline-primary  ">@Html.ActionLink("Chọn tuyến", "Index", "Algorithm")</td> <!--  disabled để vô hiệu hóa btn-->
+            </tr>
+
+            <tr>
+                <td>Nha Trang</td>
+                <td>Đà Lạt</td>
+                <td>1,500,000</td>
+                <td class="btn btn-outline-primary  ">@Html.ActionLink("Chọn tuyến", "Index", "Algorithm")</td> <!--  disabled để vô hiệu hóa btn-->
+            </tr>
+
+            <tr>
+                <td>Đà Lạt</td>
+                <td>TP.HCM</td>
+                <td>1,000,000</td>
+                <td class="btn btn-outline-primary  ">@Html.ActionLink("Chọn tuyến", "Index", "Algorithm")</td> <!--  disabled để vô hiệu hóa btn-->
+            </tr>
+
+            <tr>
+                <td>Đà Nẵng</td>
+                <td>TP.HCM</td>
+                <td>3,200,000</td>
+                <td class="btn btn-outline-primary  ">@Html.ActionLink("Chọn tuyến", "Index", "Algorithm")</td> <!--  disabled để vô hiệu hóa btn-->
+            </tr>
+
+        </tbody>
+    </table>
+
+</div>

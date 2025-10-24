@@ -1,0 +1,69 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link href="~/Content/css/indexAlgorithm.css" rel="stylesheet" />
+
+<h2 class="text-center text-light mb-4">Hãy chọn cách tìm đường đi của bạn</h2>
+
+<div class="container-fluid">
+    <div class="row justify-content-center gap-4">
+
+        <!-- Card Thuật toán Prim -->
+        <div class="col-md-4">
+            <div class="card shadow-lg border-0 text-light" style="background-color: #1e293b;">
+                <img src="~/Content/IMG/it ok to not be ok.jpg" class="card-img-top" alt="Prim" style="height: 180px; object-fit: cover;">
+                <div class="card-body text-center">
+                    <h5 class="card-title text-info fw-bold">Thuật toán Prim</h5>
+                    <p class="card-text text-secondary">Tìm cây khung nhỏ nhất bằng phương pháp tham lam.</p>
+                    @Html.ActionLink("Xem mô phỏng", "Prim", "Algorithm", null,
+                        new { @class = "btn btn-outline-info px-4 py-2 mt-2 fw-semibold" })
+                </div>
+            </div>
+        </div>
+
+        <!-- Card Thuật toán Kruskal -->
+        <div class="col-md-4">
+            <div class="card shadow-lg border-0 text-light" style="background-color: #1e293b;">
+                <img src="~/Content/IMG/nen.jpg" class="card-img-top" alt="Kruskal" style="height: 180px; object-fit: cover;">
+                <div class="card-body text-center">
+                    <h5 class="card-title text-success fw-bold">Thuật toán Kruskal</h5>
+                    <p class="card-text text-secondary">So sánh và tối ưu cây khung bằng hợp nhất tập cạnh.</p>
+                    @Html.ActionLink("Xem mô phỏng", "Kruskal", "Algorithm", null,
+                        new { @class = "btn btn-outline-success px-4 py-2 mt-2 fw-semibold" })
+                </div>
+            </div>
+        </div>
+
+        <!-- Card Thuật toán Prim -->
+        <div class="col-md-4">
+            <div class="card shadow-lg border-0 text-light" style="background-color: #1e293b;">
+                <img src="~/Content/IMG/0f327dc40093452b10bd7a8c1986216e.jpg" class="card-img-top" alt="Prim" style="height: 180px; object-fit: cover;">
+                <div class="card-body text-center">
+                    <h5 class="card-title text-info fw-bold">Thuật toán Prim</h5>
+                    <p class="card-text text-secondary">Tìm cây khung nhỏ nhất bằng phương pháp tham lam.</p>
+                    @Html.ActionLink("Xem mô phỏng", "Prim", "Algorithm", null,
+                        new { @class = "btn btn-outline-info px-4 py-2 mt-2 fw-semibold" })
+                </div>
+            </div>
+        </div>
+
+        <!-- Card Thuật toán Kruskal -->
+        <div class="col-md-4">
+            <div class="card shadow-lg border-0 text-light" style="background-color: #1e293b;">
+                <img src="~/Content/IMG/6a2ac027eac90e902970726b4f0f394a.jpg" class="card-img-top" alt="Kruskal" style="height: 180px; object-fit: cover;">
+                <div class="card-body text-center">
+                    <h5 class="card-title text-success fw-bold">Thuật toán Kruskal</h5>
+                    <p class="card-text text-secondary">So sánh và tối ưu cây khung bằng hợp nhất tập cạnh.</p>
+                    @Html.ActionLink("Xem mô phỏng", "Kruskal", "Algorithm", null,
+                        new { @class = "btn btn-outline-success px-4 py-2 mt-2 fw-semibold" })
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+

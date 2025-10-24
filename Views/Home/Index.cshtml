@@ -1,0 +1,102 @@
+﻿@{
+    ViewBag.Title = "Trang chủ - TourWorld";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!-- 🌈 HERO SECTION -->
+<section class="hero text-center text-light d-flex align-items-center justify-content-center">
+    <div class="container">
+        <h1 class="fw-bold display-4 mb-3 animate__animated animate__fadeInDown">
+            Khám phá thế giới với <span class="brand">TourWorld</span>
+        </h1>
+        <p class="lead mb-4 animate__animated animate__fadeInUp">
+            Ứng dụng giải thuật tối ưu giúp bạn du lịch dễ dàng, tiết kiệm và vui hơn!
+        </p>
+        <a href="#" class="btn btn-glow px-4 py-2 rounded-pill">✨ Khám phá ngay</a>
+    </div>
+</section>
+
+<!-- 💡 GIỚI THIỆU -->
+<section class="intro py-5 text-center">
+    <div class="container">
+        <h2 class="fw-bold text-gradient mb-3">
+            <i class="bi bi-lightbulb-fill"></i> Giới thiệu về giải thuật
+        </h2>
+        <p class="text-muted mb-5">
+            Trong hệ thống đặt tour, việc tìm lộ trình tối ưu giúp giảm chi phí & thời gian là thách thức lớn.
+            Hai giải thuật nổi bật: <strong>Prim</strong> và <strong>Kruskal</strong>.
+        </p>
+
+        <div class="row g-4 justify-content-center">
+            <div class="col-md-4">
+                <div class="card card-fancy h-100 border-0 shadow-lg">
+                    <div class="card-header bg-gradient-primary text-light fw-bold">
+                        Thuật toán Prim
+                    </div>
+                    <img src="~/Content/images/prim.jpg" class="card-img-top" alt="Prim Algorithm">
+                    <div class="card-body">
+                        <p>Tìm cây khung nhỏ nhất bằng cách mở rộng từng cạnh có trọng số nhỏ nhất.</p>
+                        <a href="#" class="btn btn-outline-light btn-sm rounded-pill">Xem chi tiết</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card card-fancy h-100 border-0 shadow-lg">
+                    <div class="card-header bg-gradient-success text-light fw-bold">
+                        Thuật toán Kruskal
+                    </div>
+                    <img src="~/Content/images/kruskal.jpg" class="card-img-top" alt="Kruskal Algorithm">
+                    <div class="card-body">
+                        <p>Chọn các cạnh nhỏ nhất nối các đỉnh rời rạc để tạo mạng lưới tối ưu.</p>
+                        <a href="#" class="btn btn-outline-light btn-sm rounded-pill">Xem chi tiết</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 🌍 TOUR NỔI BẬT -->
+<section class="featured py-5 text-center text-light">
+    <div class="container">
+        <h2 class="fw-bold mb-4 text-shadow">🌈 Tour nổi bật</h2>
+        <div class="row g-4">
+            <div class="col-md-3">
+                <div class="tour-card">
+                    <img src="~/Content/images/paris.jpg" alt="Paris">
+                    <div class="tour-info">
+                        <h6>Paris, Pháp</h6>
+                        <p>Khám phá tháp Eiffel và dòng sông Seine thơ mộng.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="tour-card">
+                    <img src="~/Content/images/japan.jpg" alt="Tokyo">
+                    <div class="tour-info">
+                        <h6>Tokyo, Nhật Bản</h6>
+                        <p>Hòa mình vào ánh đèn neon và văn hóa truyền thống.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="tour-card">
+                    <img src="~/Content/images/bali.jpg" alt="Bali">
+                    <div class="tour-info">
+                        <h6>Bali, Indonesia</h6>
+                        <p>Thiên đường nghỉ dưỡng với biển xanh cát trắng.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="tour-card">
+                    <img src="~/Content/images/halong.jpg" alt="Hạ Long">
+                    <div class="tour-info">
+                        <h6>Hạ Long, Việt Nam</h6>
+                        <p>Vịnh biển kỳ quan thế giới với vẻ đẹp hùng vĩ.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

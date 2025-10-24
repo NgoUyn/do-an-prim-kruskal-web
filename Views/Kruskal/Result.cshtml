@@ -1,0 +1,44 @@
+﻿@model IEnumerable<Prim_Kruskal_Web.Models.Edge>
+@{
+    ViewBag.Title = "Kết quả Kruskal";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+}
+
+<h2>Kết quả cây khung nhỏ nhất (MST)</h2>
+
+@if (Model == null || !Model.Any())
+{
+    <p>Không có dữ liệu MST. Có thể đồ thị rỗng hoặc xảy ra lỗi khi tính toán.</p>
+}
+else
+{
+    <table class="table table-bordered table-hover">
+        <thead>
+            <tr>
+                <th>Nguồn</th>
+                <th>Đích</th>
+                <th>Trọng số</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var edge in Model)
+            {
+                <tr>
+                    <td>@edge.Src.Name</td>
+                    <td>@edge.Destination.Name</td>
+                    <td>@edge.Weight</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <div class="alert alert-success">
+        <strong>Tổng chi phí:</strong>
+        @Model.Sum(e => e.Weight) KM
+    </div>
+
+    <div style="margin-top: 20px;">
+        <a href="@Url.Action("Index", "Kruskal")" class="btn btn-secondary">Quay lại đồ thị</a>
+    </div>
+}

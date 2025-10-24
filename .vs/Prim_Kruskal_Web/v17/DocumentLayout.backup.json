@@ -1,0 +1,369 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "D:\\1.Download\\1. L\u00E0m \u0111\u1ED3 \u00E1n\\4.\u0110\u1ED3 \u00E1n ph\u00E2n t\u00EDch thu\u1EADt to\u00E1n\\do-an-prim-kruskal-web-main\\do-an-prim-kruskal-web-main\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{56F89BD6-A34F-497C-B044-B2BCC7949943}|Prim_Kruskal_Web.csproj|D:\\1.Download\\1. L\u00E0m \u0111\u1ED3 \u00E1n\\4.\u0110\u1ED3 \u00E1n ph\u00E2n t\u00EDch thu\u1EADt to\u00E1n\\do-an-prim-kruskal-web-main\\do-an-prim-kruskal-web-main\\controllers\\homecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{56F89BD6-A34F-497C-B044-B2BCC7949943}|Prim_Kruskal_Web.csproj|solutionrelative:controllers\\homecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{56F89BD6-A34F-497C-B044-B2BCC7949943}|Prim_Kruskal_Web.csproj|D:\\1.Download\\1. L\u00E0m \u0111\u1ED3 \u00E1n\\4.\u0110\u1ED3 \u00E1n ph\u00E2n t\u00EDch thu\u1EADt to\u00E1n\\do-an-prim-kruskal-web-main\\do-an-prim-kruskal-web-main\\controllers\\kruskalcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{56F89BD6-A34F-497C-B044-B2BCC7949943}|Prim_Kruskal_Web.csproj|solutionrelative:controllers\\kruskalcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{56F89BD6-A34F-497C-B044-B2BCC7949943}|Prim_Kruskal_Web.csproj|d:\\1.download\\1. l\u00E0m \u0111\u1ED3 \u00E1n\\4.\u0111\u1ED3 \u00E1n ph\u00E2n t\u00EDch thu\u1EADt to\u00E1n\\do-an-prim-kruskal-web-main\\do-an-prim-kruskal-web-main\\content\\site.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}",
+      "RelativeMoniker": "D:0:0:{56F89BD6-A34F-497C-B044-B2BCC7949943}|Prim_Kruskal_Web.csproj|solutionrelative:content\\site.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{56F89BD6-A34F-497C-B044-B2BCC7949943}|Prim_Kruskal_Web.csproj|D:\\1.Download\\1. L\u00E0m \u0111\u1ED3 \u00E1n\\4.\u0110\u1ED3 \u00E1n ph\u00E2n t\u00EDch thu\u1EADt to\u00E1n\\do-an-prim-kruskal-web-main\\do-an-prim-kruskal-web-main\\views\\home\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{56F89BD6-A34F-497C-B044-B2BCC7949943}|Prim_Kruskal_Web.csproj|solutionrelative:views\\home\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{56F89BD6-A34F-497C-B044-B2BCC7949943}|Prim_Kruskal_Web.csproj|D:\\1.Download\\1. L\u00E0m \u0111\u1ED3 \u00E1n\\4.\u0110\u1ED3 \u00E1n ph\u00E2n t\u00EDch thu\u1EADt to\u00E1n\\do-an-prim-kruskal-web-main\\do-an-prim-kruskal-web-main\\views\\prim\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{56F89BD6-A34F-497C-B044-B2BCC7949943}|Prim_Kruskal_Web.csproj|solutionrelative:views\\prim\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{56F89BD6-A34F-497C-B044-B2BCC7949943}|Prim_Kruskal_Web.csproj|D:\\1.Download\\1. L\u00E0m \u0111\u1ED3 \u00E1n\\4.\u0110\u1ED3 \u00E1n ph\u00E2n t\u00EDch thu\u1EADt to\u00E1n\\do-an-prim-kruskal-web-main\\do-an-prim-kruskal-web-main\\controllers\\primcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{56F89BD6-A34F-497C-B044-B2BCC7949943}|Prim_Kruskal_Web.csproj|solutionrelative:controllers\\primcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{56F89BD6-A34F-497C-B044-B2BCC7949943}|Prim_Kruskal_Web.csproj|D:\\1.Download\\1. L\u00E0m \u0111\u1ED3 \u00E1n\\4.\u0110\u1ED3 \u00E1n ph\u00E2n t\u00EDch thu\u1EADt to\u00E1n\\do-an-prim-kruskal-web-main\\do-an-prim-kruskal-web-main\\views\\kruskal\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{56F89BD6-A34F-497C-B044-B2BCC7949943}|Prim_Kruskal_Web.csproj|solutionrelative:views\\kruskal\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{56F89BD6-A34F-497C-B044-B2BCC7949943}|Prim_Kruskal_Web.csproj|D:\\1.Download\\1. L\u00E0m \u0111\u1ED3 \u00E1n\\4.\u0110\u1ED3 \u00E1n ph\u00E2n t\u00EDch thu\u1EADt to\u00E1n\\do-an-prim-kruskal-web-main\\do-an-prim-kruskal-web-main\\views\\algorithm\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{56F89BD6-A34F-497C-B044-B2BCC7949943}|Prim_Kruskal_Web.csproj|solutionrelative:views\\algorithm\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{56F89BD6-A34F-497C-B044-B2BCC7949943}|Prim_Kruskal_Web.csproj|D:\\1.Download\\1. L\u00E0m \u0111\u1ED3 \u00E1n\\4.\u0110\u1ED3 \u00E1n ph\u00E2n t\u00EDch thu\u1EADt to\u00E1n\\do-an-prim-kruskal-web-main\\do-an-prim-kruskal-web-main\\models\\edge.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{56F89BD6-A34F-497C-B044-B2BCC7949943}|Prim_Kruskal_Web.csproj|solutionrelative:models\\edge.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{56F89BD6-A34F-497C-B044-B2BCC7949943}|Prim_Kruskal_Web.csproj|D:\\1.Download\\1. L\u00E0m \u0111\u1ED3 \u00E1n\\4.\u0110\u1ED3 \u00E1n ph\u00E2n t\u00EDch thu\u1EADt to\u00E1n\\do-an-prim-kruskal-web-main\\do-an-prim-kruskal-web-main\\views\\home\\ungdung.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{56F89BD6-A34F-497C-B044-B2BCC7949943}|Prim_Kruskal_Web.csproj|solutionrelative:views\\home\\ungdung.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{56F89BD6-A34F-497C-B044-B2BCC7949943}|Prim_Kruskal_Web.csproj|D:\\1.Download\\1. L\u00E0m \u0111\u1ED3 \u00E1n\\4.\u0110\u1ED3 \u00E1n ph\u00E2n t\u00EDch thu\u1EADt to\u00E1n\\do-an-prim-kruskal-web-main\\do-an-prim-kruskal-web-main\\views\\home\\mophong.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{56F89BD6-A34F-497C-B044-B2BCC7949943}|Prim_Kruskal_Web.csproj|solutionrelative:views\\home\\mophong.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{56F89BD6-A34F-497C-B044-B2BCC7949943}|Prim_Kruskal_Web.csproj|D:\\1.Download\\1. L\u00E0m \u0111\u1ED3 \u00E1n\\4.\u0110\u1ED3 \u00E1n ph\u00E2n t\u00EDch thu\u1EADt to\u00E1n\\do-an-prim-kruskal-web-main\\do-an-prim-kruskal-web-main\\views\\home\\contact.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{56F89BD6-A34F-497C-B044-B2BCC7949943}|Prim_Kruskal_Web.csproj|solutionrelative:views\\home\\contact.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{56F89BD6-A34F-497C-B044-B2BCC7949943}|Prim_Kruskal_Web.csproj|D:\\1.Download\\1. L\u00E0m \u0111\u1ED3 \u00E1n\\4.\u0110\u1ED3 \u00E1n ph\u00E2n t\u00EDch thu\u1EADt to\u00E1n\\do-an-prim-kruskal-web-main\\do-an-prim-kruskal-web-main\\views\\home\\about.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{56F89BD6-A34F-497C-B044-B2BCC7949943}|Prim_Kruskal_Web.csproj|solutionrelative:views\\home\\about.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{56F89BD6-A34F-497C-B044-B2BCC7949943}|Prim_Kruskal_Web.csproj|D:\\1.Download\\1. L\u00E0m \u0111\u1ED3 \u00E1n\\4.\u0110\u1ED3 \u00E1n ph\u00E2n t\u00EDch thu\u1EADt to\u00E1n\\do-an-prim-kruskal-web-main\\do-an-prim-kruskal-web-main\\controllers\\tourcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{56F89BD6-A34F-497C-B044-B2BCC7949943}|Prim_Kruskal_Web.csproj|solutionrelative:controllers\\tourcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{56F89BD6-A34F-497C-B044-B2BCC7949943}|Prim_Kruskal_Web.csproj|D:\\1.Download\\1. L\u00E0m \u0111\u1ED3 \u00E1n\\4.\u0110\u1ED3 \u00E1n ph\u00E2n t\u00EDch thu\u1EADt to\u00E1n\\do-an-prim-kruskal-web-main\\do-an-prim-kruskal-web-main\\views\\shared\\_layout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{56F89BD6-A34F-497C-B044-B2BCC7949943}|Prim_Kruskal_Web.csproj|solutionrelative:views\\shared\\_layout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{56F89BD6-A34F-497C-B044-B2BCC7949943}|Prim_Kruskal_Web.csproj|D:\\1.Download\\1. L\u00E0m \u0111\u1ED3 \u00E1n\\4.\u0110\u1ED3 \u00E1n ph\u00E2n t\u00EDch thu\u1EADt to\u00E1n\\do-an-prim-kruskal-web-main\\do-an-prim-kruskal-web-main\\models\\node.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{56F89BD6-A34F-497C-B044-B2BCC7949943}|Prim_Kruskal_Web.csproj|solutionrelative:models\\node.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{56F89BD6-A34F-497C-B044-B2BCC7949943}|Prim_Kruskal_Web.csproj|D:\\1.Download\\1. L\u00E0m \u0111\u1ED3 \u00E1n\\4.\u0110\u1ED3 \u00E1n ph\u00E2n t\u00EDch thu\u1EADt to\u00E1n\\do-an-prim-kruskal-web-main\\do-an-prim-kruskal-web-main\\content\\img\\0f327dc40093452b10bd7a8c1986216e.jpg||{58961B49-13E0-48C0-9258-13CBC4D40279}",
+      "RelativeMoniker": "D:0:0:{56F89BD6-A34F-497C-B044-B2BCC7949943}|Prim_Kruskal_Web.csproj|solutionrelative:content\\img\\0f327dc40093452b10bd7a8c1986216e.jpg||{58961B49-13E0-48C0-9258-13CBC4D40279}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{56F89BD6-A34F-497C-B044-B2BCC7949943}|Prim_Kruskal_Web.csproj|D:\\1.Download\\1. L\u00E0m \u0111\u1ED3 \u00E1n\\4.\u0110\u1ED3 \u00E1n ph\u00E2n t\u00EDch thu\u1EADt to\u00E1n\\do-an-prim-kruskal-web-main\\do-an-prim-kruskal-web-main\\content\\img\\24e28da0bdea8c4f01f1c6fce73d653d.jpg||{58961B49-13E0-48C0-9258-13CBC4D40279}",
+      "RelativeMoniker": "D:0:0:{56F89BD6-A34F-497C-B044-B2BCC7949943}|Prim_Kruskal_Web.csproj|solutionrelative:content\\img\\24e28da0bdea8c4f01f1c6fce73d653d.jpg||{58961B49-13E0-48C0-9258-13CBC4D40279}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{56F89BD6-A34F-497C-B044-B2BCC7949943}|Prim_Kruskal_Web.csproj|D:\\1.Download\\1. L\u00E0m \u0111\u1ED3 \u00E1n\\4.\u0110\u1ED3 \u00E1n ph\u00E2n t\u00EDch thu\u1EADt to\u00E1n\\do-an-prim-kruskal-web-main\\do-an-prim-kruskal-web-main\\content\\img\\kruskal.png||{58961B49-13E0-48C0-9258-13CBC4D40279}",
+      "RelativeMoniker": "D:0:0:{56F89BD6-A34F-497C-B044-B2BCC7949943}|Prim_Kruskal_Web.csproj|solutionrelative:content\\img\\kruskal.png||{58961B49-13E0-48C0-9258-13CBC4D40279}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{56F89BD6-A34F-497C-B044-B2BCC7949943}|Prim_Kruskal_Web.csproj|D:\\1.Download\\1. L\u00E0m \u0111\u1ED3 \u00E1n\\4.\u0110\u1ED3 \u00E1n ph\u00E2n t\u00EDch thu\u1EADt to\u00E1n\\do-an-prim-kruskal-web-main\\do-an-prim-kruskal-web-main\\content\\img\\nen.jpg||{58961B49-13E0-48C0-9258-13CBC4D40279}",
+      "RelativeMoniker": "D:0:0:{56F89BD6-A34F-497C-B044-B2BCC7949943}|Prim_Kruskal_Web.csproj|solutionrelative:content\\img\\nen.jpg||{58961B49-13E0-48C0-9258-13CBC4D40279}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{56F89BD6-A34F-497C-B044-B2BCC7949943}|Prim_Kruskal_Web.csproj|D:\\1.Download\\1. L\u00E0m \u0111\u1ED3 \u00E1n\\4.\u0110\u1ED3 \u00E1n ph\u00E2n t\u00EDch thu\u1EADt to\u00E1n\\do-an-prim-kruskal-web-main\\do-an-prim-kruskal-web-main\\content\\img\\it ok to not be ok.jpg||{58961B49-13E0-48C0-9258-13CBC4D40279}",
+      "RelativeMoniker": "D:0:0:{56F89BD6-A34F-497C-B044-B2BCC7949943}|Prim_Kruskal_Web.csproj|solutionrelative:content\\img\\it ok to not be ok.jpg||{58961B49-13E0-48C0-9258-13CBC4D40279}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{56F89BD6-A34F-497C-B044-B2BCC7949943}|Prim_Kruskal_Web.csproj|D:\\1.Download\\1. L\u00E0m \u0111\u1ED3 \u00E1n\\4.\u0110\u1ED3 \u00E1n ph\u00E2n t\u00EDch thu\u1EADt to\u00E1n\\do-an-prim-kruskal-web-main\\do-an-prim-kruskal-web-main\\content\\img\\6a2ac027eac90e902970726b4f0f394a.jpg||{58961B49-13E0-48C0-9258-13CBC4D40279}",
+      "RelativeMoniker": "D:0:0:{56F89BD6-A34F-497C-B044-B2BCC7949943}|Prim_Kruskal_Web.csproj|solutionrelative:content\\img\\6a2ac027eac90e902970726b4f0f394a.jpg||{58961B49-13E0-48C0-9258-13CBC4D40279}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 2,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "Site.css",
+              "DocumentMoniker": "D:\\1.Download\\1. L\u00E0m \u0111\u1ED3 \u00E1n\\4.\u0110\u1ED3 \u00E1n ph\u00E2n t\u00EDch thu\u1EADt to\u00E1n\\do-an-prim-kruskal-web-main\\do-an-prim-kruskal-web-main\\Content\\Site.css",
+              "RelativeDocumentMoniker": "Content\\Site.css",
+              "ToolTip": "D:\\1.Download\\1. L\u00E0m \u0111\u1ED3 \u00E1n\\4.\u0110\u1ED3 \u00E1n ph\u00E2n t\u00EDch thu\u1EADt to\u00E1n\\do-an-prim-kruskal-web-main\\do-an-prim-kruskal-web-main\\Content\\Site.css",
+              "RelativeToolTip": "Content\\Site.css",
+              "ViewState": "AgIAAFIAAAAAAAAAAAAqwGsAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
+              "WhenOpened": "2025-10-24T07:00:13.751Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "KruskalController.cs",
+              "DocumentMoniker": "D:\\1.Download\\1. L\u00E0m \u0111\u1ED3 \u00E1n\\4.\u0110\u1ED3 \u00E1n ph\u00E2n t\u00EDch thu\u1EADt to\u00E1n\\do-an-prim-kruskal-web-main\\do-an-prim-kruskal-web-main\\Controllers\\KruskalController.cs",
+              "RelativeDocumentMoniker": "Controllers\\KruskalController.cs",
+              "ToolTip": "D:\\1.Download\\1. L\u00E0m \u0111\u1ED3 \u00E1n\\4.\u0110\u1ED3 \u00E1n ph\u00E2n t\u00EDch thu\u1EADt to\u00E1n\\do-an-prim-kruskal-web-main\\do-an-prim-kruskal-web-main\\Controllers\\KruskalController.cs",
+              "RelativeToolTip": "Controllers\\KruskalController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-24T06:57:06.471Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "HomeController.cs",
+              "DocumentMoniker": "D:\\1.Download\\1. L\u00E0m \u0111\u1ED3 \u00E1n\\4.\u0110\u1ED3 \u00E1n ph\u00E2n t\u00EDch thu\u1EADt to\u00E1n\\do-an-prim-kruskal-web-main\\do-an-prim-kruskal-web-main\\Controllers\\HomeController.cs",
+              "RelativeDocumentMoniker": "Controllers\\HomeController.cs",
+              "ToolTip": "D:\\1.Download\\1. L\u00E0m \u0111\u1ED3 \u00E1n\\4.\u0110\u1ED3 \u00E1n ph\u00E2n t\u00EDch thu\u1EADt to\u00E1n\\do-an-prim-kruskal-web-main\\do-an-prim-kruskal-web-main\\Controllers\\HomeController.cs",
+              "RelativeToolTip": "Controllers\\HomeController.cs",
+              "ViewState": "AgIAAA4AAAAAAAAAAAAAwAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-24T06:57:04.041Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "Index.cshtml",
+              "DocumentMoniker": "D:\\1.Download\\1. L\u00E0m \u0111\u1ED3 \u00E1n\\4.\u0110\u1ED3 \u00E1n ph\u00E2n t\u00EDch thu\u1EADt to\u00E1n\\do-an-prim-kruskal-web-main\\do-an-prim-kruskal-web-main\\Views\\Home\\Index.cshtml",
+              "RelativeDocumentMoniker": "Views\\Home\\Index.cshtml",
+              "ToolTip": "D:\\1.Download\\1. L\u00E0m \u0111\u1ED3 \u00E1n\\4.\u0110\u1ED3 \u00E1n ph\u00E2n t\u00EDch thu\u1EADt to\u00E1n\\do-an-prim-kruskal-web-main\\do-an-prim-kruskal-web-main\\Views\\Home\\Index.cshtml",
+              "RelativeToolTip": "Views\\Home\\Index.cshtml",
+              "ViewState": "AgIAAE0AAAAAAAAAAAAQwGYAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-10-24T06:59:26.774Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "PrimController.cs",
+              "DocumentMoniker": "D:\\1.Download\\1. L\u00E0m \u0111\u1ED3 \u00E1n\\4.\u0110\u1ED3 \u00E1n ph\u00E2n t\u00EDch thu\u1EADt to\u00E1n\\do-an-prim-kruskal-web-main\\do-an-prim-kruskal-web-main\\Controllers\\PrimController.cs",
+              "RelativeDocumentMoniker": "Controllers\\PrimController.cs",
+              "ToolTip": "D:\\1.Download\\1. L\u00E0m \u0111\u1ED3 \u00E1n\\4.\u0110\u1ED3 \u00E1n ph\u00E2n t\u00EDch thu\u1EADt to\u00E1n\\do-an-prim-kruskal-web-main\\do-an-prim-kruskal-web-main\\Controllers\\PrimController.cs",
+              "RelativeToolTip": "Controllers\\PrimController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-24T07:24:31.084Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "Edge.cs",
+              "DocumentMoniker": "D:\\1.Download\\1. L\u00E0m \u0111\u1ED3 \u00E1n\\4.\u0110\u1ED3 \u00E1n ph\u00E2n t\u00EDch thu\u1EADt to\u00E1n\\do-an-prim-kruskal-web-main\\do-an-prim-kruskal-web-main\\Models\\Edge.cs",
+              "RelativeDocumentMoniker": "Models\\Edge.cs",
+              "ToolTip": "D:\\1.Download\\1. L\u00E0m \u0111\u1ED3 \u00E1n\\4.\u0110\u1ED3 \u00E1n ph\u00E2n t\u00EDch thu\u1EADt to\u00E1n\\do-an-prim-kruskal-web-main\\do-an-prim-kruskal-web-main\\Models\\Edge.cs",
+              "RelativeToolTip": "Models\\Edge.cs",
+              "ViewState": "AgIAAAoAAAAAAAAAAAAzwAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-24T07:25:14.978Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "Index.cshtml",
+              "DocumentMoniker": "D:\\1.Download\\1. L\u00E0m \u0111\u1ED3 \u00E1n\\4.\u0110\u1ED3 \u00E1n ph\u00E2n t\u00EDch thu\u1EADt to\u00E1n\\do-an-prim-kruskal-web-main\\do-an-prim-kruskal-web-main\\Views\\Prim\\Index.cshtml",
+              "RelativeDocumentMoniker": "Views\\Prim\\Index.cshtml",
+              "ToolTip": "D:\\1.Download\\1. L\u00E0m \u0111\u1ED3 \u00E1n\\4.\u0110\u1ED3 \u00E1n ph\u00E2n t\u00EDch thu\u1EADt to\u00E1n\\do-an-prim-kruskal-web-main\\do-an-prim-kruskal-web-main\\Views\\Prim\\Index.cshtml",
+              "RelativeToolTip": "Views\\Prim\\Index.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAC0AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-10-24T07:25:54.775Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 11,
+              "Title": "Contact.cshtml",
+              "DocumentMoniker": "D:\\1.Download\\1. L\u00E0m \u0111\u1ED3 \u00E1n\\4.\u0110\u1ED3 \u00E1n ph\u00E2n t\u00EDch thu\u1EADt to\u00E1n\\do-an-prim-kruskal-web-main\\do-an-prim-kruskal-web-main\\Views\\Home\\Contact.cshtml",
+              "RelativeDocumentMoniker": "Views\\Home\\Contact.cshtml",
+              "ToolTip": "D:\\1.Download\\1. L\u00E0m \u0111\u1ED3 \u00E1n\\4.\u0110\u1ED3 \u00E1n ph\u00E2n t\u00EDch thu\u1EADt to\u00E1n\\do-an-prim-kruskal-web-main\\do-an-prim-kruskal-web-main\\Views\\Home\\Contact.cshtml",
+              "RelativeToolTip": "Views\\Home\\Contact.cshtml",
+              "ViewState": "AgIAAAMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-10-24T07:16:48.584Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
+              "Title": "MoPhong.cshtml",
+              "DocumentMoniker": "D:\\1.Download\\1. L\u00E0m \u0111\u1ED3 \u00E1n\\4.\u0110\u1ED3 \u00E1n ph\u00E2n t\u00EDch thu\u1EADt to\u00E1n\\do-an-prim-kruskal-web-main\\do-an-prim-kruskal-web-main\\Views\\Home\\MoPhong.cshtml",
+              "RelativeDocumentMoniker": "Views\\Home\\MoPhong.cshtml",
+              "ToolTip": "D:\\1.Download\\1. L\u00E0m \u0111\u1ED3 \u00E1n\\4.\u0110\u1ED3 \u00E1n ph\u00E2n t\u00EDch thu\u1EADt to\u00E1n\\do-an-prim-kruskal-web-main\\do-an-prim-kruskal-web-main\\Views\\Home\\MoPhong.cshtml",
+              "RelativeToolTip": "Views\\Home\\MoPhong.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-10-24T07:19:54.514Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "Index.cshtml",
+              "DocumentMoniker": "D:\\1.Download\\1. L\u00E0m \u0111\u1ED3 \u00E1n\\4.\u0110\u1ED3 \u00E1n ph\u00E2n t\u00EDch thu\u1EADt to\u00E1n\\do-an-prim-kruskal-web-main\\do-an-prim-kruskal-web-main\\Views\\Kruskal\\Index.cshtml",
+              "RelativeDocumentMoniker": "Views\\Kruskal\\Index.cshtml",
+              "ToolTip": "D:\\1.Download\\1. L\u00E0m \u0111\u1ED3 \u00E1n\\4.\u0110\u1ED3 \u00E1n ph\u00E2n t\u00EDch thu\u1EADt to\u00E1n\\do-an-prim-kruskal-web-main\\do-an-prim-kruskal-web-main\\Views\\Kruskal\\Index.cshtml",
+              "RelativeToolTip": "Views\\Kruskal\\Index.cshtml",
+              "ViewState": "AgIAAB4AAAAAAAAAAAAswDoAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-10-24T07:24:10.233Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 12,
+              "Title": "About.cshtml",
+              "DocumentMoniker": "D:\\1.Download\\1. L\u00E0m \u0111\u1ED3 \u00E1n\\4.\u0110\u1ED3 \u00E1n ph\u00E2n t\u00EDch thu\u1EADt to\u00E1n\\do-an-prim-kruskal-web-main\\do-an-prim-kruskal-web-main\\Views\\Home\\About.cshtml",
+              "RelativeDocumentMoniker": "Views\\Home\\About.cshtml",
+              "ToolTip": "D:\\1.Download\\1. L\u00E0m \u0111\u1ED3 \u00E1n\\4.\u0110\u1ED3 \u00E1n ph\u00E2n t\u00EDch thu\u1EADt to\u00E1n\\do-an-prim-kruskal-web-main\\do-an-prim-kruskal-web-main\\Views\\Home\\About.cshtml",
+              "RelativeToolTip": "Views\\Home\\About.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-10-24T07:24:47.662Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 13,
+              "Title": "TourController.cs",
+              "DocumentMoniker": "D:\\1.Download\\1. L\u00E0m \u0111\u1ED3 \u00E1n\\4.\u0110\u1ED3 \u00E1n ph\u00E2n t\u00EDch thu\u1EADt to\u00E1n\\do-an-prim-kruskal-web-main\\do-an-prim-kruskal-web-main\\Controllers\\TourController.cs",
+              "RelativeDocumentMoniker": "Controllers\\TourController.cs",
+              "ToolTip": "D:\\1.Download\\1. L\u00E0m \u0111\u1ED3 \u00E1n\\4.\u0110\u1ED3 \u00E1n ph\u00E2n t\u00EDch thu\u1EADt to\u00E1n\\do-an-prim-kruskal-web-main\\do-an-prim-kruskal-web-main\\Controllers\\TourController.cs",
+              "RelativeToolTip": "Controllers\\TourController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-24T07:24:29.625Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "Index.cshtml",
+              "DocumentMoniker": "D:\\1.Download\\1. L\u00E0m \u0111\u1ED3 \u00E1n\\4.\u0110\u1ED3 \u00E1n ph\u00E2n t\u00EDch thu\u1EADt to\u00E1n\\do-an-prim-kruskal-web-main\\do-an-prim-kruskal-web-main\\Views\\Algorithm\\Index.cshtml",
+              "RelativeDocumentMoniker": "Views\\Algorithm\\Index.cshtml",
+              "ToolTip": "D:\\1.Download\\1. L\u00E0m \u0111\u1ED3 \u00E1n\\4.\u0110\u1ED3 \u00E1n ph\u00E2n t\u00EDch thu\u1EADt to\u00E1n\\do-an-prim-kruskal-web-main\\do-an-prim-kruskal-web-main\\Views\\Algorithm\\Index.cshtml",
+              "RelativeToolTip": "Views\\Algorithm\\Index.cshtml",
+              "ViewState": "AgIAAA8AAAAAAAAAAAAAADIAAAAOAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-10-24T06:55:23.947Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "UngDung.cshtml",
+              "DocumentMoniker": "D:\\1.Download\\1. L\u00E0m \u0111\u1ED3 \u00E1n\\4.\u0110\u1ED3 \u00E1n ph\u00E2n t\u00EDch thu\u1EADt to\u00E1n\\do-an-prim-kruskal-web-main\\do-an-prim-kruskal-web-main\\Views\\Home\\UngDung.cshtml",
+              "RelativeDocumentMoniker": "Views\\Home\\UngDung.cshtml",
+              "ToolTip": "D:\\1.Download\\1. L\u00E0m \u0111\u1ED3 \u00E1n\\4.\u0110\u1ED3 \u00E1n ph\u00E2n t\u00EDch thu\u1EADt to\u00E1n\\do-an-prim-kruskal-web-main\\do-an-prim-kruskal-web-main\\Views\\Home\\UngDung.cshtml",
+              "RelativeToolTip": "Views\\Home\\UngDung.cshtml",
+              "ViewState": "AgIAAEIAAAAAAAAAAAAAACgAAAAfAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-10-24T07:17:36.444Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 14,
+              "Title": "_Layout.cshtml",
+              "DocumentMoniker": "D:\\1.Download\\1. L\u00E0m \u0111\u1ED3 \u00E1n\\4.\u0110\u1ED3 \u00E1n ph\u00E2n t\u00EDch thu\u1EADt to\u00E1n\\do-an-prim-kruskal-web-main\\do-an-prim-kruskal-web-main\\Views\\Shared\\_Layout.cshtml",
+              "RelativeDocumentMoniker": "Views\\Shared\\_Layout.cshtml",
+              "ToolTip": "D:\\1.Download\\1. L\u00E0m \u0111\u1ED3 \u00E1n\\4.\u0110\u1ED3 \u00E1n ph\u00E2n t\u00EDch thu\u1EADt to\u00E1n\\do-an-prim-kruskal-web-main\\do-an-prim-kruskal-web-main\\Views\\Shared\\_Layout.cshtml",
+              "RelativeToolTip": "Views\\Shared\\_Layout.cshtml",
+              "ViewState": "AgIAADYAAAAAAAAAAAAAADAAAAAcAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-10-24T06:59:48.511Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 15,
+              "Title": "Node.cs",
+              "DocumentMoniker": "D:\\1.Download\\1. L\u00E0m \u0111\u1ED3 \u00E1n\\4.\u0110\u1ED3 \u00E1n ph\u00E2n t\u00EDch thu\u1EADt to\u00E1n\\do-an-prim-kruskal-web-main\\do-an-prim-kruskal-web-main\\Models\\Node.cs",
+              "RelativeDocumentMoniker": "Models\\Node.cs",
+              "ToolTip": "D:\\1.Download\\1. L\u00E0m \u0111\u1ED3 \u00E1n\\4.\u0110\u1ED3 \u00E1n ph\u00E2n t\u00EDch thu\u1EADt to\u00E1n\\do-an-prim-kruskal-web-main\\do-an-prim-kruskal-web-main\\Models\\Node.cs",
+              "RelativeToolTip": "Models\\Node.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-24T07:19:36.565Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 18,
+              "Title": "kruskal.png",
+              "DocumentMoniker": "D:\\1.Download\\1. L\u00E0m \u0111\u1ED3 \u00E1n\\4.\u0110\u1ED3 \u00E1n ph\u00E2n t\u00EDch thu\u1EADt to\u00E1n\\do-an-prim-kruskal-web-main\\do-an-prim-kruskal-web-main\\Content\\IMG\\kruskal.png",
+              "RelativeDocumentMoniker": "Content\\IMG\\kruskal.png",
+              "ToolTip": "D:\\1.Download\\1. L\u00E0m \u0111\u1ED3 \u00E1n\\4.\u0110\u1ED3 \u00E1n ph\u00E2n t\u00EDch thu\u1EADt to\u00E1n\\do-an-prim-kruskal-web-main\\do-an-prim-kruskal-web-main\\Content\\IMG\\kruskal.png",
+              "RelativeToolTip": "Content\\IMG\\kruskal.png",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001533|",
+              "WhenOpened": "2025-10-24T06:54:21.896Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 19,
+              "Title": "nen.jpg",
+              "DocumentMoniker": "D:\\1.Download\\1. L\u00E0m \u0111\u1ED3 \u00E1n\\4.\u0110\u1ED3 \u00E1n ph\u00E2n t\u00EDch thu\u1EADt to\u00E1n\\do-an-prim-kruskal-web-main\\do-an-prim-kruskal-web-main\\Content\\IMG\\nen.jpg",
+              "RelativeDocumentMoniker": "Content\\IMG\\nen.jpg",
+              "ToolTip": "D:\\1.Download\\1. L\u00E0m \u0111\u1ED3 \u00E1n\\4.\u0110\u1ED3 \u00E1n ph\u00E2n t\u00EDch thu\u1EADt to\u00E1n\\do-an-prim-kruskal-web-main\\do-an-prim-kruskal-web-main\\Content\\IMG\\nen.jpg",
+              "RelativeToolTip": "Content\\IMG\\nen.jpg",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001533|",
+              "WhenOpened": "2025-10-24T06:54:08.295Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 20,
+              "Title": "it ok to not be ok.jpg",
+              "DocumentMoniker": "D:\\1.Download\\1. L\u00E0m \u0111\u1ED3 \u00E1n\\4.\u0110\u1ED3 \u00E1n ph\u00E2n t\u00EDch thu\u1EADt to\u00E1n\\do-an-prim-kruskal-web-main\\do-an-prim-kruskal-web-main\\Content\\IMG\\it ok to not be ok.jpg",
+              "RelativeDocumentMoniker": "Content\\IMG\\it ok to not be ok.jpg",
+              "ToolTip": "D:\\1.Download\\1. L\u00E0m \u0111\u1ED3 \u00E1n\\4.\u0110\u1ED3 \u00E1n ph\u00E2n t\u00EDch thu\u1EADt to\u00E1n\\do-an-prim-kruskal-web-main\\do-an-prim-kruskal-web-main\\Content\\IMG\\it ok to not be ok.jpg",
+              "RelativeToolTip": "Content\\IMG\\it ok to not be ok.jpg",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001533|",
+              "WhenOpened": "2025-10-24T06:54:04.185Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 21,
+              "Title": "6a2ac027eac90e902970726b4f0f394a.jpg",
+              "DocumentMoniker": "D:\\1.Download\\1. L\u00E0m \u0111\u1ED3 \u00E1n\\4.\u0110\u1ED3 \u00E1n ph\u00E2n t\u00EDch thu\u1EADt to\u00E1n\\do-an-prim-kruskal-web-main\\do-an-prim-kruskal-web-main\\Content\\IMG\\6a2ac027eac90e902970726b4f0f394a.jpg",
+              "RelativeDocumentMoniker": "Content\\IMG\\6a2ac027eac90e902970726b4f0f394a.jpg",
+              "ToolTip": "D:\\1.Download\\1. L\u00E0m \u0111\u1ED3 \u00E1n\\4.\u0110\u1ED3 \u00E1n ph\u00E2n t\u00EDch thu\u1EADt to\u00E1n\\do-an-prim-kruskal-web-main\\do-an-prim-kruskal-web-main\\Content\\IMG\\6a2ac027eac90e902970726b4f0f394a.jpg",
+              "RelativeToolTip": "Content\\IMG\\6a2ac027eac90e902970726b4f0f394a.jpg",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001533|",
+              "WhenOpened": "2025-10-24T06:54:00.253Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 17,
+              "Title": "24e28da0bdea8c4f01f1c6fce73d653d.jpg",
+              "DocumentMoniker": "D:\\1.Download\\1. L\u00E0m \u0111\u1ED3 \u00E1n\\4.\u0110\u1ED3 \u00E1n ph\u00E2n t\u00EDch thu\u1EADt to\u00E1n\\do-an-prim-kruskal-web-main\\do-an-prim-kruskal-web-main\\Content\\IMG\\24e28da0bdea8c4f01f1c6fce73d653d.jpg",
+              "RelativeDocumentMoniker": "Content\\IMG\\24e28da0bdea8c4f01f1c6fce73d653d.jpg",
+              "ToolTip": "D:\\1.Download\\1. L\u00E0m \u0111\u1ED3 \u00E1n\\4.\u0110\u1ED3 \u00E1n ph\u00E2n t\u00EDch thu\u1EADt to\u00E1n\\do-an-prim-kruskal-web-main\\do-an-prim-kruskal-web-main\\Content\\IMG\\24e28da0bdea8c4f01f1c6fce73d653d.jpg",
+              "RelativeToolTip": "Content\\IMG\\24e28da0bdea8c4f01f1c6fce73d653d.jpg",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001533|",
+              "WhenOpened": "2025-10-24T06:53:56.697Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 16,
+              "Title": "0f327dc40093452b10bd7a8c1986216e.jpg",
+              "DocumentMoniker": "D:\\1.Download\\1. L\u00E0m \u0111\u1ED3 \u00E1n\\4.\u0110\u1ED3 \u00E1n ph\u00E2n t\u00EDch thu\u1EADt to\u00E1n\\do-an-prim-kruskal-web-main\\do-an-prim-kruskal-web-main\\Content\\IMG\\0f327dc40093452b10bd7a8c1986216e.jpg",
+              "RelativeDocumentMoniker": "Content\\IMG\\0f327dc40093452b10bd7a8c1986216e.jpg",
+              "ToolTip": "D:\\1.Download\\1. L\u00E0m \u0111\u1ED3 \u00E1n\\4.\u0110\u1ED3 \u00E1n ph\u00E2n t\u00EDch thu\u1EADt to\u00E1n\\do-an-prim-kruskal-web-main\\do-an-prim-kruskal-web-main\\Content\\IMG\\0f327dc40093452b10bd7a8c1986216e.jpg",
+              "RelativeToolTip": "Content\\IMG\\0f327dc40093452b10bd7a8c1986216e.jpg",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001533|",
+              "WhenOpened": "2025-10-24T06:53:48.811Z"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

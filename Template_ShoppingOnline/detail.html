@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shopping Online</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script src="js/script.js" defer></script>
+</head>
+<body>
+    <!-- Header Section -->
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">Logo Website</div>
+                <nav>
+                    <ul>
+                        <li><a href="#" onclick="showPage('home')">Trang Chủ</a></li>
+                        <li><a href="#" onclick="showPage('home')">Giới Thiệu</a></li>
+                        <li><a href="#" onclick="showPage('home')">Dịch Vụ</a></li>
+                        <li><a href="#" onclick="showPage('home')">Sản Phẩm</a></li>
+                        <li><a href="#" onclick="showPage('home')">Liên Hệ</a></li>
+                        <li><a href="login.html" class="btn btn-login">Đăng nhập</a></li>
+                        <li><a href="register.html" class="btn btn-register">Đăng ký ngay</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Section -->
+    <main>
+        <div class="container">
+            <div class="product-detail">
+                    <div class="product-image">
+                        <img id="detail-image" src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80" alt="Sản phẩm">
+                    </div>
+                    <div class="product-info">
+                        <h1 id="detail-title" class="product-title">Giày Thể Thao X1</h1>
+                        <p id="detail-price" class="product-price">1.250.000 VNĐ</p>
+                        <p id="detail-description" class="product-description">
+						Giày thể thao cao cấp với thiết kế hiện đại, chất liệu da thật, êm ái và bền bỉ. Phù hợp cho cả tập luyện và sử dụng hàng ngày.
+						</p>
+                        
+                        <div class="product-features">
+                            <h3>Đặc điểm nổi bật</h3>
+                            <ul id="detail-features">
+								<li>Chất liệu da thật cao cấp</li>
+								<li>Đế giày chống trượt</li>
+								<li>Thiết kế thoáng khí</li>
+								<li>Màu sắc thời trang</li>
+								<li>Bảo hành 12 tháng</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="product-actions">
+                            <button class="btn-buy">Mua Ngay</button>
+                            <button class="card-button" onclick="showPage('home')">Quay Lại</button>
+                        </div>
+                    </div>
+                </div>
+        </div>
+    </main>
+
+    <!-- Footer Section -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Thông Tin Liên Hệ</h3>
+                    <p>Địa chỉ: 123 Đường ABC, Quận XYZ, TP. Hồ Chí Minh</p>
+                    <p>Điện thoại: (0123) 456-789</p>
+                    <p>Email: contact@example.com</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Liên Kết Nhanh</h3>
+                    <a href="#">Trang Chủ</a>
+                    <a href="#">Giới Thiệu</a>
+                    <a href="#">Dịch Vụ</a>
+                    <a href="#">Sản Phẩm</a>
+                </div>
+                <div class="footer-section">
+                    <h3>Theo Dõi Chúng Tôi</h3>
+                    <a href="#">Facebook</a>
+                    <a href="#">Twitter</a>
+                    <a href="#">Instagram</a>
+                    <a href="#">LinkedIn</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2023 Tên Công Ty. Tất cả các quyền được bảo lưu. | Phát triển bởi Nhóm Phát Triển</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

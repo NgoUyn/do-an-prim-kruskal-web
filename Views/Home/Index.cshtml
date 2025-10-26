@@ -1,40 +1,204 @@
 ﻿@{
-    ViewBag.Title = "Trang chủ - Hệ thống đặt vé tour du lịch";
+    ViewBag.Title = "Trang chủ - TourWorld";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<!-- HERO SECTION -->
-<section class="hero">
-    <div class="hero-overlay"></div>
-    <div class="hero-content">
-        <h1>Khám phá thế giới với <span>TourWorld</span></h1>
-        <p>Ứng dụng giải thuật tối ưu hóa lộ trình – giúp bạn du lịch dễ dàng, tiết kiệm và thú vị hơn!</p>
-        <a href="@Url.Action("MoPhong","Home")" class="btn-explore">Khám phá ngay</a>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css">
+<!-- 🌈 HERO SECTION -->
+<section class="hero text-light d-flex align-items-center justify-content-center position-relative">
+    <div class="hero-overlay position-absolute top-0 start-0 w-100 h-100"></div>
+
+    <div class="container text-center position-relative">
+        <h1 class="fw-bold display-4 mb-3 animate__animated animate__fadeInDown">
+            <i class="bi bi-globe-americas text-warning me-2"></i>
+            Khám phá thế giới với <span class="brand text-info">TourWorld</span>
+        </h1>
+        <p class="lead mb-4 animate__animated animate__fadeInUp">
+            Ứng dụng sử dụng giải thuật tối ưu để gợi ý lộ trình du lịch thông minh – nhanh, tiết kiệm và tràn đầy cảm hứng.
+        </p>
+        <div class="animate__animated animate__zoomIn">
+            <a href="#" class="btn btn-glow px-4 py-2 rounded-pill me-2">
+                ✨ Khám phá ngay
+            </a>
+            <a href="#" class="btn btn-outline-light px-4 py-2 rounded-pill">
+                <i class="bi bi-info-circle"></i> Tìm hiểu thêm
+            </a>
+        </div>
+    </div>
+
+    <div class="floating-icons position-absolute w-100">
+        <i class="bi bi-airplane-fill float-icon text-info"></i>
+        <i class="bi bi-compass float-icon text-warning"></i>
+        <i class="bi bi-geo-alt-fill float-icon text-danger"></i>
     </div>
 </section>
-
-<!-- GIỚI THIỆU -->
-<section class="intro">
+<!-- 💡 GIỚI THIỆU -->
+<!-- 🌍 TOUR NỔI BẬT -->
+<section class="featured py-5 text-center text-light">
     <div class="container">
-        <h2 class="section-title">🌐 Giới thiệu về giải thuật</h2>
-        <p class="intro-text">
-            Trong hệ thống đặt vé tour du lịch, việc tìm lộ trình tối ưu để giảm chi phí và thời gian là một thách thức lớn.
-            Hai thuật toán nổi bật được ứng dụng là <strong>Prim</strong> và <strong>Kruskal</strong>, giúp tìm ra mạng lưới kết nối
-            các điểm du lịch hiệu quả nhất.
-        </p>
-
-        <div class="intro-grid">
-            <div class="intro-card">
-                <img src="~/Content/images/prim.jpg" alt="Thuật toán Prim">
-                <h3>Thuật toán Prim</h3>
-                <p>Tìm cây khung nhỏ nhất bằng cách mở rộng dần các đỉnh được chọn – phù hợp khi muốn tính nhanh từ một điểm xuất phát.</p>
+        <h2 class="fw-bold mb-4 text-shadow">🌈 Tour nổi bật</h2>
+        <div class="row g-4">
+            <div class="col-md-3">
+                <div class="tour-card">
+                    <img src="~/Content/IMG/Paris.jpg" loading="lazy" alt="Paris">
+                    <div class="tour-info">
+                        <h6>Paris, Pháp</h6>
+                        <p>Khám phá tháp Eiffel và dòng sông Seine thơ mộng.</p>
+                    </div>
+                </div>
             </div>
-            <div class="intro-card">
-                <img src="~/Content/images/kruskal.jpg" alt="Thuật toán Kruskal">
-                <h3>Thuật toán Kruskal</h3>
-                <p>Xây dựng cây khung nhỏ nhất bằng cách chọn các cạnh ngắn nhất – lý tưởng cho mô hình có nhiều tuyến kết nối.</p>
-                <button class="btn btn-outline-dark text-bg-danger">@Html.ActionLink("Kruskal","Index","Kruskal");</button>
+            <div class="col-md-3">
+                <div class="tour-card">
+                    <img src="~/Content/IMG/Tokyo.jpg" loading="lazy" alt="Tokyo">
+                    <div class="tour-info">
+                        <h6>Tokyo, Nhật Bản</h6>
+                        <p>Hòa mình vào ánh đèn neon và văn hóa truyền thống.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="tour-card">
+                    <img src="~/Content/IMG/Bali.jpg" loading="lazy" alt="Bali">
+                    <div class="tour-info">
+                        <h6>Bali, Indonesia</h6>
+                        <p>Thiên đường nghỉ dưỡng với biển xanh cát trắng.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="tour-card">
+                    <img src="~/Content/IMG/HaLong.jpg" loading="lazy" s alt="Hạ Long">
+                    <div class="tour-info">
+                        <h6>Hạ Long, Việt Nam</h6>
+                        <p>Vịnh biển kỳ quan thế giới với vẻ đẹp hùng vĩ.</p>
+                    </div>
+                </div>
             </div>
         </div>
+        <link href="~/Content/css/trangchu.css" rel="stylesheet" />
+
+        <!-- HERO SECTION -->
+        <section class="hero" style="background-image: url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e');">
+            <div class="hero-overlay"></div>
+            <div class="hero-content">
+                <h1>Khám phá thế giới cùng <span>TourWorld</span></h1>
+                <p>Hành trình thông minh – nơi công nghệ và đam mê du lịch hòa làm một.</p>
+
+                <div class="hero-icons">
+                    <div class="hero-icon">
+                        <img src="https://cdn-icons-png.flaticon.com/512/854/854878.png" loading="lazy" alt="Bản đồ" />
+                        <p>Tuyến đường thông minh</p>
+                    </div>
+                    <div class="hero-icon">
+                        <img src="https://cdn-icons-png.flaticon.com/512/201/201623.png" loading="lazy" alt="Máy bay" />
+                        <p>Khám phá toàn cầu</p>
+                    </div>
+                    <div class="hero-icon">
+                        <img src="https://cdn-icons-png.flaticon.com/512/3225/3225004.png" loading="lazy" alt="Thuật toán" />
+                        <p>Tối ưu hóa hành trình</p>
+                    </div>
+                </div>
+
+                <a href="@Url.Action("MoPhong","Home")" class="btn-explore">Bắt đầu khám phá</a>
+            </div>
+        </section>
+
+        <!-- GIỚI THIỆU GIẢI THUẬT -->
+        <section class="intro">
+            <div class="container">
+
+                <section class="intro enhanced-intro">
+                    <div class="container">
+                        <h2 class="section-title">🌐 Giới thiệu về giải thuật</h2>
+                        <p class="intro-text">
+                            Có những chuyến đi bắt đầu bằng một <strong style="color:#6a0dad;">giấc mơ khám phá</strong> — nơi mỗi cung đường là một nét vẽ, mỗi điểm đến là một gam màu.
+                            Nhưng giữa vô vàn lựa chọn, <strong>đâu là hành trình tối ưu nhất</strong> giúp ta vừa tiết kiệm thời gian, vừa tận hưởng trọn vẹn vẻ đẹp của thế giới?
+                        </p>
+
+                        <p class="intro-text">
+                            Ẩn sâu trong hệ thống đặt vé thông minh là hai “nghệ sĩ” của bản đồ –
+                            <strong style="color:#8a2be2;">Prim</strong> và <strong style="color:#b35cff;">Kruskal</strong>.
+                            <em>Prim</em> nhẹ nhàng bắt đầu từ một điểm, mở rộng từng kết nối như nét cọ vẽ nên bức tranh du lịch tinh tế.
+                            <em>Kruskal</em> thì chọn lọc những con đường ngắn nhất, liên kết chúng thành một mạng lưới hoàn hảo – như ghép những mảnh ghép của một hành trình tuyệt mỹ.
+                        </p>
+
+                        <p class="intro-text">
+                            Với sự hỗ trợ của hai giải thuật này, hệ thống không chỉ giúp bạn <strong style="color:#4b0082;">đi nhanh hơn</strong> và <strong style="color:#4b0082;">đi xa hơn</strong>,
+                            mà còn khiến mỗi chuyến đi trở nên <strong style="color:#6a0dad;">ý nghĩa</strong> và <strong style="color:#8a2be2;">đáng nhớ</strong> hơn.
+                            <span style="color:#b35cff; font-weight:600;">TourWorld</span> – nơi công nghệ và cảm xúc giao hòa, để mỗi hành trình là một câu chuyện được viết nên bởi sự kết nối hoàn hảo.
+                        </p>
+
+
+                        <div class="intro-grid">
+                            <div class="intro-card">
+                                <div class="card-overlay"></div>
+                                <img src="https://images.unsplash.com/photo-1500530855697-b586d89ba3ee" alt="Thuật toán Prim">
+                                <h3>Thuật toán Prim</h3>
+                                <p>
+                                    Mở rộng dần cây khung nhỏ nhất từ một điểm xuất phát, giúp xác định nhanh tuyến đường rút gọn và tối ưu hóa quãng đường di chuyển.
+                                </p>
+                                <ul class="intro-list">
+                                    <li>🚩 Bắt đầu từ một điểm du lịch trung tâm</li>
+                                    <li>🧭 Kết nối từng đỉnh theo chi phí thấp nhất</li>
+                                    <li>📍 Phù hợp với bản đồ quy mô nhỏ</li>
+                                </ul>
+                                @Html.ActionLink("Tìm hiểu Prim", "Index", "Prim", null, new { @class = "btn btn-outline-dark" })
+
+                            </div>
+
+                            <div class="intro-card">
+                                <div class="card-overlay"></div>
+                                <img src="https://images.unsplash.com/photo-1473625247510-8ceb1760943f" alt="Thuật toán Kruskal">
+                                <h3>Thuật toán Kruskal</h3>
+                                <p>
+                                    Xây dựng cây khung nhỏ nhất bằng cách lựa chọn các cạnh ngắn nhất trước, kết nối các cụm điểm riêng lẻ thành một mạng lưới hoàn chỉnh.
+                                </p>
+                                <ul class="intro-list">
+                                    <li>📊 Chọn cạnh ngắn nhất, tránh chu trình</li>
+                                    <li>🌍 Thích hợp với nhiều cụm du lịch độc lập</li>
+                                    <li>💡 Hiệu quả cho mạng lưới quy mô lớn</li>
+                                </ul>
+                                @Html.ActionLink("Khám phá Kruskal", "Index", "Kruskal", null, new { @class = "btn btn-outline-dark" })
+
+                            </div>
+
+                            <div class="intro-card">
+                                <div class="card-overlay"></div>
+                                <img src="https://images.unsplash.com/photo-1526772662000-3f88f10405ff" alt="Ứng dụng trong du lịch">
+                                <h3>Ứng dụng thực tế</h3>
+                                <p>
+                                    Khi công nghệ kết hợp cùng du lịch, thuật toán trở thành công cụ giúp vẽ nên những hành trình tối ưu: ít chi phí hơn, nhiều trải nghiệm hơn.
+                                </p>
+                                <ul class="intro-list">
+                                    <li>🗺️ Xây dựng bản đồ tour tự động</li>
+                                    <li>🚖 Tối ưu lộ trình di chuyển</li>
+                                    <li>💰 Giảm thiểu chi phí vận hành</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- PHẦN GIỚI THIỆU THÊM -->
+                <section class="more-info">
+                    <div class="info-img">
+                        <img src="https://images.unsplash.com/photo-1504384308090-c894fdcc538d" alt="Giới thiệu TourWorld">
+                    </div>
+                    <div class="info-text">
+                        <h2>Vì sao chọn TourWorld?</h2>
+                        <p>
+                            TourWorld không chỉ là hệ thống đặt vé du lịch, mà còn là nền tảng ứng dụng các thuật toán tối ưu giúp hành trình của bạn
+                            tiết kiệm thời gian, chi phí và đầy trải nghiệm.
+                            <br><br>
+                            Với giao diện thân thiện, mô phỏng trực quan và thuật toán Prim - Kruskal mạnh mẽ,
+                            chúng tôi giúp bạn thấy được cách khoa học và du lịch gặp nhau trong từng hành trình.
+                            <br><br>
+                            ✨ Từ bản đồ đến thực tế, mọi chuyến đi đều được tính toán thông minh.
+                        </p>
+                    </div>
+                </section>
+            </div>
+        </section>
     </div>
 </section>

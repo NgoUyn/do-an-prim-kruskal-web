@@ -156,3 +156,7 @@ D:\NĂM 3\HK1\Phân tích thiết kế thuật toán\DoAn_Prim&Kruskal\Prim_Krus
 D:\NĂM 3\HK1\Phân tích thiết kế thuật toán\DoAn_Prim&Kruskal\Prim_Kruskal_Web\obj\Debug\Prim_Kru.70B2BF02.Up2Date
 D:\NĂM 3\HK1\Phân tích thiết kế thuật toán\DoAn_Prim&Kruskal\Prim_Kruskal_Web\obj\Debug\Prim_Kruskal_Web.dll
 D:\NĂM 3\HK1\Phân tích thiết kế thuật toán\DoAn_Prim&Kruskal\Prim_Kruskal_Web\obj\Debug\Prim_Kruskal_Web.pdb
+D:\DA_PTTKTT\bin\EntityFramework.dll
+D:\DA_PTTKTT\bin\EntityFramework.SqlServer.dll
+D:\DA_PTTKTT\bin\EntityFramework.xml
+D:\DA_PTTKTT\bin\EntityFramework.SqlServer.xml

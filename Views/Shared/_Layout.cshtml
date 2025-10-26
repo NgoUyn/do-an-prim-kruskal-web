@@ -2,60 +2,72 @@
 <html>
 <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@ViewBag.Title - My ASP.NET Application</title>
+    <meta name="description" content="TourWorld - Du lịch thông minh bằng giải thuật tối ưu Prim và Kruskal.">    <title>@ViewBag.Title - TourWorld</title>
+
     @Styles.Render("~/Content/css")
     @Scripts.Render("~/bundles/modernizr")
+    <link rel="icon" type="image/png" href="~/Content/IMG/logo.png" />
     <link href="~/Content/css/style.css" rel="stylesheet" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
     <link href="~/Content/css/layouttemp.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
 </head>
 <body>
-    <!-- Header -->
+    <!-- HEADER -->
     <header class="tour-header">
         <div class="header-container">
             <div class="logo">
                 <a href="@Url.Action("Index","Home")">
-                    <i class="fa-solid fa-earth-asia"></i> TourWorld
+                    <i class="fa-solid fa-earth-asia"></i>
+                    <span>TourWorld</span>
                 </a>
             </div>
-            <form class="header-search" action="@Url.Action("Search","Home")" method="get">
-                <input type="text" name="query" placeholder="Tìm tour, địa điểm..." class="search-input" />
-                <button type="submit" class="search-btn">🔍</button>
-            </form>
 
-            <nav>
+            <nav class="nav-bar">
                 <ul class="nav-menu">
-                    <li><a href="@Url.Action("Index","Home")" class="active">Trang Chủ</a></li>
+                    <li><a href="@Url.Action("Index","Home")" class="@(ViewBag.Title == "Trang chủ" ? "active" : "")">Trang Chủ</a></li>
                     <li><a href="@Url.Action("MoPhong","Home")">Mô Phỏng</a></li>
-                    <li><a href="@Url.Action("Compare","Kruskal")">Ứng Dụng</a></li>
+                    <li><a href="@Url.Action("UngDung","Home")">Ứng Dụng</a></li>
                     <li><a href="@Url.Action("Contact","Home")">Liên Hệ</a></li>
                 </ul>
             </nav>
+
+            <form class="header-search" action="@Url.Action("Search","Home")" method="get">
+                <input type="text" name="query" placeholder="Tìm tour, địa điểm..." class="search-input" />
+                <button type="submit" class="search-btn">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                </button>
+            </form>
         </div>
     </header>
 
+    <!-- MAIN -->
     <main class="main-container">
         @RenderBody()
     </main>
 
-    <!-- Footer -->
+    <!-- FOOTER -->
     <footer class="tour-footer">
         <div class="footer-container">
-            <div class="footer-section">
+            <div class="footer-col">
                 <h3><i class="fa-solid fa-map-location-dot"></i> Liên Hệ</h3>
-                <p>📍 123 Đường ABC, Quận XYZ, TP. Hồ Chí Minh</p>
-                <p>📞 (0123) 456-789</p>
+                <p>📍 140 Lê Trọng Tấn, Tây Thạnh, Tân Phú, Thành phố Hồ Chí Minh</p>
+                <p>📞 094 248 3612</p>
                 <p>✉ contact@example.com</p>
+              
             </div>
-            <div class="footer-section">
+
+            <div class="footer-col">
                 <h3><i class="fa-solid fa-compass"></i> Liên Kết Nhanh</h3>
-                <a href="#">Trang Chủ</a>
-                <a href="#">Giới Thiệu</a>
-                <a href="#">Tour Nổi Bật</a>
-                <a href="#">Khuyến Mãi</a>
+                <ul>
+                    <li><a href="@Url.Action("Index","Home")">Trang Chủ</a></li>
+                    <li><a href="@Url.Action("MoPhong","Home")">Mô Phỏng</a></li>
+                    <li><a href="@Url.Action("Compare","Kruskal")">Ứng Dụng</a></li>
+                    <li><a href="@Url.Action("Contact","Home")">Liên Hệ</a></li>
+                </ul>
             </div>
-            <div class="footer-section">
+
+            <div class="footer-col">
                 <h3><i class="fa-solid fa-plane-departure"></i> Theo Dõi Chúng Tôi</h3>
                 <div class="social-links">
                     <a href="#"><i class="fab fa-facebook"></i></a>
@@ -65,11 +77,14 @@
                 </div>
             </div>
         </div>
+
         <div class="footer-bottom">
-            <p>© 2025 TourWorld | Thiết kế bởi <strong>Nhóm Du Lịch</strong></p>
+            <p>© 2025 <strong>TourWorld</strong> — Thiết kế bởi Nhóm Du Lịch.</p>
         </div>
     </footer>
 
     <script src="~/Scripts/js/script.js"></script>
+    @RenderSection("Scripts", required: false)
+
 </body>
 </html>

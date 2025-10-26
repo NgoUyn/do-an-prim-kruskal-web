@@ -1,0 +1,198 @@
+﻿
+@{
+    ViewBag.Title = "LienTinh";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@{
+    ViewBag.Title = "Du Lịch Liên Tỉnh - Tìm Tuyến Đường Tối Ưu";
+}
+
+<div class="lientinh-container">
+    <div class="banner">
+        <h1>Du Lịch Liên Tỉnh Tối Ưu</h1>
+        <p>Tìm tuyến đường du lịch với chi phí thấp nhất và khoảng cách ngắn nhất</p>
+    </div>
+
+    <div class="content-wrapper">
+        <!-- Sidebar: Lựa chọn tỉnh thành -->
+        <aside class="selection-panel">
+            <div class="panel-header">
+                <h2><i class="fas fa-map-marker-alt"></i> Chọn Tỉnh Thành</h2>
+            </div>
+
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="Tìm tỉnh thành..." class="search-input">
+            </div>
+
+            <div class="provinces-list">
+                <div id="provincesList" class="provinces-checkboxes">
+                    <!-- Các checkbox sẽ được tạo bằng JavaScript -->
+                </div>
+            </div>
+
+            <div class="panel-actions">
+                <button id="clearBtn" class="btn btn-secondary">
+                    <i class="fas fa-times"></i> Xóa Hết
+                </button>
+                <button id="calculateBtn" class="btn btn-primary">
+                    <i class="fas fa-calculator"></i> Tính Toán
+                </button>
+            </div>
+
+            <div class="selected-info">
+                <h3>Đã Chọn (<span id="selectedCount">0</span>)</h3>
+                <ul id="selectedList" class="selected-list">
+                </ul>
+            </div>
+        </aside>
+
+        <!-- Main Content: Kết quả và biểu đồ -->
+        <main class="results-panel">
+            <!-- Loading -->
+            <div id="loadingSpinner" class="loading-spinner" style="display: none;">
+                <div class="spinner"></div>
+                <p>Đang tính toán...</p>
+            </div>
+
+            <!-- Results -->
+            <div id="resultsContent" style="display: none;">
+                <!-- Kết quả tối ưu -->
+                <section class="result-section optimal-result">
+                    <h2><i class="fas fa-star"></i> Tuyến Đường Tối Ưu</h2>
+                    <div class="optimal-info">
+                        <div class="info-box">
+                            <span class="label">Thuật Toán:</span>
+                            <span class="value" id="optimalAlgorithm">-</span>
+                        </div>
+                        <div class="info-box">
+                            <span class="label">Chi Phí Tổng:</span>
+                            <span class="value" id="optimalCost">-</span> <span class="unit">Triệu VNĐ</span>
+                        </div>
+                        <div class="info-box">
+                            <span class="label">Khoảng Cách:</span>
+                            <span class="value" id="optimalDistance">-</span> <span class="unit">Km</span>
+                        </div>
+                    </div>
+                    <div class="route-info">
+                        <h3>Tuyến Đường</h3>
+                        <p id="routePath" class="route-path">-</p>
+                    </div>
+                </section>
+
+                <!-- Bảng so sánh -->
+                <section class="result-section comparison-table">
+                    <h2><i class="fas fa-table"></i> Bảng So Sánh Thuật Toán</h2>
+                    <table class="comparison-table-content">
+                        <thead>
+                            <tr>
+                                <th>Chỉ Số</th>
+                                <th>Prim</th>
+                                <th>Kruskal</th>
+                                <th>Chênh Lệch</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Chi Phí (Triệu VNĐ)</td>
+                                <td><span id="primCostVal">-</span></td>
+                                <td><span id="kruskalCostVal">-</span></td>
+                                <td><span id="costDiff">-</span></td>
+                            </tr>
+                            <tr>
+                                <td>Khoảng Cách (Km)</td>
+                                <td><span id="primDistVal">-</span></td>
+                                <td><span id="kruskalDistVal">-</span></td>
+                                <td><span id="distDiff">-</span></td>
+                            </tr>
+                            <tr>
+                                <td>Thời Gian Thực Thi (ms)</td>
+                                <td><span id="primTimeVal">-</span></td>
+                                <td><span id="kruskalTimeVal">-</span></td>
+                                <td><span id="timeDiff">-</span></td>
+                            </tr>
+                            <tr>
+                                <td>Số Phép Toán</td>
+                                <td><span id="primOpsVal">-</span></td>
+                                <td><span id="kruskalOpsVal">-</span></td>
+                                <td><span id="opsDiff">-</span></td>
+                            </tr>
+                            <tr>
+                                <td>Số Cạnh</td>
+                                <td><span id="primEdgesVal">-</span></td>
+                                <td><span id="kruskalEdgesVal">-</span></td>
+                                <td>-</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </section>
+
+                <!-- Biểu đồ so sánh -->
+                <section class="result-section charts-section">
+                    <h2><i class="fas fa-chart-bar"></i> Biểu Đồ Thống Kê</h2>
+                    <div class="charts-grid">
+                        <div class="chart-container">
+                            <h3>Chi Phí So Sánh</h3>
+                            <canvas id="costChart"></canvas>
+                        </div>
+                        <div class="chart-container">
+                            <h3>Thời Gian Thực Thi</h3>
+                            <canvas id="timeChart"></canvas>
+                        </div>
+                        <div class="chart-container">
+                            <h3>Số Phép Toán</h3>
+                            <canvas id="operationsChart"></canvas>
+                        </div>
+                        <div class="chart-container">
+                            <h3>Khoảng Cách</h3>
+                            <canvas id="distanceChart"></canvas>
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <!-- Initial Message -->
+            <div id="initialMessage" class="initial-message">
+                <i class="fas fa-info-circle"></i>
+                <p>Chọn ít nhất 2 tỉnh thành và nhấn nút "Tính Toán" để bắt đầu</p>
+            </div>
+        </main>
+    </div>
+</div>
+
+<!-- CSS -->
+<style>
+    .lientinh-container {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        padding-top: 20px;
+    }
+
+    .banner {
+        text-align: center;
+        color: white;
+        margin-bottom: 30px;
+        padding: 40px 20px;
+        background: rgba(0, 0, 0, 0.3);
+        border-radius: 10px;
+    }
+
+        .banner h1 {
+            font-size: 2.5em;
+            margin: 0 0 10px 0;
+        }
+
+    .content-wrapper {
+        display: flex;
+        gap: 20px;
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 0 20px 40px 20px;
+    }
+
+    .selection-panel {
+        width: 320px;
+        background: white;
+        border-radius: 10px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0)
+    }
+</style>

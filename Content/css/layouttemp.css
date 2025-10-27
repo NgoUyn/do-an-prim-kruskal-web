@@ -53,6 +53,37 @@ body {
             color: #ffdd00;
         }
 
+
+
+
+.nav-dropdown {
+    position: relative;
+}
+
+    .nav-dropdown > a {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+.dropdown-menu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background: white;
+    min-width: 220px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+    border-radius: 8px;
+    padding: 8px 0;
+    margin-top: 8px;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: all 0.3s ease;
+    z-index: 1000;
+    list-style: none;
+}
+
 /* MAIN */
 .main-container {
     padding: 30px 60px;

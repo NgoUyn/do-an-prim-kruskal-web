@@ -129,6 +129,7 @@
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="Controllers\AlgorithmController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\PrimController.cs" />
     <Compile Include="Controllers\TourController.cs" />
@@ -172,6 +173,7 @@
     <Content Include="Content\bootstrap.rtl.css" />
     <Content Include="Content\bootstrap.rtl.min.css" />
     <Content Include="Content\css\layouttemp.css" />
+    <Content Include="Content\css\LienTinh.css" />
     <Content Include="Content\css\mst_style.css" />
     <Content Include="Content\css\style.css" />
     <Content Include="Content\IMG\0f327dc40093452b10bd7a8c1986216e.jpg" />

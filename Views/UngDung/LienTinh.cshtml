@@ -1,198 +1,1021 @@
-﻿
-@{
-    ViewBag.Title = "LienTinh";
-    Layout = "~/Views/Shared/_Layout.cshtml";
-}
-@{
-    ViewBag.Title = "Du Lịch Liên Tỉnh - Tìm Tuyến Đường Tối Ưu";
-}
-
-<div class="lientinh-container">
-    <div class="banner">
-        <h1>Du Lịch Liên Tỉnh Tối Ưu</h1>
-        <p>Tìm tuyến đường du lịch với chi phí thấp nhất và khoảng cách ngắn nhất</p>
-    </div>
-
-    <div class="content-wrapper">
-        <!-- Sidebar: Lựa chọn tỉnh thành -->
-        <aside class="selection-panel">
-            <div class="panel-header">
-                <h2><i class="fas fa-map-marker-alt"></i> Chọn Tỉnh Thành</h2>
-            </div>
-
-            <div class="search-box">
-                <input type="text" id="searchInput" placeholder="Tìm tỉnh thành..." class="search-input">
-            </div>
-
-            <div class="provinces-list">
-                <div id="provincesList" class="provinces-checkboxes">
-                    <!-- Các checkbox sẽ được tạo bằng JavaScript -->
-                </div>
-            </div>
-
-            <div class="panel-actions">
-                <button id="clearBtn" class="btn btn-secondary">
-                    <i class="fas fa-times"></i> Xóa Hết
-                </button>
-                <button id="calculateBtn" class="btn btn-primary">
-                    <i class="fas fa-calculator"></i> Tính Toán
-                </button>
-            </div>
-
-            <div class="selected-info">
-                <h3>Đã Chọn (<span id="selectedCount">0</span>)</h3>
-                <ul id="selectedList" class="selected-list">
-                </ul>
-            </div>
-        </aside>
-
-        <!-- Main Content: Kết quả và biểu đồ -->
-        <main class="results-panel">
-            <!-- Loading -->
-            <div id="loadingSpinner" class="loading-spinner" style="display: none;">
-                <div class="spinner"></div>
-                <p>Đang tính toán...</p>
-            </div>
-
-            <!-- Results -->
-            <div id="resultsContent" style="display: none;">
-                <!-- Kết quả tối ưu -->
-                <section class="result-section optimal-result">
-                    <h2><i class="fas fa-star"></i> Tuyến Đường Tối Ưu</h2>
-                    <div class="optimal-info">
-                        <div class="info-box">
-                            <span class="label">Thuật Toán:</span>
-                            <span class="value" id="optimalAlgorithm">-</span>
-                        </div>
-                        <div class="info-box">
-                            <span class="label">Chi Phí Tổng:</span>
-                            <span class="value" id="optimalCost">-</span> <span class="unit">Triệu VNĐ</span>
-                        </div>
-                        <div class="info-box">
-                            <span class="label">Khoảng Cách:</span>
-                            <span class="value" id="optimalDistance">-</span> <span class="unit">Km</span>
-                        </div>
-                    </div>
-                    <div class="route-info">
-                        <h3>Tuyến Đường</h3>
-                        <p id="routePath" class="route-path">-</p>
-                    </div>
-                </section>
-
-                <!-- Bảng so sánh -->
-                <section class="result-section comparison-table">
-                    <h2><i class="fas fa-table"></i> Bảng So Sánh Thuật Toán</h2>
-                    <table class="comparison-table-content">
-                        <thead>
-                            <tr>
-                                <th>Chỉ Số</th>
-                                <th>Prim</th>
-                                <th>Kruskal</th>
-                                <th>Chênh Lệch</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>Chi Phí (Triệu VNĐ)</td>
-                                <td><span id="primCostVal">-</span></td>
-                                <td><span id="kruskalCostVal">-</span></td>
-                                <td><span id="costDiff">-</span></td>
-                            </tr>
-                            <tr>
-                                <td>Khoảng Cách (Km)</td>
-                                <td><span id="primDistVal">-</span></td>
-                                <td><span id="kruskalDistVal">-</span></td>
-                                <td><span id="distDiff">-</span></td>
-                            </tr>
-                            <tr>
-                                <td>Thời Gian Thực Thi (ms)</td>
-                                <td><span id="primTimeVal">-</span></td>
-                                <td><span id="kruskalTimeVal">-</span></td>
-                                <td><span id="timeDiff">-</span></td>
-                            </tr>
-                            <tr>
-                                <td>Số Phép Toán</td>
-                                <td><span id="primOpsVal">-</span></td>
-                                <td><span id="kruskalOpsVal">-</span></td>
-                                <td><span id="opsDiff">-</span></td>
-                            </tr>
-                            <tr>
-                                <td>Số Cạnh</td>
-                                <td><span id="primEdgesVal">-</span></td>
-                                <td><span id="kruskalEdgesVal">-</span></td>
-                                <td>-</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </section>
-
-                <!-- Biểu đồ so sánh -->
-                <section class="result-section charts-section">
-                    <h2><i class="fas fa-chart-bar"></i> Biểu Đồ Thống Kê</h2>
-                    <div class="charts-grid">
-                        <div class="chart-container">
-                            <h3>Chi Phí So Sánh</h3>
-                            <canvas id="costChart"></canvas>
-                        </div>
-                        <div class="chart-container">
-                            <h3>Thời Gian Thực Thi</h3>
-                            <canvas id="timeChart"></canvas>
-                        </div>
-                        <div class="chart-container">
-                            <h3>Số Phép Toán</h3>
-                            <canvas id="operationsChart"></canvas>
-                        </div>
-                        <div class="chart-container">
-                            <h3>Khoảng Cách</h3>
-                            <canvas id="distanceChart"></canvas>
-                        </div>
-                    </div>
-                </section>
-            </div>
-
-            <!-- Initial Message -->
-            <div id="initialMessage" class="initial-message">
-                <i class="fas fa-info-circle"></i>
-                <p>Chọn ít nhất 2 tỉnh thành và nhấn nút "Tính Toán" để bắt đầu</p>
-            </div>
-        </main>
-    </div>
-</div>
-
-<!-- CSS -->
-<style>
-    .lientinh-container {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        min-height: 100vh;
-        padding-top: 20px;
-    }
-
-    .banner {
-        text-align: center;
-        color: white;
-        margin-bottom: 30px;
-        padding: 40px 20px;
-        background: rgba(0, 0, 0, 0.3);
-        border-radius: 10px;
-    }
-
-        .banner h1 {
-            font-size: 2.5em;
-            margin: 0 0 10px 0;
+﻿<!DOCTYPE html>
+@*View ứng dụng liên tỉnh - Đã fix theo review code*@
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Du Lịch Liên Tỉnh - Tối Ưu Hóa Tuyến Đường</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    @*<link href="~/Content/css/LienTinh.css" rel="stylesheet"/>
+    *@
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
 
-    .content-wrapper {
-        display: flex;
-        gap: 20px;
-        max-width: 1400px;
-        margin: 0 auto;
-        padding: 0 20px 40px 20px;
-    }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
 
-    .selection-panel {
-        width: 320px;
-        background: white;
-        border-radius: 10px;
-        box-shadow: 0 8px 32px rgba(0, 0, 0, 0)
-    }
-</style>
+        .container {
+            max-width: 1500px;
+            margin: 0 auto;
+        }
+
+        .banner {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+            padding: 40px 20px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+        }
+
+            .banner h1 {
+                font-size: 2.5em;
+                margin-bottom: 10px;
+                text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            }
+
+            .banner p {
+                font-size: 1.1em;
+                opacity: 0.95;
+            }
+
+        .content-wrapper {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .selection-panel {
+            flex: 0 0 380px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            padding: 25px;
+            height: fit-content;
+            position: sticky;
+            top: 20px;
+        }
+
+        .panel-header h2 {
+            font-size: 1.5em;
+            color: #667eea;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .hint-box {
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 15px;
+            font-size: 0.9em;
+            color: #856404;
+        }
+
+        .search-box {
+            margin-bottom: 20px;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1em;
+            transition: border-color 0.3s;
+        }
+
+            .search-input:focus {
+                outline: none;
+                border-color: #667eea;
+            }
+
+        .provinces-list {
+            max-height: 300px;
+            overflow-y: auto;
+            margin-bottom: 20px;
+            padding: 10px 0;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+        }
+
+            .provinces-list::-webkit-scrollbar {
+                width: 6px;
+            }
+
+            .provinces-list::-webkit-scrollbar-track {
+                background: #f1f1f1;
+                border-radius: 10px;
+            }
+
+            .provinces-list::-webkit-scrollbar-thumb {
+                background: #667eea;
+                border-radius: 10px;
+            }
+
+        .province-option {
+            display: flex;
+            align-items: center;
+            padding: 12px;
+            margin: 4px 8px;
+            background: #f5f5f5;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 2px solid transparent;
+        }
+
+            .province-option:hover {
+                background: #efefef;
+                border-color: #667eea;
+            }
+
+            .province-option input[type="checkbox"] {
+                width: 20px;
+                height: 20px;
+                cursor: pointer;
+                accent-color: #667eea;
+            }
+
+            .province-option label {
+                flex: 1;
+                margin-left: 12px;
+                cursor: pointer;
+                font-weight: 500;
+                color: #333;
+            }
+
+        .panel-actions {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.95em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-clear {
+            background: #ff6b6b;
+            color: white;
+        }
+
+            .btn-clear:hover {
+                background: #ff5252;
+                transform: translateY(-2px);
+                box-shadow: 0 4px 12px rgba(255, 107, 107, 0.3);
+            }
+
+        .btn-save {
+            background: #51cf66;
+            color: white;
+        }
+
+            .btn-save:hover {
+                background: #40c057;
+                transform: translateY(-2px);
+                box-shadow: 0 4px 12px rgba(81, 207, 102, 0.3);
+            }
+
+        .btn-calculate {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            width: 100%;
+            font-size: 1.1em;
+            padding: 14px;
+            margin-top: 10px;
+        }
+
+            .btn-calculate:hover:not(:disabled) {
+                transform: translateY(-2px);
+                box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+            }
+
+            .btn-calculate:disabled {
+                opacity: 0.5;
+                cursor: not-allowed;
+            }
+
+        .selected-info {
+            background: #f0f4ff;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+
+            .selected-info h3 {
+                color: #667eea;
+                margin-bottom: 12px;
+                font-size: 1em;
+            }
+
+        .selected-list {
+            list-style: none;
+        }
+
+        .selected-item {
+            background: white;
+            padding: 8px 12px;
+            margin: 6px 0;
+            border-radius: 6px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.9em;
+            color: #333;
+            border-left: 3px solid #51cf66;
+        }
+
+        .remove-vertex {
+            background: #ff6b6b;
+            color: white;
+            border: none;
+            padding: 4px 8px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.8em;
+            transition: all 0.3s;
+        }
+
+            .remove-vertex:hover {
+                background: #ff5252;
+            }
+
+        .results-panel {
+            flex: 1;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            padding: 30px;
+            min-height: 500px;
+            overflow-y: auto;
+            max-height: 90vh;
+        }
+
+        .initial-message {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 400px;
+            color: #999;
+            font-size: 1.2em;
+            text-align: center;
+        }
+
+            .initial-message i {
+                font-size: 3em;
+                margin-bottom: 20px;
+                color: #ddd;
+            }
+
+        .loading-spinner {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 400px;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin-bottom: 20px;
+        }
+
+
+
+        .result-section {
+            margin-bottom: 30px;
+            padding-bottom: 30px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+            .result-section:last-child {
+                border-bottom: none;
+            }
+
+            .result-section h2 {
+                color: #667eea;
+                margin-bottom: 20px;
+                font-size: 1.5em;
+                display: flex;
+                align-items: center;
+                gap: 10px;
+            }
+
+        .optimal-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .info-box {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+            .info-box .label {
+                font-size: 0.9em;
+                opacity: 0.9;
+            }
+
+            .info-box .value {
+                font-size: 1.6em;
+                font-weight: bold;
+            }
+
+            .info-box .unit {
+                font-size: 0.85em;
+                opacity: 0.8;
+            }
+
+        .route-info {
+            background: #f0f4ff;
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 4px solid #667eea;
+            margin-bottom: 20px;
+        }
+
+            .route-info h3 {
+                color: #667eea;
+                margin-bottom: 10px;
+            }
+
+        .route-path {
+            font-family: 'Courier New', monospace;
+            color: #333;
+            font-size: 1em;
+            font-weight: 600;
+            line-height: 1.6;
+            word-wrap: break-word;
+        }
+
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            font-size: 0.95em;
+        }
+
+            .comparison-table thead {
+                background: #f0f4ff;
+            }
+
+            .comparison-table th, .comparison-table td {
+                padding: 12px;
+                text-align: left;
+                border-bottom: 1px solid #e0e0e0;
+            }
+
+            .comparison-table th {
+                font-weight: 600;
+                color: #667eea;
+            }
+
+            .comparison-table tbody tr:hover {
+                background: #fafafa;
+            }
+
+        .charts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .chart-container {
+            background: #f9f9f9;
+            padding: 20px;
+            border-radius: 10px;
+            border: 2px solid #f0f0f0;
+            height: 300px;
+        }
+
+            .chart-container h3 {
+                color: #667eea;
+                margin-bottom: 15px;
+                font-size: 1em;
+            }
+
+        .error-message {
+            background: #ffe0e0;
+            color: #c92a2a;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border-left: 4px solid #c92a2a;
+            display: flex;
+            gap: 10px;
+            align-items: flex-start;
+        }
+
+        .success-message {
+            background: #e7f5e7;
+            color: #2b8a2b;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border-left: 4px solid #2b8a2b;
+            display: flex;
+            gap: 10px;
+            align-items: flex-start;
+        }
+
+        .edge-list {
+            margin-top: 15px;
+            max-height: 200px;
+            overflow-y: auto;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 10px;
+            background: #fafafa;
+        }
+
+        .edge-item {
+            padding: 8px;
+            margin: 4px 0;
+            background: white;
+            border-radius: 6px;
+            border-left: 3px solid #667eea;
+            font-size: 0.9em;
+        }
+
+        @@media (max-width: 1024px) {
+            .content-wrapper {
+                flex-direction: column;
+            }
+
+            .selection-panel {
+                flex: 1;
+                position: static;
+            }
+
+            .banner h1 {
+                font-size: 2em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="banner">
+            <h1><i class="fas fa-map-location-dot"></i> Du Lịch Liên Tỉnh Tối Ưu</h1>
+            <p>Tìm tuyến đường du lịch với chi phí thấp nhất sử dụng thuật toán Prim & Kruskal</p>
+        </div>
+
+        <div class="content-wrapper">
+            <!-- Sidebar: Lựa chọn tỉnh thành -->
+            <aside class="selection-panel">
+                <div class="panel-header">
+                    <h2><i class="fas fa-map-marker-alt"></i> Chọn Tỉnh Thành</h2>
+                </div>
+
+                <div class="hint-box">
+                    <i class="fas fa-lightbulb"></i> <strong>Gợi ý:</strong> Chọn ít nhất 2 tỉnh, nhấn "Lưu Đỉnh", rồi nhấn "Tính Toán"
+                </div>
+
+                <div class="search-box">
+                    <input type="text" id="searchInput" placeholder="Tìm tỉnh thành..." class="search-input">
+                </div>
+
+                <div class="provinces-list" id="provincesList">
+                    <div style="padding: 20px; text-align: center; color: #999;">
+                        <i class="fas fa-spinner fa-spin"></i> Đang tải dữ liệu từ database...
+                    </div>
+                </div>
+
+                <div class="panel-actions">
+                    <button id="clearBtn" class="btn btn-clear">
+                        <i class="fas fa-times"></i> Xóa Hết
+                    </button>
+                    <button id="saveBtn" class="btn btn-save">
+                        <i class="fas fa-save"></i> Lưu Đỉnh
+                    </button>
+                </div>
+
+                <button id="calculateBtn" class="btn btn-calculate" disabled>
+                    <i class="fas fa-calculator"></i> Tính Toán Tuyến Đường
+                </button>
+
+                <div class="selected-info">
+                    <h3><i class="fas fa-check-circle"></i> Đã Lưu (<span id="selectedCount">0</span>)</h3>
+                    <ul id="selectedList" class="selected-list">
+                        <li style="color: #999; font-style: italic; padding: 10px;">Chưa lưu tỉnh nào</li>
+                    </ul>
+                </div>
+            </aside>
+
+            <!-- Main Content: Kết quả và biểu đồ -->
+            <main class="results-panel">
+                <!-- Loading -->
+                <div id="loadingSpinner" class="loading-spinner" style="display: none;">
+                    <div class="spinner"></div>
+                    <p>Đang tính toán tuyến đường tối ưu...</p>
+                </div>
+
+                <!-- Results -->
+                <div id="resultsContent" style="display: none;">
+                    <!-- Kết quả tối ưu -->
+                    <section class="result-section optimal-result">
+                        <h2><i class="fas fa-star"></i> Tuyến Đường Tối Ưu</h2>
+                        <div id="messageBox"></div>
+                        <div class="optimal-info">
+                            <div class="info-box">
+                                <span class="label">Thuật Toán</span>
+                                <span class="value" id="optimalAlgorithm">-</span>
+                            </div>
+                            <div class="info-box">
+                                <span class="label">Chi Phí Tổng</span>
+                                <span class="value" id="optimalCost">-</span>
+                                <span class="unit">VNĐ</span>
+                            </div>
+                            <div class="info-box">
+                                <span class="label">Khoảng Cách</span>
+                                <span class="value" id="optimalDistance">-</span>
+                                <span class="unit">Km</span>
+                            </div>
+                            <div class="info-box">
+                                <span class="label">Thời Gian Thực Thi</span>
+                                <span class="value" id="optimalTime">-</span>
+                                <span class="unit">ms</span>
+                            </div>
+                        </div>
+                        <div class="route-info">
+                            <h3>Tuyến Đường Chi Tiết</h3>
+                            <p id="routePath" class="route-path">-</p>
+                        </div>
+                    </section>
+
+                    <!-- Bảng so sánh -->
+                    <section class="result-section comparison-table-section">
+                        <h2><i class="fas fa-table"></i> Bảng So Sánh Thuật Toán</h2>
+                        <table class="comparison-table">
+                            <thead>
+                                <tr>
+                                    <th>Chỉ Số</th>
+                                    <th>Prim</th>
+                                    <th>Kruskal</th>
+                                    <th>Chênh Lệch</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>Chi Phí (VNĐ)</strong></td>
+                                    <td><span id="primCostVal">-</span></td>
+                                    <td><span id="kruskalCostVal">-</span></td>
+                                    <td><span id="costDiff">-</span></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Thời Gian (ms)</strong></td>
+                                    <td><span id="primTimeVal">-</span></td>
+                                    <td><span id="kruskalTimeVal">-</span></td>
+                                    <td><span id="timeDiff">-</span></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Số Phép Toán</strong></td>
+                                    <td><span id="primOpsVal">-</span></td>
+                                    <td><span id="kruskalOpsVal">-</span></td>
+                                    <td><span id="opsDiff">-</span></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Số Cạnh (MST)</strong></td>
+                                    <td><span id="primEdgesVal">-</span></td>
+                                    <td><span id="kruskalEdgesVal">-</span></td>
+                                    <td>-</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Độ Phức Tạp</strong></td>
+                                    <td>O(V²)</td>
+                                    <td>O(E log E)</td>
+                                    <td>-</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </section>
+
+                    <!-- Biểu đồ so sánh -->
+                    <section class="result-section charts-section">
+                        <h2><i class="fas fa-chart-bar"></i> Biểu Đồ Thống Kê So Sánh</h2>
+                        <div class="charts-grid">
+                            <div class="chart-container">
+                                <h3>Chi Phí So Sánh (VNĐ)</h3>
+                                <canvas id="costChart"></canvas>
+                            </div>
+                            <div class="chart-container">
+                                <h3>Thời Gian Thực Thi (ms)</h3>
+                                <canvas id="timeChart"></canvas>
+                            </div>
+                            <div class="chart-container">
+                                <h3>Số Phép Toán</h3>
+                                <canvas id="operationsChart"></canvas>
+                            </div>
+                            <div class="chart-container">
+                                <h3>Số Cạnh trong MST</h3>
+                                <canvas id="edgesChart"></canvas>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Danh sách cạnh của tuyến tối ưu -->
+                    <section class="result-section">
+                        <h2><i class="fas fa-network-wired"></i> Danh Sách Cạnh Tuyến Tối Ưu</h2>
+                        <div class="edge-list" id="edgesList"></div>
+                    </section>
+                </div>
+
+                <!-- Initial Message -->
+                <div id="initialMessage" class="initial-message">
+                    <i class="fas fa-info-circle"></i>
+                    <p>Chọn ít nhất 2 tỉnh thành, nhấn "Lưu Đỉnh", rồi nhấn "Tính Toán Tuyến Đường"</p>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script>let allProvinces = [];
+        let selectedProvinces = new Set();
+        let savedProvinces = [];
+        let charts = {};
+        let currentResults = null;
+
+        // Khởi tạo
+        async function init() {
+            await loadProvinces();
+            setupEventListeners();
+        }
+
+        // Tải danh sách tỉnh từ backend API
+        async function loadProvinces() {
+            try {
+                const response = await fetch('/UngDung/GetProvinces');
+                const result = await response.json();
+
+                if (result.success) {
+                    allProvinces = result.data;
+                    renderProvincesList();
+                } else {
+                    showError('Không thể tải danh sách tỉnh: ' + result.message);
+                }
+            } catch (error) {
+                showError('Lỗi kết nối với server: ' + error.message);
+                console.error('Error loading provinces:', error);
+            }
+        }
+
+        function renderProvincesList(searchTerm = '') {
+            const listContainer = document.getElementById('provincesList');
+            const filtered = allProvinces.filter(p =>
+                p.name.toLowerCase().includes(searchTerm.toLowerCase())
+            );
+
+            if (filtered.length === 0) {
+                listContainer.innerHTML = '<div style="padding: 20px; text-align: center; color: #999;">Không tìm thấy tỉnh nào</div>';
+                return;
+            }
+
+            listContainer.innerHTML = filtered.map(province => `
+                        <div class="province-option">
+                            <input type="checkbox" id="province-${province.id}" value="${province.id}">
+                            <label for="province-${province.id}">${province.name}</label>
+                        </div>
+                    `).join('');
+
+            document.querySelectorAll('.province-option input').forEach(checkbox => {
+                checkbox.addEventListener('change', (e) => {
+                    if (e.target.checked) {
+                        selectedProvinces.add(parseInt(e.target.value));
+                    } else {
+                        selectedProvinces.delete(parseInt(e.target.value));
+                    }
+                });
+            });
+        }
+
+        function setupEventListeners() {
+            document.getElementById('searchInput').addEventListener('input', (e) => {
+                renderProvincesList(e.target.value);
+            });
+
+            document.getElementById('clearBtn').addEventListener('click', () => {
+                selectedProvinces.clear();
+                document.querySelectorAll('.province-option input').forEach(cb => cb.checked = false);
+            });
+
+            document.getElementById('saveBtn').addEventListener('click', saveVertices);
+            document.getElementById('calculateBtn').addEventListener('click', calculateRoute);
+        }
+
+        function saveVertices() {
+            if (selectedProvinces.size < 2) {
+                alert('Vui lòng chọn ít nhất 2 tỉnh thành!');
+                return;
+            }
+
+            savedProvinces = Array.from(selectedProvinces);
+            updateSelectedList();
+            document.getElementById('calculateBtn').disabled = false;
+
+            alert(`Đã lưu ${savedProvinces.length} tỉnh thành thành công!`);
+        }
+
+        function updateSelectedList() {
+            const listEl = document.getElementById('selectedList');
+            const countEl = document.getElementById('selectedCount');
+
+            countEl.textContent = savedProvinces.length;
+
+            if (savedProvinces.length === 0) {
+                listEl.innerHTML = '<li style="color: #999; font-style: italic; padding: 10px;">Chưa lưu tỉnh nào</li>';
+                return;
+            }
+
+            listEl.innerHTML = savedProvinces.map(id => {
+                const province = allProvinces.find(p => p.id === id);
+                return `
+                            <li class="selected-item">
+                                <span>${province.name}</span>
+                                <button class="remove-vertex" onclick="removeVertex(${id})">Xóa</button>
+                            </li>
+                        `;
+            }).join('');
+        }
+
+        function removeVertex(id) {
+            savedProvinces = savedProvinces.filter(p => p !== id);
+            updateSelectedList();
+            if (savedProvinces.length < 2) {
+                document.getElementById('calculateBtn').disabled = true;
+            }
+        }
+
+        // FIX: Gửi JSON body thay vì form-urlencoded
+        async function calculateRoute() {
+            if (savedProvinces.length < 2) {
+                showError('Vui lòng lưu ít nhất 2 tỉnh!');
+                return;
+            }
+
+            document.getElementById('loadingSpinner').style.display = 'flex';
+            document.getElementById('resultsContent').style.display = 'none';
+            document.getElementById('initialMessage').style.display = 'none';
+
+            try {
+                const response = await fetch('/UngDung/CalculateOptimalRoute', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json; charset=utf-8'
+                    },
+                    body: JSON.stringify({ selectedProvinces: savedProvinces })
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    currentResults = result;
+                    displayResults(result);
+                    document.getElementById('resultsContent').style.display = 'block';
+                } else {
+                    showError('Lỗi tính toán: ' + result.message);
+                    document.getElementById('initialMessage').style.display = 'flex';
+                }
+            } catch (error) {
+                showError('Lỗi kết nối với server: ' + error.message);
+                console.error('Error calculating route:', error);
+                document.getElementById('initialMessage').style.display = 'flex';
+            } finally {
+                document.getElementById('loadingSpinner').style.display = 'none';
+            }
+        }
+
+        // FIX: Xử lý an toàn với null/undefined
+        function displayResults(data) {
+            const prim = data.primResult || {};
+            const kruskal = data.kruskalResult || {};
+            const optimal = data.optimalRoute || {};
+            const comp = data.comparison || {};
+
+            // Cập nhật thông tin tối ưu
+            document.getElementById('optimalAlgorithm').textContent = optimal.algorithmName || '-';
+            document.getElementById('optimalCost').textContent = (optimal.totalCost || 0).toLocaleString('vi-VN');
+            document.getElementById('optimalDistance').textContent = (optimal.totalDistance || 0).toLocaleString('vi-VN');
+            document.getElementById('optimalTime').textContent = (optimal.executionTime || 0).toFixed(3);
+
+            // Tuyến đường
+            const routeNames = Array.isArray(optimal.routeNames) ? optimal.routeNames.join(' → ') : '-';
+            document.getElementById('routePath').textContent = routeNames;
+
+            // Cập nhật bảng so sánh
+            document.getElementById('primCostVal').textContent = (prim.totalCost || 0).toLocaleString('vi-VN');
+            document.getElementById('kruskalCostVal').textContent = (kruskal.totalCost || 0).toLocaleString('vi-VN');
+            document.getElementById('costDiff').textContent = (comp.costDifference || 0).toLocaleString('vi-VN');
+
+            document.getElementById('primTimeVal').textContent = (prim.executionTime || 0).toFixed(3);
+            document.getElementById('kruskalTimeVal').textContent = (kruskal.executionTime || 0).toFixed(3);
+            document.getElementById('timeDiff').textContent = (comp.timeDifference || 0).toFixed(3);
+
+            document.getElementById('primOpsVal').textContent = prim.operationCount || 0;
+            document.getElementById('kruskalOpsVal').textContent = kruskal.operationCount || 0;
+            document.getElementById('opsDiff').textContent = comp.operationDifference || 0;
+
+            document.getElementById('primEdgesVal').textContent = prim.edgeCount || 0;
+            document.getElementById('kruskalEdgesVal').textContent = kruskal.edgeCount || 0;
+
+            // Hiển thị thông báo
+            const messageBox = document.getElementById('messageBox');
+            messageBox.innerHTML = `
+                        <div class="success-message">
+                            <i class="fas fa-check-circle"></i>
+                            <span>Tuyến tối ưu được tìm thấy bằng <strong>${optimal.algorithmName}</strong> với chi phí <strong>${(optimal.totalCost || 0).toLocaleString('vi-VN')}</strong> VNĐ</span>
+                        </div>
+                    `;
+
+            // Hiển thị danh sách cạnh
+            displayEdgesList(optimal.edges);
+
+            // Vẽ biểu đồ
+            drawCharts(prim, kruskal);
+        }
+
+        function displayEdgesList(edges) {
+            const edgesListEl = document.getElementById('edgesList');
+
+            if (!edges || !Array.isArray(edges) || edges.length === 0) {
+                edgesListEl.innerHTML = '<div style="color: #999; padding: 10px;">Không có cạnh</div>';
+                return;
+            }
+
+            edgesListEl.innerHTML = edges.map((edge, idx) => `
+                        <div class="edge-item">
+                            <strong>#${idx + 1}</strong> ${edge.fromName || 'N/A'} ↔ ${edge.toName || 'N/A'}
+                            <br/>
+                            <small>
+                                Khoảng cách: <strong>${(edge.distance || 0).toLocaleString('vi-VN')}</strong> km |
+                                Chi phí: <strong>${(edge.cost || 0).toLocaleString('vi-VN')}</strong> VNĐ
+                            </small>
+                        </div>
+                    `).join('');
+        }
+
+        function drawCharts(prim, kruskal) {
+            // Xóa các biểu đồ cũ
+            Object.values(charts).forEach(chart => {
+                if (chart && typeof chart.destroy === 'function') {
+                    chart.destroy();
+                }
+            });
+            charts = {};
+
+            const primColor = '#667eea';
+            const kruskalColor = '#764ba2';
+
+            // Biểu đồ Chi Phí
+            const costCtx = document.getElementById('costChart');
+            if (costCtx) {
+                charts.costChart = new Chart(costCtx.getContext('2d'), {
+                    type: 'bar',
+                    data: {
+                        labels: ['Prim', 'Kruskal'],
+                        datasets: [{
+                            label: 'Chi phí (VNĐ)',
+                            data: [prim.totalCost || 0, kruskal.totalCost || 0],
+                            backgroundColor: [primColor, kruskalColor],
+                            borderRadius: 8
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                ticks: { callback: v => v.toLocaleString('vi-VN') }
+                            }
+                        },
+                        plugins: { legend: { display: false } }
+                    }
+                });
+            }
+
+            // Biểu đồ Thời Gian
+            const timeCtx = document.getElementById('timeChart');
+            if (timeCtx) {
+                charts.timeChart = new Chart(timeCtx.getContext('2d'), {
+                    type: 'bar',
+                    data: {
+                        labels: ['Prim', 'Kruskal'],
+                        datasets: [{
+                            label: 'Thời gian (ms)',
+                            data: [prim.executionTime || 0, kruskal.executionTime || 0],
+                            backgroundColor: ['#51cf66', '#ff6b6b'],
+                            borderRadius: 8
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: { y: { beginAtZero: true } },
+                        plugins: { legend: { display: false } }
+                    }
+                });
+            }
+
+            // Biểu đồ Số Phép Toán
+            const opsCtx = document.getElementById('operationsChart');
+            if (opsCtx) {
+                charts.operationsChart = new Chart(opsCtx.getContext('2d'), {
+                    type: 'bar',
+                    data: {
+                        labels: ['Prim', 'Kruskal'],
+                        datasets: [{
+                            label: 'Số phép toán',
+                            data: [prim.operationCount || 0, kruskal.operationCount || 0],
+                            backgroundColor: ['#5b8def', '#f78fb3'],
+                            borderRadius: 8
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: { y: { beginAtZero: true } },
+                        plugins: { legend: { display: false } }
+                    }
+                });
+            }
+
+            // Biểu đồ Số Cạnh
+            const edgesCtx = document.getElementById('edgesChart');
+            if (edgesCtx) {
+                charts.edgesChart = new Chart(edgesCtx.getContext('2d'), {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Prim', 'Kruskal'],
+                        datasets: [{
+                            data: [prim.edgeCount || 0, kruskal.edgeCount || 0],
+                            backgroundColor: [primColor, kruskalColor],
+                            borderColor: 'white',
+                            borderWidth: 2
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { position: 'bottom' } }
+                    }
+                });
+            }
+        }
+
+        function showError(message) {
+            const messageBox = document.getElementById('messageBox');
+            if (messageBox) {
+                messageBox.innerHTML = `
+                            <div class="error-message">
+                                <i class="fas fa-exclamation-circle"></i>
+                                <span>${message}</span>
+                            </div>
+                        `;
+            } else {
+                alert(message);
+            }
+        }
+
+        // Khởi chạy ứng dụng
+        init();</script>
+</body>
+</html>

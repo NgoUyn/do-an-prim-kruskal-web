@@ -12,7 +12,9 @@ namespace Prim_Kruskal_Web.Controllers
     {
         private readonly DataContext db = new DataContext();
 
-
+        /// <summary>
+        /// Trang chính liên tỉnh - hiển thị view
+        /// </summary>
         public ActionResult LienTinh()
         {
             try
@@ -22,18 +24,36 @@ namespace Prim_Kruskal_Web.Controllers
             }
             catch (Exception ex)
             {
+                // Log the full exception details
+                System.Diagnostics.Debug.WriteLine($"Database Error: {ex.Message}");
+                if (ex.InnerException != null)
+                {
+                    System.Diagnostics.Debug.WriteLine($"Inner Exception: {ex.InnerException.Message}");
+                }
                 ViewBag.Error = "Lỗi khi tải dữ liệu: " + ex.Message;
                 return View(new List<object>());
             }
         }
 
-
+        /// <summary>
+        /// API: Lấy danh sách tỉnh thành cho dropdown/checkbox
+        /// </summary>
         [HttpGet]
         public ActionResult GetProvinces()
         {
             try
             {
                 var tinhThanhs = db.GetAllTinhThanh();
+                
+                if (tinhThanhs == null || !tinhThanhs.Any())
+                {
+                    return Json(new
+                    {
+                        success = false,
+                        message = "Không có dữ liệu tỉnh thành trong database"
+                    }, JsonRequestBehavior.AllowGet);
+                }
+
                 var provinces = tinhThanhs.Select(t => new
                 {
                     id = t.ID,
@@ -50,15 +70,24 @@ namespace Prim_Kruskal_Web.Controllers
             }
             catch (Exception ex)
             {
+                // Log the full exception details
+                System.Diagnostics.Debug.WriteLine($"Database Error in GetProvinces: {ex.Message}");
+                if (ex.InnerException != null)
+                {
+                    System.Diagnostics.Debug.WriteLine($"Inner Exception: {ex.InnerException.Message}");
+                }
+
                 return Json(new
                 {
                     success = false,
-                    message = "Lỗi khi tải danh sách tỉnh: " + ex.Message
+                    message = "Lỗi khi tải danh sách tỉnh: " + ex.Message + (ex.InnerException != null ? "\nInner: " + ex.InnerException.Message : "")
                 }, JsonRequestBehavior.AllowGet);
             }
         }
 
-
+        /// <summary>
+        /// API: Lấy dữ liệu đồ thị (nodes + edges) cho graph visualization
+        /// </summary>
         [HttpGet]
         public ActionResult GetGraphData()
         {
@@ -102,6 +131,10 @@ namespace Prim_Kruskal_Web.Controllers
             }
         }
 
+        /// <summary>
+        /// API: Tính toán tuyến đường tối ưu bằng Prim và Kruskal
+        /// FIX: Đọc JSON body thay vì model binding trực tiếp
+        /// </summary>
         [HttpPost]
         public ActionResult CalculateOptimalRoute()
         {
@@ -215,7 +248,9 @@ namespace Prim_Kruskal_Web.Controllers
             }
         }
 
-
+        /// <summary>
+        /// Convert Edge list sang DTO cho JSON response
+        /// </summary>
         private List<object> ConvertEdgesToDto(List<Edge> edges)
         {
             return edges.Select(e => new
@@ -229,7 +264,10 @@ namespace Prim_Kruskal_Web.Controllers
             }).Cast<object>().ToList();
         }
 
-
+        /// <summary>
+        /// Load graph từ database dựa trên danh sách tỉnh được chọn
+        /// FIX: An toàn với nullable latitude/longitude
+        /// </summary>
         private Graph LoadGraph(List<int> selectedProvinces)
         {
             var graph = new Graph();

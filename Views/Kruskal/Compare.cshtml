@@ -105,7 +105,7 @@
         foreach (var e in graph.Edges)
         {
             <text>
-edges.push({ id:@idx, from:@e.Src.Id, to:@e.Destination.Id, label:"@e.Weight", width:1, color:{color:'#848484'} });
+edges.push({ id:@idx, from:@e.Src.Id, to:@e.Destination.Id, label:"@e.Cost", width:1, color:{color:'#848484'} });
 edgeIdMap['@e.Src.Id-@e.Destination.Id'] = @idx;
             </text>
             idx++;
@@ -151,7 +151,7 @@ edgeIdMap['@e.Src.Id-@e.Destination.Id'] = @idx;
     // Export CSV
     document.getElementById('btnExportCSV').addEventListener('click', function(){
         let rows=[['Src','Dest','Weight']];
-        @if(Model?.KruskalEdges!=null){foreach(var e in Model.KruskalEdges){<text>rows.push(["@e.Src.Name","@e.Destination.Name","@e.Weight"]);</text>}}
+        @if(Model?.KruskalEdges!=null){foreach(var e in Model.KruskalEdges){<text>rows.push(["@e.Src.Name","@e.Destination.Name","@e.Cost"]);</text>}}
         const csv=rows.map(r=>r.join(',')).join('\n');
         const blob=new Blob([csv],{type:'text/csv;charset=utf-8;'});
         const url=URL.createObjectURL(blob);

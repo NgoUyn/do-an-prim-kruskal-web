@@ -10,34 +10,49 @@ namespace Prim_Kruskal_Web.Controllers
 {
     public class KruskalController : Controller
     {
-        
-        // GET: Kruskal: gọi giải thuật kruskal từ service, trả về kết quả
-        
-        DatabaseContext db = new DatabaseContext();
-        public ActionResult Index()
 
+        public ActionResult Index()
         {
-            var graphs = db.LoadGraph();
-            return View(graphs);
+            var model = new GraphInputModel();
+            model.Edges.Add(new EdgeInput());
+            return View(model);
         }
 
-        public ActionResult RunKruskal()
+        [HttpPost]
+        public ActionResult RunKruskal(GraphInputModel input)
         {
             try
             {
-                var graph = db.LoadGraph();
-                if (graph == null || graph.Nodes.Count == 0)
-                    return Content("khong co du lieu trong do thi.");
-
+                var graph = BuildGraph(input);
                 var mst = Kruskal.FindMST(graph);
                 return View("Result", mst);
             }
             catch (Exception ex)
             {
-                return Content("Loi khi chay Kruskal: " + ex.Message);
+                return Content("Lỗi khi chạy Kruskal: " + ex.Message);
             }
         }
-    }
 
-    
+        private Graph BuildGraph(GraphInputModel input)
+        {
+            var graph = new Graph();
+            var nodeDict = new Dictionary<string, Node>();
+
+            foreach (var edge in input.Edges)
+            {
+                if (string.IsNullOrWhiteSpace(edge.Src) || string.IsNullOrWhiteSpace(edge.Dest))
+                    continue;
+
+                if (!nodeDict.ContainsKey(edge.Src))
+                    nodeDict[edge.Src] = new Node(nodeDict.Count + 1, edge.Src);
+                if (!nodeDict.ContainsKey(edge.Dest))
+                    nodeDict[edge.Dest] = new Node(nodeDict.Count + 1, edge.Dest);
+
+                graph.AddNode(nodeDict[edge.Src]);
+                graph.AddNode(nodeDict[edge.Dest]);
+                graph.AddEdge(nodeDict[edge.Src], nodeDict[edge.Dest], edge.Weight);
+            }
+            return graph;
+        }
+    }
 }

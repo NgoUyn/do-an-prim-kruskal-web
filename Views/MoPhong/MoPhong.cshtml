@@ -1,0 +1,162 @@
+﻿@{
+    ViewBag.Title = "Mô phỏng Thuật toán Prim & Kruskal";
+}
+
+<h2 class="text-center mb-4">🧩 Mô phỏng Thuật toán Prim & Kruskal</h2>
+
+<div class="container">
+    <form method="post" action="/MoPhong/Result">
+        <!-- 1️⃣ Nhập đỉnh -->
+        <div class="card p-3 mb-3 shadow-sm">
+            <h5>1️⃣ Nhập các đỉnh</h5>
+            <input type="text" id="nodes" name="nodes"
+                   value="@ViewBag.Nodes"
+                   class="form-control"
+                   placeholder="VD: A,B,C,D"
+                   required />
+        </div>
+
+        <!-- 2️⃣ Nhập cạnh -->
+        <div class="card p-3 mb-3 shadow-sm">
+            <h5>2️⃣ Nhập cạnh và trọng số</h5>
+            <div id="edges-container">
+                @if (ViewBag.Src != null)
+                {
+                    var srcList = ViewBag.Src as string[];
+                    var destList = ViewBag.Dest as string[];
+                    var weightList = ViewBag.Weight as int[];
+                    for (int i = 0; i < srcList.Length; i++)
+                    {
+                        <div class="row g-2 mb-2 edge-row">
+                            <div class="col-md-3"><input type="text" name="src[]" value="@srcList[i]" class="form-control" placeholder="Đỉnh bắt đầu" required /></div>
+                            <div class="col-md-3"><input type="text" name="dest[]" value="@destList[i]" class="form-control" placeholder="Đỉnh kết thúc" required /></div>
+                            <div class="col-md-3"><input type="number" name="weight[]" value="@weightList[i]" class="form-control" placeholder="Trọng số" required /></div>
+                            <div class="col-md-3"><button type="button" class="btn btn-danger w-100 remove-edge">Xóa</button></div>
+                        </div>
+                    }
+                }
+                else
+                {
+                    <div class="row g-2 mb-2 edge-row">
+                        <div class="col-md-3"><input type="text" name="src[]" class="form-control" placeholder="Đỉnh bắt đầu" required /></div>
+                        <div class="col-md-3"><input type="text" name="dest[]" class="form-control" placeholder="Đỉnh kết thúc" required /></div>
+                        <div class="col-md-3"><input type="number" name="weight[]" class="form-control" placeholder="Trọng số" required /></div>
+                        <div class="col-md-3"><button type="button" class="btn btn-danger w-100 remove-edge">Xóa</button></div>
+                    </div>
+                }
+            </div>
+            <button type="button" id="add-edge" class="btn btn-success mt-2">+ Thêm cạnh</button>
+        </div>
+
+        <!-- 3️⃣ Chọn thuật toán -->
+        <div class="card p-3 mb-3 shadow-sm">
+            <h5>3️⃣ Chọn thuật toán</h5>
+            <select name="algorithm" class="form-select" required>
+                <option value="Prim" @(ViewBag.Algorithm == "Prim" ? "selected" : "")>Prim</option>
+                <option value="Kruskal" @(ViewBag.Algorithm == "Kruskal" ? "selected" : "")>Kruskal</option>
+            </select>
+        </div>
+
+        <button type="submit" class="btn btn-primary w-100">🔍 Chạy mô phỏng</button>
+    </form>
+</div>
+
+<!-- Kết quả chữ -->
+@if (ViewBag.Result != null)
+{
+    var edges = ViewBag.Result as List<Prim_Kruskal_Web.Models.Edge>;
+    var total = edges.Sum(e => e.Weight);
+
+    <div class="container mt-4">
+        <div class="card p-3 shadow-sm">
+            <h5>MST:</h5>
+            <ul>
+                @foreach (var edge in edges)
+                {
+                    <li>@edge.Src.Name - @edge.Destination.Name : @edge.Weight</li>
+                }
+            </ul>
+            <p><strong>Tổng trọng số: @total</strong></p>
+        </div>
+    </div>
+
+    <!-- Canvas mô phỏng -->
+    <div class="container mt-4 text-center">
+        <h5>Mô phỏng trực quan MST</h5>
+        <canvas id="graphCanvas" width="700" height="500" class="border"></canvas>
+    </div>
+}
+
+<!-- So sánh hiệu suất -->
+@if (ViewBag.Time != null)
+{
+    <div class="container mt-4">
+        <div class="card p-3 shadow-sm bg-light">
+            <h5>📊 So sánh hiệu suất</h5>
+            <table class="table table-bordered text-center mt-2">
+                <thead class="table-secondary"><tr><th>Thuật toán</th><th>Số bước</th><th>Thời gian (ms)</th></tr></thead>
+                <tbody><tr><td>@ViewBag.Algorithm</td><td>@ViewBag.Steps</td><td>@ViewBag.Time</td></tr></tbody>
+            </table>
+        </div>
+    </div>
+}
+
+@section scripts {
+    <script>
+document.getElementById('add-edge').addEventListener('click', () => {
+    const container = document.getElementById('edges-container');
+    const row = document.createElement('div');
+    row.className = 'row g-2 mb-2 edge-row';
+    row.innerHTML = `
+        <div class="col-md-3"><input type="text" name="src[]" class="form-control" placeholder="Đỉnh bắt đầu" required /></div>
+        <div class="col-md-3"><input type="text" name="dest[]" class="form-control" placeholder="Đỉnh kết thúc" required /></div>
+        <div class="col-md-3"><input type="number" name="weight[]" class="form-control" placeholder="Trọng số" required /></div>
+        <div class="col-md-3"><button type="button" class="btn btn-danger w-100 remove-edge">Xóa</button></div>`;
+    container.appendChild(row);
+});
+
+document.addEventListener('click', e => { if (e.target.classList.contains('remove-edge')) e.target.closest('.edge-row').remove(); });
+
+window.onload = function () {
+    const resultEdges = @Html.Raw(ViewBag.ResultJson ?? "null");
+    const allEdges = @Html.Raw(ViewBag.AllEdgesJson ?? "null");
+    const nodes = @Html.Raw(ViewBag.NodesJson ?? "null");
+    if (!resultEdges || !allEdges || !nodes) return;
+
+    const canvas = document.getElementById('graphCanvas');
+    const ctx = canvas.getContext('2d');
+    const centerX = canvas.width / 2, centerY = canvas.height / 2, radius = 180;
+    const nodePositions = {};
+    nodes.forEach((n,i)=>{const x=centerX+radius*Math.cos(i*2*Math.PI/nodes.length);const y=centerY+radius*Math.sin(i*2*Math.PI/nodes.length);nodePositions[n.Name]={x,y};});
+
+    function drawBaseGraph(){
+        ctx.clearRect(0,0,canvas.width,canvas.height);
+        allEdges.forEach(e=>{
+            const s=nodePositions[e.Src.Name],d=nodePositions[e.Destination.Name];
+            ctx.beginPath();ctx.moveTo(s.x,s.y);ctx.lineTo(d.x,d.y);ctx.strokeStyle="#ccc";ctx.lineWidth=2;ctx.stroke();
+            ctx.fillStyle="black";ctx.font="13px Arial";ctx.fillText(e.Weight,(s.x+d.x)/2,(s.y+d.y)/2);
+        });
+        nodes.forEach(n=>{
+            const p=nodePositions[n.Name];
+            ctx.beginPath();ctx.arc(p.x,p.y,20,0,2*Math.PI);ctx.fillStyle="#007bff";ctx.fill();ctx.strokeStyle="white";ctx.lineWidth=2;ctx.stroke();
+            ctx.fillStyle="white";ctx.font="bold 14px Arial";ctx.textAlign="center";ctx.textBaseline="middle";ctx.fillText(n.Name,p.x,p.y);
+        });
+    }
+
+    drawBaseGraph();
+
+    let step=0;const totalSteps=resultEdges.length;
+    const btn=document.createElement("button");btn.textContent="▶ Tiếp tục";btn.className="btn btn-warning mt-3";btn.style.fontWeight="bold";document.querySelector(".container.text-center").appendChild(btn);
+
+    btn.addEventListener("click",()=>{
+        if(step<totalSteps){
+            const e=resultEdges[step];const s=nodePositions[e.Src.Name],d=nodePositions[e.Destination.Name];
+            drawBaseGraph();
+            for(let i=0;i<step;i++){const prev=resultEdges[i],ps=nodePositions[prev.Src.Name],pd=nodePositions[prev.Destination.Name];ctx.beginPath();ctx.moveTo(ps.x,ps.y);ctx.lineTo(pd.x,pd.y);ctx.strokeStyle="green";ctx.lineWidth=4;ctx.stroke();}
+            ctx.beginPath();ctx.moveTo(s.x,s.y);ctx.lineTo(d.x,d.y);ctx.strokeStyle="orange";ctx.lineWidth=5;ctx.stroke();
+            step++;if(step===totalSteps){btn.textContent="✅ Hoàn tất";btn.disabled=true;btn.classList.replace("btn-warning","btn-success");}
+        }
+    });
+};
+    </script>
+}

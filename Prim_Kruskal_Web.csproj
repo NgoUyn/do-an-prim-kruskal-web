@@ -145,6 +145,7 @@
     <Compile Include="Models\Edge.cs" />
     <Compile Include="Models\Graph.cs" />
     <Compile Include="Models\KHOANG_CACH.cs" />
+    <Compile Include="Models\LocationDTO.cs" />
     <Compile Include="Models\Node.cs" />
     <Compile Include="Models\TINH_THANH.cs" />
     <Compile Include="Models\UnionFind.cs" />
@@ -227,6 +228,7 @@
     <Content Include="Views\Kruskal\Result.cshtml" />
     <Content Include="Views\Kruskal\Compare.cshtml" />
     <Content Include="Views\UngDung\LienTinh.cshtml" />
+    <Content Include="Views\UngDung\NoiTinh.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -14,8 +14,9 @@ namespace Prim_Kruskal_Web.Models
         }
 
         [Key]
+        [Column("ID_TINH")]
         public int ID { get; set; }
-        
+
         [Required]
         [StringLength(100)]
         public string TEN_TINH { get; set; }

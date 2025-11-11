@@ -1,14 +1,13 @@
-﻿<!DOCTYPE html>
-@*View ứng dụng liên tỉnh - Đã fix theo review code*@
-<html lang="vi">
+﻿@{
+    ViewBag.Title = "NoiTinh";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Du Lịch Liên Tỉnh - Tối Ưu Hóa Tuyến Đường</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
-    @*<link href="~/Content/css/LienTinh.css" rel="stylesheet"/>
-    *@
     <style>
         * {
             margin: 0;
@@ -495,61 +494,53 @@
 <body>
     <div class="container">
         <div class="banner">
-            <h1><i class="fas fa-map-location-dot"></i> Du Lịch Liên Tỉnh Tối Ưu</h1>
-            <p>Tìm tuyến đường du lịch với chi phí thấp nhất sử dụng thuật toán Prim & Kruskal</p>
+            <h1><i class="fas fa-city"></i> Du Lịch Nội Tỉnh Tối Ưu</h1>
+            <p>Tìm tuyến đường ngắn nhất giữa các địa điểm trong tỉnh</p>
         </div>
 
         <div class="content-wrapper">
-            <!-- Sidebar: Lựa chọn tỉnh thành -->
             <aside class="selection-panel">
                 <div class="panel-header">
-                    <h2><i class="fas fa-map-marker-alt"></i> Chọn Tỉnh Thành</h2>
-                </div>
-
-                <div class="hint-box">
-                    <i class="fas fa-lightbulb"></i> <strong>Gợi ý:</strong> Chọn ít nhất 2 tỉnh, nhấn "Lưu Đỉnh", rồi nhấn "Tính Toán"
+                    <h2><i class="fas fa-map-marker-alt"></i> Chọn Tỉnh và Địa Điểm</h2>
                 </div>
 
                 <div class="search-box">
-                    <input type="text" id="searchInput" placeholder="Tìm tỉnh thành..." class="search-input">
+                    <label for="provinceSelect">Chọn một tỉnh:</label>
+                    <select id="provinceSelect" class="search-input">
+                        <option value="">-- Đang tải danh sách tỉnh --</option>
+                    </select>
                 </div>
 
-                <div class="provinces-list" id="provincesList">
+                <div class="hint-box">
+                    <i class="fas fa-lightbulb"></i> <strong>Gợi ý:</strong> Chọn tỉnh, sau đó chọn ít nhất 2 địa điểm và nhấn "Tính Toán".
+                </div>
+
+                <div class="provinces-list" id="locationsList">
                     <div style="padding: 20px; text-align: center; color: #999;">
-                        <i class="fas fa-spinner fa-spin"></i> Đang tải dữ liệu từ database...
+                        Vui lòng chọn một tỉnh...
                     </div>
                 </div>
 
-                <div class="panel-actions">
-                    <button id="clearBtn" class="btn btn-clear">
-                        <i class="fas fa-times"></i> Xóa Hết
-                    </button>
-                    <button id="saveBtn" class="btn btn-save">
-                        <i class="fas fa-save"></i> Lưu Đỉnh
-                    </button>
-                </div>
-
-                <button id="calculateBtn" class="btn btn-calculate" disabled>
+                <button id="calculateBtn" class="btn btn-calculate">
                     <i class="fas fa-calculator"></i> Tính Toán Tuyến Đường
                 </button>
 
-                <div class="selected-info">
-                    <h3><i class="fas fa-check-circle"></i> Đã Lưu (<span id="selectedCount">0</span>)</h3>
-                    <ul id="selectedList" class="selected-list">
-                        <li style="color: #999; font-style: italic; padding: 10px;">Chưa lưu tỉnh nào</li>
-                    </ul>
-                </div>
             </aside>
 
-            <!-- Main Content: Kết quả và biểu đồ -->
             <main class="results-panel">
+                <!-- Initial Message -->
+                <div id="initialMessage" class="initial-message" style="display: flex;">
+                    <i class="fas fa-info-circle"></i>
+                    <p>Chọn tỉnh và ít nhất 2 địa điểm, sau đó nhấn "Tính Toán Tuyến Đường"</p>
+                </div>
+
                 <!-- Loading -->
                 <div id="loadingSpinner" class="loading-spinner" style="display: none;">
                     <div class="spinner"></div>
                     <p>Đang tính toán tuyến đường tối ưu...</p>
                 </div>
 
-                <!-- Results -->
+                <!-- Results wrapper - CHỨA TẤT CẢ CÁC SECTIONS -->
                 <div id="resultsContent" style="display: none;">
                     <!-- Kết quả tối ưu -->
                     <section class="result-section optimal-result">
@@ -658,157 +649,127 @@
                         <div class="edge-list" id="edgesList"></div>
                     </section>
                 </div>
-
-                <!-- Initial Message -->
-                <div id="initialMessage" class="initial-message">
-                    <i class="fas fa-info-circle"></i>
-                    <p>Chọn ít nhất 2 tỉnh thành, nhấn "Lưu Đỉnh", rồi nhấn "Tính Toán Tuyến Đường"</p>
-                </div>
             </main>
         </div>
     </div>
 
     <script>
-    let allProvinces = [];
-        let selectedProvinces = new Set();
-        let savedProvinces = [];
-        let charts = {};
-        let currentResults = null;
+        let allProvinces = [];
+        let allLocations = []; // Lưu danh sách địa điểm (full object)
+        let charts = {}; // Cần để hàm displayResults chạy
 
-        // Khởi tạo
+        document.addEventListener('DOMContentLoaded', init);
+
         async function init() {
-            await loadProvinces();
+            await loadProvincesDropdown();
             setupEventListeners();
         }
 
-        // Tải danh sách tỉnh từ backend API
-        async function loadProvinces() {
+        // Tải danh sách TỈNH vào dropdown
+        async function loadProvincesDropdown() {
             try {
+                // SỬA LỖI 1: Phải gọi 'GetProvinces'
                 const response = await fetch('/UngDung/GetProvinces');
                 const result = await response.json();
+                const selectEl = document.getElementById('provinceSelect');
 
                 if (result.success) {
                     allProvinces = result.data;
-                    renderProvincesList();
+                    selectEl.innerHTML = '<option value="">-- Chọn một tỉnh --</option>'; // Xóa "Đang tải"
+
+                    allProvinces.forEach(province => {
+                        selectEl.innerHTML += `<option value="${province.id}">${province.name}</option>`;
+                    });
                 } else {
-                    showError('Không thể tải danh sách tỉnh: ' + result.message);
+                    selectEl.innerHTML = '<option value="">-- Lỗi tải tỉnh --</option>';
                 }
             } catch (error) {
-                showError('Lỗi kết nối với server: ' + error.message);
-                console.error('Error loading provinces:', error);
+                console.error('Lỗi tải tỉnh:', error);
+                document.getElementById('provinceSelect').innerHTML = '<option value="">-- Lỗi kết nối --</option>';
             }
         }
-
-        function renderProvincesList(searchTerm = '') {
-            const listContainer = document.getElementById('provincesList');
-            const filtered = allProvinces.filter(p =>
-                p.name.toLowerCase().includes(searchTerm.toLowerCase())
-            );
-
-            if (filtered.length === 0) {
-                listContainer.innerHTML = '<div style="padding: 20px; text-align: center; color: #999;">Không tìm thấy tỉnh nào</div>';
-                return;
-            }
-
-            listContainer.innerHTML = filtered.map(province => `
-                            <div class="province-option">
-                                <input type="checkbox" id="province-${province.id}" value="${province.id}">
-                                <label for="province-${province.id}">${province.name}</label>
-                            </div>
-                        `).join('');
-
-            document.querySelectorAll('.province-option input').forEach(checkbox => {
-                checkbox.addEventListener('change', (e) => {
-                    if (e.target.checked) {
-                        selectedProvinces.add(parseInt(e.target.value));
-                    } else {
-                        selectedProvinces.delete(parseInt(e.target.value));
-                    }
-                });
-            });
-        }
-
         function setupEventListeners() {
-            document.getElementById('searchInput').addEventListener('input', (e) => {
-                renderProvincesList(e.target.value);
+            // Khi người dùng CHỌN 1 TỈNH
+            document.getElementById('provinceSelect').addEventListener('change', async (e) => {
+                const provinceId = e.target.value;
+                if (provinceId) {
+                    await loadLocationForProvince(provinceId);
+                } else {
+                    document.getElementById('locationsList').innerHTML = '<div style="padding: 20px; text-align: center; color: #999;">Vui lòng chọn một tỉnh...</div>';
+                }
             });
 
-            document.getElementById('clearBtn').addEventListener('click', () => {
-                selectedProvinces.clear();
-                document.querySelectorAll('.province-option input').forEach(cb => cb.checked = false);
-            });
-
-            document.getElementById('saveBtn').addEventListener('click', saveVertices);
-            document.getElementById('calculateBtn').addEventListener('click', calculateRoute);
+            // Khi người dùng NHẤN NÚT TÍNH TOÁN
+            document.getElementById('calculateBtn').addEventListener('click', calculateNoiTinhRoute);
         }
 
-        function saveVertices() {
-            if (selectedProvinces.size < 2) {
-                alert('Vui lòng chọn ít nhất 2 tỉnh thành!');
-                return;
-            }
-
-            savedProvinces = Array.from(selectedProvinces);
-            updateSelectedList();
-            document.getElementById('calculateBtn').disabled = false;
-
-            alert(`Đã lưu ${savedProvinces.length} tỉnh thành thành công!`);
-        }
-
-        function updateSelectedList() {
-            const listEl = document.getElementById('selectedList');
-            const countEl = document.getElementById('selectedCount');
-
-            countEl.textContent = savedProvinces.length;
-
-            if (savedProvinces.length === 0) {
-                listEl.innerHTML = '<li style="color: #999; font-style: italic; padding: 10px;">Chưa lưu tỉnh nào</li>';
-                return;
-            }
-
-            listEl.innerHTML = savedProvinces.map(id => {
-                const province = allProvinces.find(p => p.id === id);
-                return `
-                                <li class="selected-item">
-                                    <span>${province.name}</span>
-                                    <button class="remove-vertex" onclick="removeVertex(${id})">Xóa</button>
-                                </li>
-                            `;
-            }).join('');
-        }
-
-        function removeVertex(id) {
-            savedProvinces = savedProvinces.filter(p => p !== id);
-            updateSelectedList();
-            if (savedProvinces.length < 2) {
-                document.getElementById('calculateBtn').disabled = true;
-            }
-        }
-
-        // FIX: Gửi JSON body thay vì form-urlencoded
-        async function calculateRoute() {
-            if (savedProvinces.length < 2) {
-                showError('Vui lòng lưu ít nhất 2 tỉnh!');
-                return;
-            }
-
-            document.getElementById('loadingSpinner').style.display = 'flex';
-            document.getElementById('resultsContent').style.display = 'none';
-            document.getElementById('initialMessage').style.display = 'none';
+        // Tải danh sách ĐỊA ĐIỂM (Nội tỉnh)
+        async function loadLocationForProvince(provinceId) {
+            const listContainer = document.getElementById('locationsList');
+            listContainer.innerHTML = '<div style="padding: 20px; text-align: center; color: #999;"><i class="fas fa-spinner fa-spin"></i> Đang tải địa điểm...</div>';
 
             try {
-                const response = await fetch('/UngDung/CalculateOptimalRoute', {
+                // Free plan: use Overpass with broad tag set to increase results
+                let response = await fetch(`/UngDung/GetLocationsByProvinceID_V2?provinceID=${provinceId}&useOverpass=true&broad=true`);
+                let result = await response.json();
+
+                // If still empty, try once more without broad to handle odd servers
+                if ((!result.success || !result.data || result.data.length === 0)) {
+                    response = await fetch(`/UngDung/GetLocationsByProvinceID_V2?provinceID=${provinceId}&useOverpass=true`);
+                    result = await response.json();
+                }
+
+                if (result.success && result.data.length > 0) {
+                    allLocations = result.data; // Lưu lại để dùng khi tính toán
+
+                    listContainer.innerHTML = allLocations.map(loc => `
+                <div class="province-option">
+                    <input type="checkbox" class="location-checkbox" id="location-${loc.id}" value="${loc.id}">
+                    <label for="location-${loc.id}">${loc.name}</label>
+                </div>
+            `).join('');
+                } else {
+                    // Hiển thị lỗi (nếu có) từ server
+                    const errorMessage = result.message || "Không tìm thấy địa điểm nào cho tỉnh này.";
+                    listContainer.innerHTML = `<div style="padding: 20px; text-align: center; color: #999;">${errorMessage}</div>`;
+                }
+            } catch (error) {
+                console.error('Lỗi tải địa điểm:', error);
+                listContainer.innerHTML = '<div style="padding: 20px; text-align: center; color: red;">Lỗi kết nối server.</div>';
+            }
+        }
+        // GỌI API TÍNH TOÁN NỘI TỈNH
+        async function calculateNoiTinhRoute() {
+            const checkedBoxes = document.querySelectorAll('.location-checkbox:checked');
+
+            if (checkedBoxes.length < 2) {
+                showError("Vui lòng chọn ít nhất 2 địa điểm."); // Dùng hàm showError từ file cũ
+                return;
+            }
+
+            // Lấy ra các object LocationDto đầy đủ
+            const selectedLocationIds = Array.from(checkedBoxes).map(cb => parseInt(cb.value));
+            const selectedLocations = allLocations.filter(loc => selectedLocationIds.includes(loc.id));
+
+            // Hiển thị loading, ẩn kết quả cũ
+            const loadingEl = document.getElementById('loadingSpinner');
+            const resultsEl = document.getElementById('resultsContent');
+            const initialEl = document.getElementById('initialMessage');
+            if (loadingEl) loadingEl.style.display = 'flex';
+            if (resultsEl) resultsEl.style.display = 'none';
+            if (initialEl) initialEl.style.display = 'none';
+
+            try {
+                const response = await fetch('/UngDung/CalculateNoiTinhRoute', {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json; charset=utf-8'
-                    },
-                    body: JSON.stringify({ selectedProvinces: savedProvinces })
+                    headers: { 'Content-Type': 'application/json; charset=utf-8' },
+                    body: JSON.stringify({ selectedLocations: selectedLocations }) // Gửi đi danh sách object
                 });
 
                 const result = await response.json();
 
                 if (result.success) {
-                    currentResults = result;
+                    // SỬ DỤNG LẠI HÀM HIỂN THỊ KẾT QUẢ CỦA BẠN
                     displayResults(result);
                     document.getElementById('resultsContent').style.display = 'block';
                 } else {
@@ -816,15 +777,16 @@
                     document.getElementById('initialMessage').style.display = 'flex';
                 }
             } catch (error) {
-                showError('Lỗi kết nối với server: ' + error.message);
-                console.error('Error calculating route:', error);
-                document.getElementById('initialMessage').style.display = 'flex';
+                 showError('Lỗi kết nối với server: ' + error.message);
+                 document.getElementById('initialMessage').style.display = 'flex';
             } finally {
-                document.getElementById('loadingSpinner').style.display = 'none';
+                //document.getElementById('loadingSpinner').style.display = 'none';
+                if (loadingEl) loadingEl.style.display = 'none';
             }
         }
 
-        // FIX: Xử lý an toàn với null/undefinedfunction showError(message)
+
+
         function displayResults(data) {
             const prim = data.primResult || {};
             const kruskal = data.kruskalResult || {};
@@ -860,11 +822,11 @@
             // Hiển thị thông báo
             const messageBox = document.getElementById('messageBox');
             messageBox.innerHTML = `
-                            <div class="success-message">
-                                <i class="fas fa-check-circle"></i>
-                                <span>Tuyến tối ưu được tìm thấy bằng <strong>${optimal.algorithmName}</strong> với chi phí <strong>${(optimal.totalCost || 0).toLocaleString('vi-VN')}</strong> VNĐ</span>
-                            </div>
-                        `;
+                        <div class="success-message">
+                            <i class="fas fa-check-circle"></i>
+                            <span>Tuyến tối ưu được tìm thấy bằng <strong>${optimal.algorithmName}</strong> với chi phí <strong>${(optimal.totalCost || 0).toLocaleString('vi-VN')}</strong> VNĐ</span>
+                        </div>
+                    `;
 
             // Hiển thị danh sách cạnh
             displayEdgesList(optimal.edges);
@@ -872,7 +834,6 @@
             // Vẽ biểu đồ
             drawCharts(prim, kruskal);
         }
-
         function displayEdgesList(edges) {
             const edgesListEl = document.getElementById('edgesList');
 
@@ -882,17 +843,17 @@
             }
 
             edgesListEl.innerHTML = edges.map((edge, idx) => `
-                            <div class="edge-item">
-                                <strong>#${idx + 1}</strong> ${edge.fromName || 'N/A'} ↔ ${edge.toName || 'N/A'}
-                                <br/>
-                                <small>
-                                    Khoảng cách: <strong>${(edge.distance || 0).toLocaleString('vi-VN')}</strong> km |
-                                    Chi phí: <strong>${(edge.cost || 0).toLocaleString('vi-VN')}</strong> VNĐ
-                                </small>
-                            </div>
-                        `).join('');
-        }
 
+                        <div class="edge-item">
+                            <strong>#${idx + 1}</strong> ${edge.fromName || 'N/A'} ↔ ${edge.toName || 'N/A'}
+                            <br/>
+                            <small>
+                                Khoảng cách: <strong>${(edge.distance || 0).toLocaleString('vi-VN')}</strong> km |
+                                Chi phí: <strong>${(edge.cost || 0).toLocaleString('vi-VN')}</strong> VNĐ
+                            </small>
+                        </div>
+                    `).join('');
+        }
         function drawCharts(prim, kruskal) {
             // Xóa các biểu đồ cũ
             Object.values(charts).forEach(chart => {
@@ -941,6 +902,7 @@
                     data: {
                         labels: ['Prim', 'Kruskal'],
                         datasets: [{
+
                             label: 'Thời gian (ms)',
                             data: [prim.executionTime || 0, kruskal.executionTime || 0],
                             backgroundColor: ['#51cf66', '#ff6b6b'],
@@ -1001,23 +963,21 @@
                 });
             }
         }
-
-        // FIX: Xử lý an toàn với null/undefined
         function showError(message) {
             const messageBox = document.getElementById('messageBox');
             if (messageBox) {
                 messageBox.innerHTML = `
-                <div class="error-message">
-                    <i class="fas fa-exclamation-circle"></i>
-                    <span>${message}</span>
-                </div>
-            `;
+                            <div class="error-message">
+                                <i class="fas fa-exclamation-circle"></i>
+                                <span>${message}</span>
+                            </div>
+                        `;
             } else {
                 alert(message);
             }
         }
 
-        // Khởi chạy ứng dụng
-        init();</script>
+
+        init();
+    </script>
 </body>
-</html>

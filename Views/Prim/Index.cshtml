@@ -1,0 +1,26 @@
+﻿@model Prim_Kruskal_Web.Models.GraphInputModel
+
+<h2>Nhập dữ liệu đồ thị</h2>
+@using (Html.BeginForm("RunPrim", "Prim", FormMethod.Post))
+{
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Đỉnh A</th>
+                <th>Đỉnh B</th>
+                <th>Trọng số</th>
+            </tr>
+        </thead>
+        <tbody>
+            @for (int i = 0; i < Model.Edges.Count; i++)
+            {
+                <tr>
+                    <td>@Html.TextBoxFor(m => m.Edges[i].Src, new { @class = "form-control" })</td>
+                    <td>@Html.TextBoxFor(m => m.Edges[i].Dest, new { @class = "form-control" })</td>
+                    <td>@Html.TextBoxFor(m => m.Edges[i].Weight, new { @class = "form-control" })</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <button type="submit" class="btn btn-primary">Chạy Prim</button>
+}

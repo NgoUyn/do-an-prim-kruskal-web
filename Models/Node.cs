@@ -11,5 +11,14 @@ namespace Prim_Kruskal_Web.Models
         public string Name { get; set; }
         public double Latitude { get; set; }
         public double Longitude { get; set; }
+
+        // Added convenience constructor used by controllers
+        public Node(int id, string name)
+        {
+            Id = id;
+            Name = name;
+        }
+
+        public Node() { }
     }
 }

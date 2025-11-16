@@ -50,5 +50,28 @@ namespace Prim_Kruskal_Web.Models
 
             Edges.Add(edge);
         }
+
+        // Overload to add by Node references and a single weight
+        public void AddEdge(Node src, Node dest, double weight)
+        {
+            if (src == null || dest == null) return;
+
+            if (Edges.Any(e =>
+                (e.SourceId == src.Id && e.DestinationId == dest.Id) ||
+                (e.SourceId == dest.Id && e.DestinationId == src.Id)))
+                return;
+
+            var edge = new Edge
+            {
+                SourceId = src.Id,
+                DestinationId = dest.Id,
+                Src = src,
+                Destination = dest,
+                KhoangCach = weight,
+                Cost = null
+            };
+
+            Edges.Add(edge);
+        }
     }
 }

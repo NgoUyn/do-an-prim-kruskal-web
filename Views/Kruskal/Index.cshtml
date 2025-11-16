@@ -1,38 +1,26 @@
-﻿@model Prim_Kruskal_Web.Models.Graph
-@{
-    ViewBag.Title = "Danh sách các cạnh trong đồ thị";
-    Layout = "~/Views/Shared/_Layout.cshtml";
-}
+﻿@model Prim_Kruskal_Web.Models.GraphInputModel
 
-<h2>Đồ thị hiện tại</h2>
-
-@if (Model == null || Model.Edges == null || Model.Edges.Count == 0)
+<h2>Nhập dữ liệu đồ thị</h2>
+@using (Html.BeginForm("RunKruskal", "Kruskal", FormMethod.Post))
 {
-    <p>Không có dữ liệu đồ thị nào trong cơ sở dữ liệu.</p>
-}
-else
-{
-    <table class="table table-bordered table-striped">
+    <table class="table table-bordered">
         <thead>
             <tr>
-                <th>Nguồn</th>
-                <th>Đích</th>
-                <th>Trọng số (Khoảng cách KM)</th>
+                <th>Đỉnh A</th>
+                <th>Đỉnh B</th>
+                <th>Trọng số</th>
             </tr>
         </thead>
         <tbody>
-            @foreach (var edge in Model.Edges)
+            @for (int i = 0; i < Model.Edges.Count; i++)
             {
                 <tr>
-                    <td>@edge.Src.Name</td>
-                    <td>@edge.Destination.Name</td>
-                    <td>@edge.Weight</td>
+                    <td>@Html.TextBoxFor(m => m.Edges[i].Src, new { @class = "form-control" })</td>
+                    <td>@Html.TextBoxFor(m => m.Edges[i].Dest, new { @class = "form-control" })</td>
+                    <td>@Html.TextBoxFor(m => m.Edges[i].Weight, new { @class = "form-control" })</td>
                 </tr>
             }
         </tbody>
     </table>
-
-    <div style="margin-top: 20px;">
-        <a href="@Url.Action("RunKruskal", "Kruskal")" class="btn btn-primary">Chạy thuật toán Kruskal</a>
-    </div>
+    <button type="submit" class="btn btn-primary">Chạy Prim</button>
 }

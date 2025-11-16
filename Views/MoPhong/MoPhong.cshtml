@@ -1,0 +1,798 @@
+﻿@{
+    ViewBag.Title = "Mô phỏng Thuật toán Prim & Kruskal";
+}
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<script src="https://d3js.org/d3.v7.min.js"></script>
+
+<style>
+    :root {
+        --bg-dark: #0f172a;
+        --panel: #1e293b;
+        --accent: #6366f1;
+        --accent2: #8b5cf6;
+        --border: #334155;
+        --edge: #475569;
+        --success: #10b981;
+        --warn: #f59e0b;
+    }
+
+    body {
+        background: linear-gradient(135deg, #0f172a, #1e1f2e);
+    }
+
+    .sim-wrapper {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 10px 6px;
+    }
+
+    .card {
+        border-radius: 18px;
+        overflow: hidden;
+        position: relative;
+        background: var(--panel);
+        color: #fff;
+        border: 1px solid var(--border);
+        box-shadow: 0 10px 30px -8px rgba(0,0,0,.6);
+    }
+
+        .card h5 {
+            font-weight: 600;
+            letter-spacing: .4px;
+        }
+
+    .gradient-btn {
+        background: linear-gradient(135deg,var(--accent),var(--accent2));
+        color: #fff;
+        border: none;
+        font-weight: 600;
+        padding: 12px 26px;
+        border-radius: 50px;
+        box-shadow: 0 8px 24px -6px rgba(99,102,241,.45);
+        transition: .35s;
+    }
+
+        .gradient-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 14px 32px -6px rgba(99,102,241,.55);
+        }
+
+    .edge-row input {
+        background: var(--bg-dark);
+        color: #e2e8f0;
+        border: 1px solid var(--border);
+        font-size: .8rem;
+        height: 34px;
+    }
+
+        .edge-row input:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 1px var(--accent);
+        }
+
+    .step-badge {
+        display: inline-block;
+        min-width: 34px;
+        padding: 4px 10px;
+        border-radius: 30px;
+        background: var(--accent);
+        color: #fff;
+        font-size: .7rem;
+        font-weight: 700;
+        text-align: center;
+        margin-right: 8px;
+    }
+
+    .step-item {
+        background: var(--bg-dark);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 8px 12px;
+        margin-bottom: 8px;
+        font-size: .75rem;
+        line-height: 1.35;
+        transition: all 0.4s ease-in-out;
+    }
+
+        .step-item.success {
+            border-color: var(--success);
+        }
+
+        .step-item.skip {
+            opacity: .55;
+            border-style: dashed;
+        }
+
+        .step-item.highlight-anim {
+            background: var(--accent) !important;
+            border-color: var(--accent2) !important;
+            transform: scale(1.02);
+            box-shadow: 0 5px 15px rgba(99, 102, 241, 0.3);
+        }
+
+    .btn-group .btn {
+        font-size: .8rem;
+        padding: .5rem;
+    }
+
+    #stepsContainer {
+        scrollbar-width: thin;
+    }
+
+        #stepsContainer::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        #stepsContainer::-webkit-scrollbar-thumb {
+            background: var(--edge);
+            border-radius: 10px;
+        }
+
+    #graphArea {
+        position: relative;
+    }
+
+    #graphCanvas {
+        background: var(--bg-dark);
+        border: 2px solid var(--border);
+        border-radius: 16px;
+        touch-action: none;
+        cursor: grab;
+        width: 100%;
+    }
+
+        #graphCanvas.dragging {
+            cursor: grabbing;
+        }
+
+    /* Đảm bảo Canvas dùng đúng font đã tải */
+    canvas {
+        font-family: 'Inter', sans-serif;
+    }
+
+    .pill-toggle .btn {
+        border-radius: 50px;
+        padding: 6px 18px;
+        font-size: .7rem;
+        font-weight: 600;
+    }
+
+        .pill-toggle .btn.active {
+            background: linear-gradient(135deg,var(--accent),var(--accent2));
+            color: #fff;
+            border: none;
+        }
+
+    .info-bar {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-top: 14px;
+    }
+
+    .info-chip {
+        background: var(--bg-dark);
+        border: 1px solid var(--border);
+        color: #94a3b8;
+        padding: 6px 12px;
+        border-radius: 40px;
+        font-size: .65rem;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+        .info-chip i {
+            color: var(--accent);
+        }
+
+    .toolbar {
+        position: absolute;
+        top: 12px;
+        right: 12px;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        z-index: 10;
+    }
+
+    .tool-btn {
+        background: var(--panel);
+        border: 1px solid var(--border);
+        color: #fff;
+        width: 42px;
+        height: 42px;
+        border-radius: 10px;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: .25s;
+        font-size: .9rem;
+    }
+
+        .tool-btn:hover {
+            background: var(--accent);
+        }
+
+    .export-note {
+        font-size: .6rem;
+        color: #64748b;
+        margin-top: 4px;
+        text-align: right;
+    }
+
+    .layout-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit,minmax(320px,1fr));
+        gap: 22px;
+    }
+
+    /* PLUS: Style cho các nút tốc độ */
+    #speedControls .btn {
+        font-size: .7rem;
+        font-weight: 600;
+        padding: 6px 12px;
+    }
+
+        #speedControls .btn.btn-outline-info.active {
+            background-color: var(--accent);
+            border-color: var(--accent);
+            color: #fff;
+        }
+
+
+    @@media (max-width:992px) {
+        #graphCanvas {
+            height: 420px;
+        }
+
+        .layout-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+
+<h2 class="text-center mb-4 text-light animate__animated animate__fadeInDown">🧩 Mô phỏng trực quan Prim & Kruskal</h2>
+<div class="sim-wrapper animate__animated animate__fadeInUp">
+    <form method="post" action="/MoPhong/Result" class="mb-4">
+        <div class="layout-grid">
+            <div class="card p-3">
+                <h5>1️⃣ Nhập các đỉnh</h5>
+                <small class="text-secondary">Ngăn cách bằng dấu phẩy. VD: A,B,C,D,E</small>
+                <input type="text" id="nodes" name="nodes" value="@ViewBag.Nodes" class="form-control mt-2" placeholder="VD: A,B,C,D" required />
+            </div>
+            <div class="card p-3">
+                <h5>2️⃣ Nhập cạnh & trọng số</h5>
+                <div id="edges-container" class="mt-2" style="max-height:270px;overflow-y:auto;">
+                    @if (ViewBag.Src != null)
+                    {
+                        var srcList = ViewBag.Src as string[];
+                        var destList = ViewBag.Dest as string[];
+                        var weightList = ViewBag.Weight as int[];
+                        for (int i = 0; i < srcList.Length; i++)
+                        {
+                            <div class="row g-2 mb-2 edge-row">
+                                <div class="col-4"><input type="text" name="src[]" value="@srcList[i]" class="form-control" placeholder="Từ" required /></div>
+                                <div class="col-4"><input type="text" name="dest[]" value="@destList[i]" class="form-control" placeholder="Đến" required /></div>
+                                <div class="col-4"><input type="number" name="weight[]" value="@weightList[i]" class="form-control" placeholder="W" required /></div>
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <div class="row g-2 mb-2 edge-row">
+                            <div class="col-4"><input type="text" name="src[]" class="form-control" placeholder="Từ" required /></div>
+                            <div class="col-4"><input type="text" name="dest[]" class="form-control" placeholder="Đến" required /></div>
+                            <div class="col-4"><input type="number" name="weight[]" class="form-control" placeholder="W" required /></div>
+                        </div>
+                    }
+                </div>
+                <button type="button" id="add-edge" class="gradient-btn mt-2 w-100">+ Thêm cạnh</button>
+            </div>
+            <div class="card p-3">
+                <h5>3️⃣ Chọn thuật toán & Chạy</h5>
+                <select name="algorithm" class="form-select mt-2" required>
+                    <option value="Prim" @(ViewBag.Algorithm == "Prim" ? "selected" : "")>Prim</option>
+                    <option value="Kruskal" @(ViewBag.Algorithm == "Kruskal" ? "selected" : "")>Kruskal</option>
+                </select>
+
+                <div class="mt-3">
+                    <small class="text-secondary">Hoặc tải đồ thị mẫu (sẽ xóa cạnh hiện tại):</small>
+                    <div class="btn-group w-100 mt-1" role="group">
+                        <button type="button" class="btn btn-sm btn-outline-info" onclick="loadSample(1)">Đồ thị 5 đỉnh</button>
+                        <button type="button" class="btn btn-sm btn-outline-info" onclick="loadSample(2)">Đồ thị 7 đỉnh</button>
+                    </div>
+                </div>
+                <button type="submit" class="gradient-btn w-100 mt-3">🔍 Chạy mô phỏng</button>
+                @if (ViewBag.Error != null)
+                {<div class="alert alert-danger mt-2">@ViewBag.Error</div>}
+            </div>
+        </div>
+    </form>
+
+    @if (ViewBag.Result != null)
+    {
+        var edges = ViewBag.Result as List<Prim_Kruskal_Web.Models.Edge>;
+        var total = edges.Sum(e => e.Weight);
+        <div class="layout-grid">
+            <div class="card p-3" id="graphArea">
+                <h5 class="mb-2">🖼️ Trực quan MST</h5>
+                <canvas id="graphCanvas" height="620"></canvas>
+                <div class="toolbar">
+                    <button class="tool-btn" id="zoomIn" title="Phóng to">+</button>
+                    <button class="tool-btn" id="zoomOut" title="Thu nhỏ">−</button>
+                    <button class="tool-btn" id="resetView" title="Reset">⟳</button>
+                    <button class="tool-btn" id="exportImg" title="Xuất ảnh"><i class="fa fa-download"></i></button>
+                </div>
+                <div class="info-bar">
+                    <div class="info-chip"><i class="fa fa-check"></i> Cạnh MST: @edges.Count</div>
+                    <div class="info-chip"><i class="fa fa-weight-hanging"></i> Tổng: @total</div>
+                    <div class="info-chip"><i class="fa fa-bolt"></i> Thuật toán: @ViewBag.Algorithm</div>
+                    <div class="info-chip"><i class="fa fa-clock"></i> Thời gian: @ViewBag.Time ms</div>
+                </div>
+                <div class="export-note">Có thể kéo nút để sắp lại, phóng to/thu nhỏ & xuất PNG.</div>
+
+                <div class="d-flex align-items-center mt-2 gap-2">
+                    <button id="playAll" class="btn btn-outline-light btn-sm">▶ Phát tự động</button>
+                    <div class="btn-group btn-group-sm" role="group" id="speedControls">
+                        <button type="button" class="btn btn-outline-info" data-speed="2">0.5x</button>
+                        <button type="button" class="btn btn-outline-info active" data-speed="1">1x</button>
+                        <button type="button" class="btn btn-outline-info" data-speed="0.5">2x</button>
+                    </div>
+                </div>
+
+            </div>
+            <div class="card p-3">
+                <h5 class="mb-2">📜 Các bước</h5>
+                <div class="pill-toggle mb-2">
+                    <button id="showPrimSteps" class="btn btn-outline-info @(ViewBag.Algorithm=="Prim"?"active":"")">Prim Steps</button>
+                    <button id="showKruskalSteps" class="btn btn-outline-success @(ViewBag.Algorithm=="Kruskal"?"active":"")">Kruskal Steps</button>
+                </div>
+                <div id="stepsContainer" style="max-height:620px;overflow-y:auto;"></div>
+            </div>
+        </div>
+    }
+</div>
+
+@section scripts {
+    <script>
+    // === LẤY DỮ LIỆU TỪ VIEW BAG ===
+    const primSteps = @Html.Raw(ViewBag.PrimStepsJson ?? "null");
+    const kruskalSteps = @Html.Raw(ViewBag.KruskalStepsJson ?? "null");
+    const resultEdges = @Html.Raw(ViewBag.ResultJson ?? "[]");
+    const allEdges = @Html.Raw(ViewBag.AllEdgesJson ?? "[]");
+    const d3Nodes = @Html.Raw(ViewBag.NodesJson ?? "[]");
+
+    // SỬA LỖI: Thêm đối tượng 'colors' để Canvas tham chiếu
+    const colors = {
+        bgDark: '#0f172a',
+        panel: '#1e293b',
+        accent: '#6366f1',
+        accent2: '#8b5cf6',
+        border: '#334155',
+        edge: '#475569',
+        success: '#10b981',
+        warn: '#f59e0b'
+    };
+
+    // Chỉ dùng tên (ID) làm source/target
+    const d3Edges = allEdges.map(e => ({
+        source: e.Src.Name,
+        target: e.Destination.Name,
+        weight: e.Weight
+    }));
+
+    // === HÀM TẢI ĐỒ THỊ MẪU (Giữ nguyên) ===
+    function addEdgeRow(src, dest, weight) {
+        const c = document.getElementById('edges-container');
+        const r = document.createElement('div');
+        r.className = 'row g-2 mb-2 edge-row';
+        r.innerHTML = `<div class='col-4'><input type='text' name='src[]' class='form-control' placeholder='Từ' value='${src}' required/></div>
+                         <div class='col-4'><input type='text' name='dest[]' class='form-control' placeholder='Đến' value='${dest}' required/></div>
+                         <div class='col-4'><input type='number' name='weight[]' class='form-control' placeholder='W' value='${weight}' required/></div>`;
+        c.appendChild(r);
+    }
+    function loadSample(sampleId) {
+        const nodesInput = document.getElementById('nodes');
+        const edgesContainer = document.getElementById('edges-container');
+        edgesContainer.innerHTML = '';
+        if (sampleId === 1) {
+            nodesInput.value = "A,B,C,D,E";
+            addEdgeRow("A", "B", 4); addEdgeRow("A", "C", 2); addEdgeRow("B", "C", 1);
+            addEdgeRow("B", "D", 5); addEdgeRow("C", "D", 8); addEdgeRow("C", "E", 10);
+            addEdgeRow("D", "E", 2);
+        } else if (sampleId === 2) {
+            nodesInput.value = "A,B,C,D,E,F,G";
+            addEdgeRow("A", "B", 7); addEdgeRow("A", "D", 5); addEdgeRow("B", "C", 8);
+            addEdgeRow("B", "D", 9); addEdgeRow("B", "E", 7); addEdgeRow("C", "E", 5);
+            addEdgeRow("D", "E", 15); addEdgeRow("D", "F", 6); addEdgeRow("E", "F", 8);
+            addEdgeRow("E", "G", 9); addEdgeRow("F", "G", 11);
+        }
+    }
+
+    // === RENDER CÁC BƯỚC (Giữ nguyên) ===
+    function renderSteps(list) {
+        const box = document.getElementById('stepsContainer');
+        if (!box) return;
+        if (!list || !list.length) { box.innerHTML = '<p class="text-muted">Không có bước.</p>'; return; }
+        let successCounter = 0;
+        box.innerHTML = list.map(s => {
+            const isSuccess = s.Description.startsWith('Chọn');
+            const isSkip = s.Description.startsWith('Bỏ qua');
+            let stepId = '';
+            if (isSuccess) {
+                stepId = `id="success-step-${successCounter}"`;
+                successCounter++;
+            }
+            return `<div ${stepId} class="step-item ${isSuccess ? 'success' : isSkip ? 'skip' : ''}">
+                        <span class="step-badge">${s.StepNumber}</span>
+                        ${s.Description}<br/>
+                        <small>MST: ${(s.CurrentMSTEdges || []).map(e => e.Src.Name + '-' + e.Destination.Name).join(', ') || '(trống)'}</small>
+                    </div>`;
+        }).join('');
+    }
+    document.getElementById('showPrimSteps')?.addEventListener('click', () => { renderSteps(primSteps); toggleActive('showPrimSteps'); });
+    document.getElementById('showKruskalSteps')?.addEventListener('click', () => { renderSteps(kruskalSteps); toggleActive('showKruskalSteps'); });
+    function toggleActive(id) { document.querySelectorAll('.pill-toggle .btn').forEach(b => b.classList.remove('active')); document.getElementById(id)?.classList.add('active'); }
+
+
+    // ===== BẮT ĐẦU CẢI TIẾN: D3-FORCE & CANVAS =====
+
+    let zoom = 1.0; let panX = 0; let panY = 0; let draggingNode = null; let isPanning = false; let lastMouse = { x: 0, y: 0 };
+    const canvas = document.getElementById('graphCanvas');
+    const ctx = canvas ? canvas.getContext('2d') : null;
+    let simulation = null; // Sẽ khởi tạo sau
+
+    // === HÀM INIT CANVAS (Giữ nguyên) ===
+    function initializeGraph() {
+        if (!canvas || !d3Nodes || d3Nodes.length === 0) return;
+        canvas.width = canvas.clientWidth;
+        canvas.height = 620;
+        const baseRadius = (Math.min(canvas.width, canvas.height) / 2 - 80);
+        const centerX = canvas.width / 2;
+        const centerY = canvas.height / 2;
+        d3Nodes.forEach((n, i) => {
+            const angle = i * 2 * Math.PI / d3Nodes.length;
+            n.x = centerX + baseRadius * Math.cos(angle);
+            n.y = centerY + baseRadius * Math.sin(angle);
+        });
+        simulation = d3.forceSimulation(d3Nodes)
+            .force("link", d3.forceLink(d3Edges).id(d => d.Name).distance(120).strength(0.1))
+            .force("charge", d3.forceManyBody().strength(-200))
+            .force("center", d3.forceCenter(centerX, centerY))
+            .on("tick", draw);
+        panX = 0;
+        zoom = 1.0;
+        draw();
+    }
+
+    function transformPoint(x, y) { return { x: x * zoom + panX, y: y * zoom + panY }; }
+    function inverseTransform(mx, my) { return { x: (mx - panX) / zoom, y: (my - panY) / zoom }; }
+
+    // === HÀM DRAW() (Giữ nguyên) ===
+    function draw(highlightStep = -1) {
+        if (!ctx) return;
+        ctx.save();
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.translate(panX, panY);
+        ctx.scale(zoom, zoom);
+        const nodeRadius = 18;
+        const nodeFont = `600 14px Inter`;
+        const edgeFont = `bold 12px Inter`;
+
+        // 1. Vẽ tất cả các cạnh (Edges)
+        ctx.lineWidth = 1.5;
+        ctx.strokeStyle = colors.edge;
+        ctx.fillStyle = '#e2e8f0';
+        ctx.font = edgeFont;
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        allEdges.forEach(e => {
+            const sNode = d3Nodes.find(n => n.Name === e.Src.Name);
+            const dNode = d3Nodes.find(n => n.Name === e.Destination.Name);
+            if (!sNode || !dNode || sNode.x === undefined || dNode.x === undefined) return;
+            ctx.setLineDash([4, 4]);
+            ctx.globalAlpha = 0.5;
+            ctx.beginPath();
+            ctx.moveTo(sNode.x, sNode.y);
+            ctx.lineTo(dNode.x, dNode.y);
+            ctx.stroke();
+            const midX = (sNode.x + dNode.x) / 2;
+            const midY = (sNode.y + dNode.y) / 2;
+            const text = e.Weight.toString();
+            const textWidth = ctx.measureText(text).width;
+            ctx.fillStyle = colors.bgDark;
+            ctx.fillRect(midX - (textWidth / 2) - 4, midY - 10, textWidth + 8, 20);
+            ctx.fillStyle = '#e2e8f0';
+            ctx.fillText(text, midX, midY);
+        });
+        ctx.setLineDash([]);
+        ctx.globalAlpha = 1.0;
+
+        // 2. Vẽ các cạnh MST (đè lên trên)
+        const highlightEdge = (highlightStep > -1 && highlightStep < resultEdges.length) ? resultEdges[highlightStep] : null;
+        resultEdges.forEach(e => {
+            const sNode = d3Nodes.find(n => n.Name === e.Src.Name);
+            const dNode = d3Nodes.find(n => n.Name === e.Destination.Name);
+            if (!sNode || !dNode || sNode.x === undefined || dNode.x === undefined) return;
+            const isHighlight = (highlightEdge && e.Src.Name === highlightEdge.Src.Name && e.Destination.Name === highlightEdge.Destination.Name);
+            ctx.beginPath();
+            ctx.moveTo(sNode.x, sNode.y);
+            ctx.lineTo(dNode.x, dNode.y);
+            ctx.strokeStyle = isHighlight ? colors.warn : colors.success;
+            ctx.lineWidth = isHighlight ? 4 : 3;
+            ctx.stroke();
+        });
+
+        // 3. Vẽ các đỉnh (Nodes) (đè lên trên cùng)
+        ctx.font = nodeFont;
+        d3Nodes.forEach(n => {
+            if (n.x === undefined || n.y === undefined) return;
+            ctx.beginPath();
+            ctx.arc(n.x, n.y, nodeRadius, 0, 2 * Math.PI);
+            ctx.fillStyle = colors.panel;
+            ctx.fill();
+            ctx.strokeStyle = colors.accent;
+            ctx.lineWidth = 2.5;
+            ctx.stroke();
+            ctx.fillStyle = '#fff';
+            ctx.fillText(n.Name, n.x, n.y);
+        });
+        ctx.restore();
+    }
+
+    // === HÀM TƯƠNG TÁC (Giữ nguyên) ===
+    function getNodeAt(mx, my) {
+        if (!d3Nodes) return null;
+        const local = inverseTransform(mx, my);
+        for (let i = d3Nodes.length - 1; i >= 0; i--) {
+            const n = d3Nodes[i];
+            const dx = local.x - n.x, dy = local.y - n.y;
+            if (Math.sqrt(dx * dx + dy * dy) <= 18) return n;
+        }
+        return null;
+    }
+    canvas?.addEventListener('mousedown', e => {
+        if (!simulation) return;
+        lastMouse = { x: e.offsetX, y: e.offsetY };
+        draggingNode = getNodeAt(e.offsetX, e.offsetY);
+        if (draggingNode) {
+            simulation.alphaTarget(0.3).restart();
+            draggingNode.fx = draggingNode.x;
+            draggingNode.fy = draggingNode.y;
+            canvas.classList.add('dragging');
+        } else {
+            isPanning = true;
+            canvas.classList.add('dragging');
+        }
+    });
+    canvas?.addEventListener('mousemove', e => {
+        if (!simulation) return;
+        if (draggingNode) {
+            const local = inverseTransform(e.offsetX, e.offsetY);
+            draggingNode.fx = local.x;
+            draggingNode.fy = local.y;
+        } else if (isPanning) {
+            panX += e.offsetX - lastMouse.x;
+            panY += e.offsetY - lastMouse.y;
+            lastMouse = { x: e.offsetX, y: e.offsetY };
+            simulation.stop();
+            draw();
+        }
+    });
+    canvas?.addEventListener('mouseup', () => {
+        if (!simulation) return;
+        if (draggingNode) {
+            simulation.alphaTarget(0);
+            draggingNode.fx = null;
+            draggingNode.fy = null;
+            draggingNode = null;
+        }
+        isPanning = false;
+        canvas.classList.remove('dragging');
+        if (!draggingNode) simulation.alpha(0.3).restart();
+    });
+    canvas?.addEventListener('mouseleave', () => {
+        if (draggingNode) {
+            simulation.alphaTarget(0);
+            draggingNode.fx = null;
+            draggingNode.fy = null;
+            draggingNode = null;
+        }
+        isPanning = false;
+        canvas.classList.remove('dragging');
+    });
+    canvas?.addEventListener('wheel', e => {
+        if (!simulation) return;
+        e.preventDefault();
+        const delta = e.deltaY < 0 ? 1.1 : 0.9;
+        const mouseX = e.offsetX;
+        const mouseY = e.offsetY;
+        panX = mouseX - (mouseX - panX) * delta;
+        panY = mouseY - (mouseY - panY) * delta;
+        zoom *= delta;
+        zoom = Math.max(0.3, Math.min(zoom, 3));
+        simulation.stop();
+        draw();
+        simulation.alpha(0.1).restart();
+    });
+
+    // Toolbar buttons
+    function applyZoom(f) {
+        if (!simulation) return;
+        zoom *= f;
+        zoom = Math.max(.3, Math.min(zoom, 3));
+        simulation.stop();
+        draw();
+        simulation.alpha(0.1).restart();
+    }
+    document.getElementById('zoomIn')?.addEventListener('click', () => applyZoom(1.2));
+    document.getElementById('zoomOut')?.addEventListener('click', () => applyZoom(0.8));
+    document.getElementById('resetView')?.addEventListener('click', () => {
+        if (!simulation) return;
+        zoom = 1; panX = 0; panY = 0;
+        simulation.force("center", d3.forceCenter(canvas.width / 2, canvas.height / 2));
+        simulation.alpha(1).restart();
+    });
+    document.getElementById('exportImg')?.addEventListener('click', () => { const link = document.createElement('a'); link.download = 'mst-graph.png'; link.href = canvas.toDataURL('image/png'); link.click(); });
+
+
+    // === HÀM PLAYALL (ĐÃ "PLUS" HÓA VỚI requestAnimationFrame) ===
+    let animStep = 0;
+    let animationFrameId = null; // Thay thế cho animInterval
+    let lastFrameTime = 0;
+    let animationDelay = 1200; // 1.2 giây (sẽ được điều khiển bằng nút)
+    let isAnimating = false;
+
+    const playBtn = document.getElementById('playAll');
+    const stepsBox = document.getElementById('stepsContainer');
+
+    /**
+     * Vòng lặp animation chính, chạy mượt mà với requestAnimationFrame
+     */
+    function animationLoop(timestamp) {
+        if (!isAnimating) return; // Dừng nếu đã bấm pause
+
+        // Khởi tạo thời gian bắt đầu
+        if (!lastFrameTime) {
+            lastFrameTime = timestamp;
+        }
+
+        const elapsed = timestamp - lastFrameTime;
+
+        // Chỉ chạy logic khi đã đủ thời gian delay
+        if (elapsed >= animationDelay) {
+            lastFrameTime = timestamp; // Reset đồng hồ
+
+            if (animStep >= resultEdges.length) {
+                stopAnimation();
+                playBtn.innerHTML = '▶ Phát lại';
+                return; // Hoàn thành, dừng vòng lặp
+            }
+
+            // --- Logic cốt lõi của mỗi bước ---
+            draw(animStep); // Vẽ lại canvas với cạnh được highlight
+            const stepEl = document.getElementById(`success-step-${animStep}`);
+            if (stepEl) {
+                // Highlight step trong danh sách
+                document.querySelectorAll('.step-item.highlight-anim').forEach(el => el.classList.remove('highlight-anim'));
+                stepEl.classList.add('highlight-anim');
+                // Cuộn danh sách đến step hiện tại
+                stepsBox.scrollTo({
+                    top: stepEl.offsetTop - (stepsBox.clientHeight / 2) + (stepEl.clientHeight / 2),
+                    behavior: 'smooth'
+                });
+            }
+            // --- Kết thúc logic cốt lõi ---
+
+            animStep++; // Chuyển sang bước tiếp theo
+        }
+
+        // Yêu cầu trình duyệt vẽ khung hình tiếp theo
+        animationFrameId = requestAnimationFrame(animationLoop);
+    }
+
+    /**
+     * Dừng hoàn toàn animation và reset
+     */
+    function stopAnimation() {
+        if (animationFrameId) {
+            cancelAnimationFrame(animationFrameId); // Dừng vòng lặp
+            animationFrameId = null;
+        }
+        isAnimating = false;
+        if (playBtn) {
+            playBtn.disabled = false;
+            playBtn.innerHTML = '▶ Phát tự động';
+        }
+        draw(); // Vẽ lại trạng thái cuối cùng (tất cả đều xanh)
+        document.querySelectorAll('.step-item.highlight-anim').forEach(el => el.classList.remove('highlight-anim'));
+
+        // "Đánh thức" lại D3 simulation
+        if (simulation) {
+            simulation.alpha(0.3).restart();
+        }
+    }
+
+    /**
+     * Bắt đầu / Tạm dừng animation
+     */
+    function toggleAnimation() {
+        if (!resultEdges || resultEdges.length === 0 || !playBtn) return;
+
+        isAnimating = !isAnimating; // Lật trạng thái
+
+        if (isAnimating) {
+            // --- ĐANG BẮT ĐẦU PHÁT ---
+
+            // Dừng D3 simulation để các nút không di chuyển
+            if (simulation) {
+                simulation.stop();
+            }
+
+            playBtn.disabled = true;
+            playBtn.innerHTML = '<i class="fa fa-pause"></i> Đang phát...';
+
+            // Nếu đang ở cuối, reset lại từ đầu
+            if (animStep >= resultEdges.length) {
+                animStep = 0;
+                document.querySelectorAll('.step-item.highlight-anim').forEach(el => el.classList.remove('highlight-anim'));
+            }
+
+            lastFrameTime = 0; // Reset thời gian của frame
+            animationFrameId = requestAnimationFrame(animationLoop); // Bắt đầu vòng lặp
+
+        } else {
+            // --- ĐANG TẠM DỪNG ---
+            if (animationFrameId) {
+                cancelAnimationFrame(animationFrameId);
+                animationFrameId = null;
+            }
+            playBtn.innerHTML = '▶ Tiếp tục';
+            playBtn.disabled = false;
+
+            // "Đánh thức" lại D3 simulation
+            if (simulation) {
+                simulation.alpha(0.3).restart();
+            }
+        }
+    }
+
+    playBtn?.addEventListener('click', toggleAnimation);
+
+    // PLUS: Thêm sự kiện cho các nút tốc độ
+    document.getElementById('speedControls')?.addEventListener('click', (e) => {
+        if (e.target.tagName === 'BUTTON') {
+            const speedMultiplier = parseFloat(e.target.dataset.speed);
+
+            // Cập nhật delay (speed 2 = 0.5x thời gian, speed 0.5 = 2x thời gian)
+            animationDelay = 1200 * speedMultiplier;
+
+            // Cập nhật UI cho nút active
+            document.querySelectorAll('#speedControls button').forEach(btn => btn.classList.remove('active'));
+            e.target.classList.add('active');
+        }
+    });
+    // === KẾT THÚC KHỐI "PLUS" HÓA ===
+
+
+    // === CÁC HÀM KHỞI TẠO CUỐI TRANG (Giữ nguyên) ===
+
+    // Chạy render ban đầu
+    if ('@ViewBag.Algorithm' === 'Prim') { renderSteps(primSteps); } else if ('@ViewBag.Algorithm' === 'Kruskal') { renderSteps(kruskalSteps); }
+
+    // Add edge row
+    document.getElementById('add-edge')?.addEventListener('click', () => { const c = document.getElementById('edges-container'); const r = document.createElement('div'); r.className = 'row g-2 mb-2 edge-row'; r.innerHTML = `<div class='col-4'><input type='text' name='src[]' class='form-control' placeholder='Từ' required/></div><div class='col-4'><input type='text' name='dest[]' class='form-control' placeholder='Đến' required/></div><div class='col-4'><input type='number' name='weight[]' class='form-control' placeholder='W' required/></div>`; c.appendChild(r); });
+
+    // Chỉ chạy khởi tạo D3 khi đã có kết quả
+    if (d3Nodes && d3Nodes.length > 0) {
+        initializeGraph();
+    }
+
+    </script>
+}

@@ -81,3 +81,15 @@ D:\DA_PTTKTT\obj\Debug\Prim_Kruskal_Web.csproj.CoreCompileInputs.cache
 D:\DA_PTTKTT\obj\Debug\Prim_Kru.70B2BF02.Up2Date
 D:\DA_PTTKTT\obj\Debug\Prim_Kruskal_Web.dll
 D:\DA_PTTKTT\obj\Debug\Prim_Kruskal_Web.pdb
+D:\DA_PTTKTT\bin\System.Runtime.CompilerServices.Unsafe.dll
+D:\DA_PTTKTT\bin\System.Threading.Tasks.Extensions.dll
+D:\DA_PTTKTT\bin\Unity.Abstractions.dll
+D:\DA_PTTKTT\bin\Unity.Container.dll
+D:\DA_PTTKTT\bin\Unity.Mvc.dll
+D:\DA_PTTKTT\bin\WebActivatorEx.dll
+D:\DA_PTTKTT\bin\System.Runtime.CompilerServices.Unsafe.xml
+D:\DA_PTTKTT\bin\System.Threading.Tasks.Extensions.xml
+D:\DA_PTTKTT\bin\Unity.Abstractions.pdb
+D:\DA_PTTKTT\bin\Unity.Container.pdb
+D:\DA_PTTKTT\bin\Unity.Mvc.pdb
+D:\DA_PTTKTT\bin\Unity.Mvc.xml

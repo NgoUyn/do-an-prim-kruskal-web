@@ -2,6 +2,7 @@
 <html>
 <head>
     <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="TourWorld - Du lịch thông minh bằng giải thuật tối ưu Prim và Kruskal.">
     <title>@ViewBag.Title - TourWorld</title>
 
@@ -28,17 +29,51 @@
             </div>
             <nav class="nav-bar">
                 <ul class="nav-menu">
-                    <li><a href="@Url.Action("Index","Home")" class="@(ViewBag.Title == "Trang chủ" ? "active" : "")">Trang Chủ</a></li>
-                    <li><a href="@Url.Action("MoPhong","MoPhong")">Mô Phỏng</a></li>
+                    <li>
+                        <a href="@Url.Action("Index","Home")" class="@(ViewBag.Title == "Trang chủ" ? "active" : "")">Trang Chủ</a>
+                    </li>
+
                     <li class="nav-dropdown">
-                        <a href="@Url.Action("LienTinh","UngDung")" aria-haspopup="true" aria-expanded="false">
+                        <a href="#" aria-haspopup="true" aria-expanded="false">
+                            Mô Phỏng <i class="fa-solid fa-caret-down"></i>
+                        </a>
+                        <ul class="dropdown-menu" role="menu">
+                            <li role="none">
+                                <a role="menuitem" href="@Url.Action("MoPhong", "MoPhong")">
+                                    <i class="fa-solid fa-diagram-project"></i> Mô phỏng từng bước
+                                </a>
+                            </li>
+                            <li role="none">
+                                <a role="menuitem" href="@Url.Action("Compare", "MoPhong")">
+                                    <i class="fa-solid fa-bolt"></i> The Race (So sánh)
+                                </a>
+                            </li>
+                            <li role="none">
+                                <a role="menuitem" href="@Url.Action("Arena", "MoPhong")">
+                                    <i class="fa-solid fa-trophy"></i> Đấu Trường (Arena)
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+
+                    <li class="nav-dropdown">
+                        <a href="#" aria-haspopup="true" aria-expanded="false">
                             Ứng Dụng <i class="fa-solid fa-caret-down"></i>
                         </a>
                         <ul class="dropdown-menu" role="menu" aria-label="Ứng Dụng menu">
-                            <li role="none"><a role="menuitem" href="@Url.Action("NoiTinh","UngDung")">Du lịch nội tỉnh</a></li>
-                            <li role="none"><a role="menuitem" href="@Url.Action("LienTinh","UngDung")">Du lịch liên tỉnh</a></li>
+                            <li role="none">
+                                <a role="menuitem" href="@Url.Action("NoiTinh", "UngDung")">
+                                    <i class="fa-solid fa-city"></i> Du lịch nội tỉnh
+                                </a>
+                            </li>
+                            <li role="none">
+                                <a role="menuitem" href="@Url.Action("LienTinh", "UngDung")">
+                                    <i class="fa-solid fa-plane-departure"></i> Du lịch liên tỉnh
+                                </a>
+                            </li>
                         </ul>
                     </li>
+
                     <li><a href="@Url.Action("Contact","Home")">Liên Hệ</a></li>
                 </ul>
             </nav>
@@ -86,6 +121,9 @@
             <p>© 2025 <strong>TourWorld</strong> — Thiết kế bởi Nhóm Du Lịch.</p>
         </div>
     </footer>
+
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
 
     <script src="~/Scripts/js/script.js"></script>
 

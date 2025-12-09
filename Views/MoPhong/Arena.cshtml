@@ -1,0 +1,536 @@
+﻿@{
+    ViewBag.Title = "Algorithm Arena - Battle Mode";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800&family=Quicksand:wght@600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+<style>
+    :root {
+        /* BẢNG MÀU NATURE ĐỒNG BỘ */
+        --bg-main: #F9F7F2;
+        --panel-bg: #FFFFFF;
+        --text-color: #4E342E;
+        --left-color: #2E7D32; /* Xanh Rừng (Prim/Kruskal) */
+        --right-color: #D84315; /* Cam Đất (Dijkstra/A*) */
+
+        --grid-line: #ECEFF1;
+        --shadow-soft: 0 10px 30px rgba(78, 52, 46, 0.1);
+        --radius: 20px;
+    }
+
+    body {
+        background-color: var(--bg-main);
+        background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23d7ccc8' fill-opacity='0.2'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        color: var(--text-color);
+        font-family: 'Nunito', sans-serif;
+    }
+
+    /* === LAYOUT === */
+    .arena-header {
+        text-align: center;
+        margin-bottom: 30px;
+        position: relative;
+    }
+
+    .arena-title {
+        font-family: 'Quicksand', sans-serif;
+        font-size: 2.5rem;
+        font-weight: 800;
+        background: -webkit-linear-gradient(45deg, var(--left-color), var(--right-color));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    .vs-badge {
+        position: absolute;
+        left: 50%;
+        top: 55%;
+        transform: translate(-50%, -50%);
+        z-index: 10;
+        background: #fff;
+        border: 4px solid #fff;
+        color: #5D4037;
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: 'Quicksand';
+        font-weight: 900;
+        font-size: 1.5rem;
+        box-shadow: 0 0 20px rgba(0,0,0,0.1);
+    }
+
+    .arena-container {
+        display: flex;
+        gap: 40px;
+        justify-content: center;
+        align-items: stretch;
+        padding: 0 20px;
+        position: relative;
+    }
+
+    /* === PLAYER CARD === */
+    .player-card {
+        background: var(--panel-bg);
+        border-radius: var(--radius);
+        padding: 25px;
+        width: 48%;
+        max-width: 650px;
+        position: relative;
+        box-shadow: var(--shadow-soft);
+        border: 2px solid transparent;
+        transition: 0.3s;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .card-left {
+        border-color: var(--left-color);
+    }
+
+    .card-right {
+        border-color: var(--right-color);
+    }
+
+    .card-header-select {
+        margin-bottom: 15px;
+    }
+
+    .algo-select {
+        width: 100%;
+        padding: 12px;
+        border-radius: 12px;
+        font-family: 'Quicksand', sans-serif;
+        font-weight: 700;
+        font-size: 1.2rem;
+        border: 2px solid #EFEBE9;
+        background: #FAFAFA;
+        color: var(--text-color);
+        cursor: pointer;
+        transition: 0.2s;
+        outline: none;
+    }
+
+    .card-left .algo-select:focus {
+        border-color: var(--left-color);
+    }
+
+    .card-right .algo-select:focus {
+        border-color: var(--right-color);
+    }
+
+    /* === MONITOR CANVAS === */
+    .monitor-frame {
+        width: 100%;
+        aspect-ratio: 1;
+        background: #f1f5f9; /* Nền xám nhạt */
+        border-radius: 16px;
+        overflow: hidden;
+        position: relative;
+        background-image: radial-gradient(#CFD8DC 1px, transparent 1px);
+        background-size: 15px 15px;
+        border: 1px solid #E0E0E0;
+    }
+
+    canvas {
+        width: 100%;
+        height: 100%;
+        image-rendering: pixelated;
+        display: block;
+        mix-blend-mode: multiply;
+    }
+
+    /* === STATS & OVERLAY === */
+    .stats-overlay {
+        margin-top: 15px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: #FAFAFA;
+        padding: 10px 15px;
+        border-radius: 12px;
+        border: 1px solid #EFEBE9;
+    }
+
+    .stat-box {
+        text-align: center;
+    }
+
+    .stat-label {
+        font-size: 0.75rem;
+        color: #8D6E63;
+        font-weight: 700;
+        text-transform: uppercase;
+    }
+
+    .stat-val {
+        font-size: 1.2rem;
+        font-weight: 800;
+        font-family: 'Nunito';
+        color: var(--text-color);
+    }
+
+    .winner-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(255,255,255,0.8);
+        backdrop-filter: blur(2px);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        pointer-events: none;
+        transition: 0.4s;
+        z-index: 5;
+    }
+
+    .player-card.winner .winner-overlay {
+        opacity: 1;
+    }
+
+    .trophy-icon {
+        font-size: 4rem;
+        color: #FFD700;
+        margin-bottom: 10px;
+        filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1));
+    }
+
+    .win-text {
+        font-size: 2rem;
+        font-weight: 900;
+        color: #4E342E;
+        text-transform: uppercase;
+    }
+
+    /* === CONTROLS === */
+    .control-bar {
+        position: fixed;
+        bottom: 30px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: #fff;
+        padding: 12px 30px;
+        border-radius: 50px;
+        display: flex;
+        gap: 20px;
+        align-items: center;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+        border: 1px solid #EFEBE9;
+        z-index: 100;
+    }
+
+    .btn-fight {
+        background: linear-gradient(135deg, var(--left-color), var(--right-color));
+        color: white;
+        border: none;
+        padding: 12px 35px;
+        font-weight: 800;
+        border-radius: 30px;
+        cursor: pointer;
+        font-size: 1.1rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        transition: 0.2s;
+    }
+
+        .btn-fight:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .btn-fight:disabled {
+            background: #BCAAA4;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+    .input-size {
+        background: #FAFAFA;
+        border: 1px solid #D7CCC8;
+        color: #5D4037;
+        padding: 8px 12px;
+        border-radius: 12px;
+        text-align: center;
+        width: 90px;
+        font-weight: 700;
+        font-size: 1rem;
+    }
+</style>
+
+<div class="container" style="padding-top:20px; padding-bottom: 100px;">
+    <div class="arena-header">
+        <div class="arena-title">ALGORITHM ARENA</div>
+        <div style="font-size:0.9rem; color:#8D6E63">Đấu trường so sánh hiệu năng trực quan</div>
+    </div>
+
+    <div class="arena-container">
+        <div class="vs-badge">VS</div>
+
+        <div class="player-card card-left" id="cardLeft">
+            <div class="card-header-select">
+                <label style="font-size:0.8rem; font-weight:700; color:var(--left-color)">ĐỘI MST (Loang phủ)</label>
+                <select id="leftAlgo" class="algo-select">
+                    <option value="Prim" selected>PRIM (Loang dầu)</option>
+                    <option value="Kruskal">KRUSKAL (Mưa rơi)</option>
+                </select>
+            </div>
+
+            <div class="monitor-frame">
+                <canvas id="canvasLeft"></canvas>
+                <div class="winner-overlay">
+                    <i class="fas fa-trophy trophy-icon"></i>
+                    <div class="win-text">WINNER!</div>
+                    <div style="font-weight:600; color:#2E7D32">Nhanh hơn đối thủ</div>
+                </div>
+            </div>
+
+            <div class="stats-overlay">
+                <div class="stat-box">
+                    <div class="stat-label">Ô Đã Duyệt</div>
+                    <div class="stat-val" id="visLeft">0</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-label">Thời Gian Thực</div>
+                    <div class="stat-val" id="timeLeft" style="color:var(--left-color)">0ms</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-label">Trạng Thái</div>
+                    <div class="stat-val" id="statusLeft" style="font-size:1rem">READY</div>
+                </div>
+            </div>
+            <div style="height:4px; width:0%; background:var(--left-color); transition: width 0.1s; margin-top:5px; border-radius:2px;" id="progLeft"></div>
+        </div>
+
+        <div class="player-card card-right" id="cardRight">
+            <div class="card-header-select">
+                <label style="font-size:0.8rem; font-weight:700; color:var(--right-color)">ĐỘI TÌM ĐƯỜNG (A -> B)</label>
+                <select id="rightAlgo" class="algo-select">
+                    <option value="Dijkstra">DIJKSTRA (Loang kỹ)</option>
+                    <option value="A*" selected>A* (Thông minh)</option>
+                    <option value="BFS">BFS (Loang đều)</option>
+                </select>
+            </div>
+
+            <div class="monitor-frame">
+                <canvas id="canvasRight"></canvas>
+                <div class="winner-overlay">
+                    <i class="fas fa-trophy trophy-icon"></i>
+                    <div class="win-text">WINNER!</div>
+                    <div style="font-weight:600; color:#D84315">Nhanh hơn đối thủ</div>
+                </div>
+            </div>
+
+            <div class="stats-overlay">
+                <div class="stat-box">
+                    <div class="stat-label">Ô Đã Duyệt</div>
+                    <div class="stat-val" id="visRight">0</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-label">Thời Gian Thực</div>
+                    <div class="stat-val" id="timeRight" style="color:var(--right-color)">0ms</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-label">Trạng Thái</div>
+                    <div class="stat-val" id="statusRight" style="font-size:1rem">READY</div>
+                </div>
+            </div>
+            <div style="height:4px; width:0%; background:var(--right-color); transition: width 0.1s; margin-top:5px; border-radius:2px;" id="progRight"></div>
+        </div>
+    </div>
+</div>
+
+<div class="control-bar">
+    <div style="display:flex; align-items:center; gap:10px; font-weight:700; color:#5D4037">
+        <i class="fas fa-th"></i>
+        <span>Kích thước:</span>
+        <input type="number" id="nodeCount" class="input-size" value="1600" step="100" min="100" max="2500">
+    </div>
+    <button id="btnFight" class="btn-fight"><i class="fas fa-play"></i> BẮT ĐẦU ĐUA</button>
+</div>
+
+<script>
+    let leftCtx, rightCtx, gridSize, cellSize, canvasSize;
+
+    document.addEventListener('DOMContentLoaded', () => {
+        initCanvases();
+    });
+
+    function initCanvases() {
+        const size = parseInt(document.getElementById('nodeCount').value);
+        gridSize = Math.ceil(Math.sqrt(size));
+        cellSize = 10;
+        canvasSize = gridSize * cellSize;
+
+        ['canvasLeft', 'canvasRight'].forEach(id => {
+            const c = document.getElementById(id);
+            c.width = canvasSize; c.height = canvasSize;
+            const ctx = c.getContext('2d');
+
+            // Xóa nền (để hiện background CSS)
+            ctx.clearRect(0, 0, canvasSize, canvasSize);
+
+            // Vẽ điểm Start/End
+            drawStartEnd(ctx);
+        });
+
+        leftCtx = document.getElementById('canvasLeft').getContext('2d');
+        rightCtx = document.getElementById('canvasRight').getContext('2d');
+    }
+
+    function drawStartEnd(ctx) {
+        // Start (Góc trái trên) - Màu Xanh Lá mạ
+        ctx.fillStyle = "#76FF03";
+        ctx.fillRect(0, 0, cellSize, cellSize);
+
+        // End (Góc phải dưới) - Màu Đỏ Cờ
+        ctx.fillStyle = "#F50057";
+        ctx.fillRect((gridSize - 1) * cellSize, (gridSize - 1) * cellSize, cellSize, cellSize);
+    }
+
+    document.getElementById('btnFight').onclick = async () => {
+        const btn = document.getElementById('btnFight');
+        btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> ĐANG CHẠY...';
+
+        // Reset UI
+        document.querySelectorAll('.player-card').forEach(c => c.classList.remove('winner'));
+        document.querySelectorAll('.winner-overlay').forEach(o => o.style.opacity = '0');
+        initCanvases();
+
+        // Get Data
+        const formData = new FormData();
+        formData.append('nodeCount', document.getElementById('nodeCount').value);
+        formData.append('leftAlgo', document.getElementById('leftAlgo').value);
+        formData.append('rightAlgo', document.getElementById('rightAlgo').value);
+
+        try {
+            const res = await fetch('/MoPhong/RunArena', { method: 'POST', body: formData });
+            const data = await res.json();
+
+            if (data.success) {
+                startRace(data);
+            }
+        } catch (e) {
+            alert("Lỗi: " + e);
+            btn.disabled = false; btn.innerText = "START RACE";
+        }
+    };
+
+    function startRace(data) {
+        const maxTime = Math.max(data.left.time, data.right.time, 1);
+        const BASE_DURATION = 8000; // 8s max
+
+        const durL = Math.max((data.left.time / maxTime) * BASE_DURATION, 600);
+        const durR = Math.max((data.right.time / maxTime) * BASE_DURATION, 600);
+
+        // Update Stats
+        document.getElementById('timeLeft').innerText = data.left.time.toFixed(2) + "ms";
+        document.getElementById('timeRight').innerText = data.right.time.toFixed(2) + "ms";
+        document.getElementById('visLeft').innerText = data.left.visited.length;
+        document.getElementById('visRight').innerText = data.right.visited.length;
+
+        let leftDone = false, rightDone = false;
+
+        // --- ĐÂY LÀ CHỖ ĐÃ FIX THỨ TỰ THAM SỐ CHO ĐÚNG VỚI HÀM RUNANIM BÊN DƯỚI ---
+        runAnim(leftCtx, data.left, '#2E7D32', durL, 'progLeft', 'statusLeft', () => {
+            leftDone = true; checkWinner('cardLeft', 'cardRight');
+        });
+
+        runAnim(rightCtx, data.right, '#D84315', durR, 'progRight', 'statusRight', () => {
+            rightDone = true; checkWinner('cardRight', 'cardLeft');
+        });
+    }
+
+    let hasWinner = false;
+    function checkWinner(winnerId, loserId) {
+        if (!hasWinner) {
+            hasWinner = true;
+            document.getElementById(winnerId).classList.add('winner');
+            confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
+
+            const btn = document.getElementById('btnFight');
+            btn.innerText = "ĐUA LẠI";
+            btn.disabled = false;
+        }
+    }
+
+    // --- HÀM ANIMATION ĐÃ ĐƯỢC CHUẨN HÓA THAM SỐ ---
+    function runAnim(ctx, data, color, duration, progId, statusId, onComplete) {
+        let startTime = null;
+        const totalV = data.visited.length;
+        // Kiểm tra xem có path không (Prim/Kruskal sẽ không có, Pathfinding sẽ có)
+        const totalP = data.path ? data.path.length : 0;
+        const hasPath = totalP > 0;
+
+        document.getElementById(statusId).innerText = "RUNNING";
+        document.getElementById(statusId).style.color = "#FFC107"; // Amber
+
+        function frame(ts) {
+            if (!startTime) startTime = ts;
+            const progress = Math.min((ts - startTime) / duration, 1.0);
+
+            let drawVisLimit = 0;
+            let drawPathLimit = 0;
+
+            if (hasPath) {
+                // Chia giai đoạn: 80% vẽ loang, 20% vẽ đường
+                if (progress < 0.8) {
+                    const vProg = progress / 0.8;
+                    drawVisLimit = Math.floor(vProg * totalV);
+                } else {
+                    drawVisLimit = totalV;
+                    const pProg = (progress - 0.8) / 0.2;
+                    drawPathLimit = Math.floor(pProg * totalP);
+                }
+            } else {
+                // Nếu không có đường (Prim/Kruskal), 100% thời gian để vẽ loang
+                drawVisLimit = Math.floor(progress * totalV);
+            }
+
+            // Vẽ Visited
+            ctx.fillStyle = color;
+            // Tối ưu: Bước nhảy lớn để vẽ nhanh
+            const step = Math.ceil(totalV / 100) || 1;
+            for (let i = 0; i < drawVisLimit; i += step) {
+                const n = data.visited[i];
+                if (n) ctx.fillRect(n.x * cellSize, n.y * cellSize, cellSize, cellSize);
+            }
+            // Vẽ vét đuôi cho mượt
+            if (drawVisLimit > 0) {
+                const last = data.visited[drawVisLimit - 1];
+                if (last) ctx.fillRect(last.x * cellSize, last.y * cellSize, cellSize, cellSize);
+            }
+
+            // Vẽ Path
+            if (hasPath && drawPathLimit > 0) {
+                ctx.fillStyle = "#3E2723"; // Nâu đậm
+                for (let i = 0; i < drawPathLimit; i++) {
+                    const n = data.path[i];
+                    if (n) ctx.fillRect(n.x * cellSize, n.y * cellSize, cellSize, cellSize);
+                }
+            }
+
+            drawStartEnd(ctx);
+
+            // Update UI
+            document.getElementById(progId).style.width = (progress * 100) + "%";
+
+            if (progress < 1.0) {
+                requestAnimationFrame(frame);
+            } else {
+                document.getElementById(statusId).innerText = "FINISHED";
+                document.getElementById(statusId).style.color = color;
+                onComplete();
+            }
+        }
+
+        requestAnimationFrame(frame);
+    }
+</script>

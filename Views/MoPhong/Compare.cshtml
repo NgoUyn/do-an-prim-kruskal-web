@@ -1,0 +1,491 @@
+﻿@model Prim_Kruskal_Web.Models.CompareResult
+@{
+    ViewBag.Title = "Eco Route Simulation";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;800&family=Quicksand:wght@500;700&display=swap" rel="stylesheet">
+
+<style>
+    :root {
+        /* BẢNG MÀU MỚI: EARTHY & NATURE */
+        --bg-main: #F9F7F2; /* Nền giấy gạo */
+        --text-color: #4E342E; /* Nâu cà phê */
+        --panel-bg: #FFFFFF; /* Nền trắng cho card */
+        /* Màu thuật toán */
+        --prim-color: #2E7D32; /* Forest Green (Xanh Rừng) */
+        --kruskal-color: #D84315; /* Burnt Clay (Cam Đất nung) */
+
+        --grid-empty: #ECEFF1; /* Xám mây */
+        --shadow-soft: 0 8px 24px rgba(78, 52, 46, 0.08); /* Bóng đổ màu nâu nhạt */
+        --border-radius: 20px;
+    }
+
+    body {
+        background-color: var(--bg-main);
+        /* Thêm họa tiết vân giấy nhẹ (noise) để tạo cảm giác tự nhiên */
+        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.05'/%3E%3C/svg%3E");
+        color: var(--text-color);
+        font-family: 'Nunito', sans-serif;
+    }
+
+    /* === 1. HEADER & CONTROL PANEL === */
+    .control-deck {
+        background: var(--panel-bg);
+        border-radius: var(--border-radius);
+        box-shadow: var(--shadow-soft);
+        padding: 40px;
+        margin-bottom: 40px;
+        text-align: center;
+        border: 1px solid rgba(78, 52, 46, 0.05);
+        position: relative;
+        overflow: hidden;
+    }
+
+        /* Trang trí lá cây mờ */
+        .control-deck::after {
+            content: '\f6f1'; /* Icon lá cây (FontAwesome) */
+            font-family: "Font Awesome 6 Free";
+            font-weight: 900;
+            position: absolute;
+            top: -30px;
+            right: -30px;
+            font-size: 180px;
+            color: var(--prim-color);
+            opacity: 0.03;
+            transform: rotate(15deg);
+        }
+
+    .badge-eco {
+        background: #E8F5E9; /* Xanh rất nhạt */
+        color: var(--prim-color);
+        padding: 8px 24px;
+        border-radius: 50px;
+        font-weight: 800;
+        font-size: 0.85rem;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        display: inline-block;
+        margin-bottom: 15px;
+    }
+
+    h1 {
+        font-family: 'Quicksand', sans-serif;
+        font-weight: 700;
+        font-size: 2.5rem;
+        color: var(--text-color);
+        margin-bottom: 30px;
+    }
+
+    /* Input & Button phong cách Organic (Bo tròn, mềm mại) */
+    .input-group-custom {
+        display: flex;
+        justify-content: center;
+        gap: 15px;
+        align-items: flex-end;
+        flex-wrap: wrap;
+    }
+
+    .map-input {
+        border: 2px solid #D7CCC8; /* Viền màu nâu nhạt */
+        border-radius: 16px;
+        padding: 12px 24px;
+        font-size: 1.2rem;
+        font-weight: 700;
+        text-align: center;
+        width: 160px;
+        color: var(--text-color);
+        background: #FAFAFA;
+        transition: 0.3s;
+    }
+
+        .map-input:focus {
+            border-color: var(--kruskal-color);
+            outline: none;
+            background: #fff;
+            box-shadow: 0 0 0 4px rgba(216, 67, 21, 0.1);
+        }
+
+    .btn-action {
+        border: none;
+        padding: 14px 32px;
+        border-radius: 16px;
+        font-weight: 700;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .btn-init {
+        background: #fff;
+        color: var(--text-color);
+        border: 2px solid #D7CCC8;
+    }
+
+        .btn-init:hover {
+            background: #EFEBE9;
+            transform: translateY(-2px);
+        }
+
+    .btn-start {
+        /* Gradient Cam Đất -> Cam Cháy */
+        background: linear-gradient(135deg, #FF7043 0%, #D84315 100%);
+        color: white;
+        box-shadow: 0 8px 20px rgba(216, 67, 21, 0.25);
+    }
+
+        .btn-start:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 25px rgba(216, 67, 21, 0.35);
+        }
+
+        .btn-start:disabled {
+            background: #BCAAA4;
+            cursor: not-allowed;
+            box-shadow: none;
+            transform: none;
+        }
+
+    /* === 2. MONITOR CARDS (Màn hình hiển thị) === */
+    .arena-container {
+        display: flex;
+        justify-content: center;
+        gap: 40px;
+        flex-wrap: wrap;
+    }
+
+    .monitor-card {
+        background: white;
+        border-radius: 24px;
+        padding: 25px;
+        width: 480px;
+        box-shadow: var(--shadow-soft);
+        border: 1px solid #EFEBE9;
+        transition: transform 0.3s;
+        position: relative;
+    }
+
+        .monitor-card:hover {
+            transform: translateY(-5px);
+        }
+
+    .monitor-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+        padding-bottom: 15px;
+        border-bottom: 2px dashed #EFEBE9; /* Đường kẻ đứt nét giống vé xe/giấy */
+    }
+
+    .algo-title {
+        font-size: 1.4rem;
+        font-weight: 800;
+        font-family: 'Quicksand', sans-serif;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .progress-tag {
+        font-size: 0.9rem;
+        font-weight: 700;
+        padding: 6px 14px;
+        border-radius: 12px;
+        background: #F5F5F5;
+        color: #757575;
+    }
+
+    /* Màu riêng cho từng thẻ */
+    .card-prim .algo-title {
+        color: var(--prim-color);
+    }
+
+    .card-prim .progress-tag {
+        color: var(--prim-color);
+        background: #E8F5E9;
+    }
+
+    .card-kruskal .algo-title {
+        color: var(--kruskal-color);
+    }
+
+    .card-kruskal .progress-tag {
+        color: var(--kruskal-color);
+        background: #FBE9E7;
+    }
+
+    /* CANVAS FRAME */
+    .canvas-frame {
+        border-radius: 16px;
+        overflow: hidden;
+        background-color: var(--grid-empty);
+        position: relative;
+        /* Họa tiết chấm bi nhẹ thay vì lưới kỹ thuật */
+        background-image: radial-gradient(#CFD8DC 1px, transparent 1px);
+        background-size: 12px 12px;
+    }
+
+    canvas {
+        width: 100%;
+        display: block;
+        image-rendering: pixelated;
+        /* Hiệu ứng hòa trộn màu để nhìn như mực in lên giấy */
+        mix-blend-mode: multiply;
+    }
+
+    /* RESULT OVERLAY (Lớp kết quả nổi lên) */
+    .result-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(255,255,255,0.92); /* Nền trắng mờ đục hơn */
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        transition: 0.5s ease;
+        backdrop-filter: blur(4px);
+    }
+
+    .monitor-card.finished .result-overlay {
+        opacity: 1;
+    }
+
+    .time-big {
+        font-size: 3.5rem;
+        font-weight: 800;
+        font-family: 'Nunito', sans-serif;
+        line-height: 1;
+        margin-bottom: 15px;
+    }
+
+    .card-prim .time-big {
+        color: var(--prim-color);
+    }
+
+    .card-kruskal .time-big {
+        color: var(--kruskal-color);
+    }
+
+    .stat-row {
+        font-size: 1rem;
+        color: #5D4037;
+        font-weight: 600;
+        display: flex;
+        gap: 20px;
+        background: #F9F7F2;
+        padding: 10px 20px;
+        border-radius: 50px;
+    }
+
+    .note {
+        margin-top: 15px;
+        font-size: 0.95rem;
+        color: #8D6E63;
+    }
+</style>
+
+<div class="container py-5">
+
+    <div class="control-deck animate__animated animate__fadeInDown">
+        <span class="badge-eco"><i class="fa-solid fa-leaf"></i> Eco Simulation Mode</span>
+        <h1>Mô Phỏng Tốc Độ Tìm Đường</h1>
+
+        <form method="post" action="@Url.Action("TheRace", "MoPhong")">
+            <div class="input-group-custom">
+                <div style="text-align:left">
+                    <label style="display:block; font-size:0.9rem; font-weight:700; color:#8D6E63; margin-bottom:5px;">Kích thước vùng (Nodes)</label>
+                    <input type="number" name="nodeCount" class="map-input"
+                           value="@(Model.NodeCount > 0 ? Model.NodeCount : 900)" min="100" max="10000" step="100" required>
+                </div>
+
+                <div style="padding-top: 28px;">
+                    <button type="submit" class="btn-action btn-init">
+                        <i class="fa-solid fa-rotate-right"></i> Tạo Mới
+                    </button>
+                </div>
+
+                <div style="padding-top: 28px;">
+                    <button type="button" id="startBtn" class="btn-action btn-start">
+                        <i class="fa-solid fa-play"></i> Chạy So Sánh
+                    </button>
+                </div>
+            </div>
+        </form>
+        <p class="note">💡 Mẹo: Nhập <strong>900</strong> (30x30) hoặc <strong>1600</strong> (40x40) để thấy hiệu ứng loang màu đẹp nhất.</p>
+    </div>
+
+    <div class="arena-container">
+
+        <div class="monitor-card card-prim" id="primCard">
+            <div class="monitor-header">
+                <div class="algo-title">
+                    <i class="fa-solid fa-water"></i> Prim
+                </div>
+                <div class="progress-tag" id="primPercent">0%</div>
+            </div>
+
+            <div class="canvas-frame">
+                <canvas id="primCanvas"></canvas>
+                <div class="result-overlay">
+                    <div style="font-size:0.9rem; text-transform:uppercase; letter-spacing:1px; color:#9E9E9E; margin-bottom:5px;">Hoàn thành</div>
+                    <div class="time-big">@Model.PrimTime<span style="font-size:1.5rem">ms</span></div>
+                    <div class="stat-row">
+                        <span><i class="fa-solid fa-microchip"></i> @(Model.PrimMemory/1024) KB</span>
+                        <span><i class="fa-solid fa-clock-rotate-left"></i> O(V²)</span>
+                    </div>
+                </div>
+            </div>
+            <div class="mt-3 text-center" style="font-size:0.9rem; color:#8D6E63">
+                <em>Thuật toán loang dần, tối ưu cho đồ thị dày đặc.</em>
+            </div>
+        </div>
+
+        <div class="monitor-card card-kruskal" id="kruskalCard">
+            <div class="monitor-header">
+                <div class="algo-title">
+                    <i class="fa-solid fa-link"></i> Kruskal
+                </div>
+                <div class="progress-tag" id="kruskalPercent">0%</div>
+            </div>
+
+            <div class="canvas-frame">
+                <canvas id="kruskalCanvas"></canvas>
+                <div class="result-overlay">
+                    <div style="font-size:0.9rem; text-transform:uppercase; letter-spacing:1px; color:#9E9E9E; margin-bottom:5px;">Hoàn thành</div>
+                    <div class="time-big">@Model.KruskalTime<span style="font-size:1.5rem">ms</span></div>
+                    <div class="stat-row">
+                        <span><i class="fa-solid fa-microchip"></i> @(Model.KruskalMemory/1024) KB</span>
+                        <span><i class="fa-solid fa-clock-rotate-left"></i> O(E log E)</span>
+                    </div>
+                </div>
+            </div>
+            <div class="mt-3 text-center" style="font-size:0.9rem; color:#8D6E63">
+                <em>Kết nối đa điểm, tối ưu cho đồ thị thưa.</em>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    // 1. DATA TỪ BACKEND
+    const rawNodes = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.Graph?.Nodes ?? new List<Prim_Kruskal_Web.Models.Node>()));
+    const primEdges = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.PrimEdges ?? new List<Prim_Kruskal_Web.Models.Edge>()));
+    const kruskalEdges = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.KruskalEdges ?? new List<Prim_Kruskal_Web.Models.Edge>()));
+
+    const realTimePrim = @Model.PrimTime;
+    const realTimeKruskal = @Model.KruskalTime;
+
+    // Validate
+    if (!rawNodes || rawNodes.length === 0) {
+        const btn = document.getElementById('startBtn');
+        btn.disabled = true;
+        btn.innerHTML = 'Vui lòng tạo Map';
+        btn.style.background = '#CFD8DC'; // Màu xám
+        btn.style.color = '#fff';
+    }
+
+    // Grid Config
+    const gridSize = Math.ceil(Math.sqrt(rawNodes.length || 1));
+    const cellSize = 10;
+    const gap = 0; // Liền mạch
+    const canvasSize = gridSize * cellSize;
+
+    // --- SETUP CANVAS ---
+    function setupCanvas(id) {
+        const cvs = document.getElementById(id);
+        cvs.width = canvasSize;
+        cvs.height = canvasSize;
+        const ctx = cvs.getContext('2d');
+        // Xóa nền để hiện background chấm bi của CSS
+        ctx.clearRect(0, 0, canvasSize, canvasSize);
+        return ctx;
+    }
+
+    let primCtx = setupCanvas('primCanvas');
+    let kruskalCtx = setupCanvas('kruskalCanvas');
+
+    // Hàm vẽ 1 ô (Fill)
+    function drawCell(ctx, edge, color) {
+        if(!edge || !edge.Src || !edge.Destination) return;
+
+        const nodesToDraw = [edge.Src, edge.Destination];
+
+        ctx.fillStyle = color;
+        nodesToDraw.forEach(n => {
+            const x = n.Longitude * cellSize;
+            const y = n.Latitude * cellSize;
+            ctx.fillRect(x, y, cellSize, cellSize);
+        });
+    }
+
+    // --- LOGIC ANIMATION ---
+    document.getElementById('startBtn').addEventListener('click', () => {
+        if (!rawNodes || rawNodes.length === 0) return;
+
+        // Reset UI
+        document.querySelectorAll('.monitor-card').forEach(m => m.classList.remove('finished'));
+        primCtx = setupCanvas('primCanvas');
+        kruskalCtx = setupCanvas('kruskalCanvas');
+
+        // TÍNH TOÁN THỜI GIAN
+        const BASE_DURATION = 8000;
+        const maxRealTime = Math.max(realTimePrim, realTimeKruskal, 1);
+
+        const visualPrimDuration = (realTimePrim / maxRealTime) * BASE_DURATION;
+        const visualKruskalDuration = (realTimeKruskal / maxRealTime) * BASE_DURATION;
+
+        const finalPrimTime = Math.max(visualPrimDuration, 800); // Min 0.8s
+        const finalKruskalTime = Math.max(visualKruskalDuration, 800);
+
+        // Chạy với màu "Nature"
+        runTimeBasedAnimation(primCtx, primEdges, '#2E7D32', 'primPercent', 'primCard', finalPrimTime); // Xanh Rừng
+        runTimeBasedAnimation(kruskalCtx, kruskalEdges, '#D84315', 'kruskalPercent', 'kruskalCard', finalKruskalTime); // Cam Đất
+    });
+
+    function runTimeBasedAnimation(ctx, edges, color, percentId, cardId, duration) {
+        let startTime = null;
+        const totalEdges = edges.length;
+        let drawnCount = 0;
+
+        function frame(timestamp) {
+            if (!startTime) startTime = timestamp;
+            const elapsed = timestamp - startTime;
+
+            let progress = Math.min(elapsed / duration, 1.0);
+            const targetCount = Math.floor(progress * totalEdges);
+
+            for (let i = drawnCount; i < targetCount; i++) {
+                drawCell(ctx, edges[i], color);
+            }
+
+            drawnCount = targetCount;
+            document.getElementById(percentId).innerText = Math.floor(progress * 100) + "%";
+
+            if (progress < 1.0) {
+                requestAnimationFrame(frame);
+            } else {
+                // Done
+                document.getElementById(cardId).classList.add('finished');
+
+                // Pháo hoa giấy (Confetti) màu tự nhiên (Xanh lá, Nâu, Cam)
+                confetti({
+                    particleCount: 40,
+                    spread: 50,
+                    origin: { y: 0.6 },
+                    colors: [color, '#8D6E63', '#A1887F'], // Màu Confetti theo tông đất
+                    disableForReducedMotion: true
+                });
+            }
+        }
+
+        requestAnimationFrame(frame);
+    }
+</script>

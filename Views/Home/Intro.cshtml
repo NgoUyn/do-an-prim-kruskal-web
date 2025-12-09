@@ -1,0 +1,573 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TourWorld - Cinematic Experience</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;700;900&family=Playfair+Display:ital,wght@1,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        /* =========================================
+           1. CORE VARIABLES & RESET
+           ========================================= */
+        :root {
+            /* Palette: Nature & Organic */
+            --color-bg-dark: #0f172a;
+            --color-bg-light: #F9F7F2; /* Giấy gạo */
+
+            --color-prim: #2E7D32; /* Xanh Rừng */
+            --color-kruskal: #D84315; /* Cam Đất */
+            --color-text-dark: #4E342E;
+            --color-particle: #81C784; /* Màu hạt ban đầu */
+
+            --font-main: 'Montserrat', sans-serif;
+            --font-serif: 'Playfair Display', serif;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            overflow: hidden;
+            background-color: var(--color-bg-dark);
+            font-family: var(--font-main);
+            height: 100vh;
+            width: 100vw;
+            transition: background-color 2s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+            body.light-mode {
+                background-color: var(--color-bg-light);
+                /* Texture giấy */
+                background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23d7ccc8' fill-opacity='0.2'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+            }
+
+        /* =========================================
+           2. CANVAS LAYER
+           ========================================= */
+        #world {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+
+        /* =========================================
+           3. UI LAYER (TEXT & BUTTONS)
+           ========================================= */
+        .ui-layer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 10;
+            pointer-events: none; /* Để chuột xuyên qua canvas */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Text Scramble Effect Container */
+        .loader-text {
+            color: rgba(255, 255, 255, 0.7);
+            font-family: 'Courier New', monospace;
+            font-size: 1rem;
+            margin-top: 20px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            transition: color 1s;
+        }
+
+        body.light-mode .loader-text {
+            color: var(--text-color);
+        }
+
+        /* Progress Line */
+        .progress-line-wrapper {
+            width: 300px;
+            height: 2px;
+            background: rgba(255,255,255,0.1);
+            margin-top: 15px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .progress-line {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: 0%;
+            background: var(--color-prim);
+            transition: width 0.1s linear;
+            box-shadow: 0 0 10px var(--color-prim);
+        }
+
+        /* Main Title (Hidden initially) */
+        .hero-title {
+            position: absolute;
+            text-align: center;
+            opacity: 0;
+            transform: translateY(50px) scale(0.9);
+            transition: all 1.5s cubic-bezier(0.19, 1, 0.22, 1);
+        }
+
+            .hero-title.visible {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+
+            .hero-title h1 {
+                font-family: var(--font-serif);
+                font-size: 5rem;
+                font-style: italic;
+                color: var(--color-text-dark);
+                margin-bottom: 10px;
+                line-height: 1;
+            }
+
+                .hero-title h1 span {
+                    font-family: var(--font-main);
+                    font-style: normal;
+                    font-weight: 900;
+                    background: linear-gradient(135deg, var(--color-prim), var(--color-kruskal));
+                    -webkit-background-clip: text;
+                    -webkit-text-fill-color: transparent;
+                }
+
+            .hero-title p {
+                font-size: 1.2rem;
+                color: #8D6E63;
+                letter-spacing: 3px;
+                margin-bottom: 40px;
+            }
+
+        /* Enter Button */
+        .btn-enter {
+            pointer-events: auto; /* Cho phép bấm */
+            text-decoration: none;
+            padding: 15px 50px;
+            border: 2px solid var(--color-text-dark);
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 1rem;
+            color: var(--color-text-dark);
+            background: transparent;
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+            display: inline-block;
+        }
+
+            .btn-enter::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: -100%;
+                width: 100%;
+                height: 100%;
+                background: var(--color-text-dark);
+                transition: left 0.4s ease;
+                z-index: -1;
+            }
+
+            .btn-enter:hover {
+                color: #fff;
+                box-shadow: 0 10px 30px rgba(46, 125, 50, 0.3);
+            }
+
+                .btn-enter:hover::before {
+                    left: 0;
+                }
+
+        /* Skip Button */
+        .btn-skip {
+            position: absolute;
+            bottom: 30px;
+            right: 30px;
+            color: rgba(255,255,255,0.3);
+            background: none;
+            border: none;
+            font-family: var(--font-main);
+            font-size: 0.8rem;
+            cursor: pointer;
+            letter-spacing: 1px;
+            z-index: 20;
+            pointer-events: auto;
+            transition: 0.3s;
+        }
+
+            .btn-skip:hover {
+                color: white;
+            }
+
+        body.light-mode .btn-skip {
+            display: none;
+        }
+
+        /* Vignette Effect */
+        .vignette {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, transparent 50%, rgba(0,0,0,0.8) 150%);
+            pointer-events: none;
+            z-index: 5;
+            transition: opacity 2s;
+        }
+
+        body.light-mode .vignette {
+            opacity: 0;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="vignette"></div>
+    <canvas id="world"></canvas>
+
+    <div class="ui-layer">
+        <div id="loaderGroup">
+            <div class="loader-text" id="glitchText">INITIALIZING SYSTEM...</div>
+            <div class="progress-line-wrapper">
+                <div class="progress-line" id="progLine"></div>
+            </div>
+        </div>
+
+        <div class="hero-title" id="heroTitle">
+            <h1>The <span>TourWorld</span></h1>
+            <p>NATURE & ALGORITHM</p>
+            <a href="#" id="enterLink" class="btn-enter">KHÁM PHÁ NGAY</a>
+        </div>
+    </div>
+
+    <button class="btn-skip" onclick="finishIntro()">SKIP INTRO</button>
+
+    <script>
+        /* =========================================
+           4. CORE 3D PARTICLE ENGINE
+           ========================================= */
+
+        const canvas = document.querySelector('#world');
+        const ctx = canvas.getContext('2d');
+
+        let width, height;
+        let particles = [];
+        // Tăng số lượng hạt để trông "Pro" hơn (Thận trọng với hiệu năng)
+        const QUANTITY = 1200;
+
+        // Camera & Mouse
+        let mouse = { x: 0, y: 0 };
+        let camera = { x: 0, y: 0, z: 500 };
+
+        // State Machine
+        let phase = 0; // 0: Init, 1: Globe, 2: Graph, 3: Explosion/Logo
+        let frameCount = 0;
+        let animationId;
+
+        // Colors
+        const PALETTE = {
+            tech: ['#00FFFF', '#00E5FF', '#2979FF', '#FFFFFF'],
+            nature: ['#2E7D32', '#D84315', '#FFAB91', '#4E342E']
+        };
+
+        // --- PARTICLE CLASS ---
+        class Particle {
+            constructor(x, y, z) {
+                this.pos = { x: x, y: y, z: z };       // Vị trí hiện tại
+                this.target = { x: x, y: y, z: z };    // Vị trí đích đến (Morphing)
+                this.vel = { x: 0, y: 0, z: 0 };       // Vận tốc
+                this.baseSize = Math.random() * 2 + 1;
+                this.color = PALETTE.tech[Math.floor(Math.random() * PALETTE.tech.length)];
+                this.alpha = Math.random() * 0.5 + 0.5;
+                this.friction = 0.94; // Độ trượt
+                this.ease = 0.05;     // Độ mượt khi di chuyển
+            }
+
+            // Di chuyển hạt về đích
+            update() {
+                // Tính khoảng cách đến target
+                this.vel.x += (this.target.x - this.pos.x) * this.ease;
+                this.vel.y += (this.target.y - this.pos.y) * this.ease;
+                this.vel.z += (this.target.z - this.pos.z) * this.ease;
+
+                // Áp dụng ma sát
+                this.vel.x *= this.friction;
+                this.vel.y *= this.friction;
+                this.vel.z *= this.friction;
+
+                // Cập nhật vị trí
+                this.pos.x += this.vel.x;
+                this.pos.y += this.vel.y;
+                this.pos.z += this.vel.z;
+
+                // Hiệu ứng nhiễu (Noise) nhẹ để hạt rung rinh tự nhiên
+                if (phase === 3) { // Phase cuối: rung rinh kiểu lá bay
+                    this.pos.x += Math.sin(frameCount * 0.01 + this.pos.y) * 0.5;
+                    this.pos.y += Math.cos(frameCount * 0.02 + this.pos.x) * 0.5;
+                }
+            }
+
+            // Vẽ hạt lên canvas (3D projection)
+            render(mouseX, mouseY) {
+                // Xoay không gian theo chuột (Parallax)
+                const rotX = (mouseY - height / 2) * 0.0005;
+                const rotY = (mouseX - width / 2) * 0.0005;
+
+                // Ma trận xoay đơn giản
+                let cx = Math.cos(rotY), sx = Math.sin(rotY);
+                let cy = Math.cos(rotX), sy = Math.sin(rotX);
+
+                // Xoay quanh trục Y
+                let x1 = this.pos.x * cx - this.pos.z * sx;
+                let z1 = this.pos.z * cx + this.pos.x * sx;
+
+                // Xoay quanh trục X
+                let y1 = this.pos.y * cy - z1 * sy;
+                let z2 = z1 * cy + this.pos.y * sy;
+
+                // Chiếu phối cảnh (Perspective Projection)
+                const scale = 400 / (400 + z2 + camera.z);
+                const x2d = x1 * scale + width / 2;
+                const y2d = y1 * scale + height / 2;
+
+                // Chỉ vẽ nếu nằm trong khung hình và phía trước camera
+                if (scale > 0) {
+                    ctx.fillStyle = this.color;
+                    ctx.globalAlpha = Math.min(1, this.alpha * scale); // Xa thì mờ
+                    ctx.beginPath();
+                    ctx.arc(x2d, y2d, this.baseSize * scale, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+            }
+        }
+
+        // --- SHAPE GENERATORS (TẠO HÌNH DÁNG) ---
+
+        // Hình cầu (Globe)
+        function shapeGlobe() {
+            const radius = 220;
+            for (let i = 0; i < particles.length; i++) {
+                const p = particles[i];
+                // Thuật toán Fibonacci Sphere để rải đều điểm trên mặt cầu
+                const phi = Math.acos(-1 + (2 * i) / particles.length);
+                const theta = Math.sqrt(particles.length * Math.PI) * phi;
+
+                p.target.x = radius * Math.cos(theta) * Math.sin(phi);
+                p.target.y = radius * Math.sin(theta) * Math.sin(phi);
+                p.target.z = radius * Math.cos(phi);
+
+                // Reset ease để di chuyển nhanh
+                p.ease = 0.04;
+            }
+        }
+
+        // Hình lưới phẳng (Graph/Map)
+        function shapeGrid() {
+            const size = 600;
+            const cols = 40; // Số cột
+            const rows = Math.ceil(particles.length / cols);
+            const spacing = size / cols;
+
+            for (let i = 0; i < particles.length; i++) {
+                const p = particles[i];
+                const col = i % cols;
+                const row = Math.floor(i / cols);
+
+                // Tạo địa hình nhấp nhô (Terrain)
+                const noise = Math.sin(col * 0.2) * Math.cos(row * 0.2) * 50;
+
+                p.target.x = (col * spacing) - (size / 2);
+                p.target.y = noise + 50; // Hạ thấp xuống một chút
+                p.target.z = (row * spacing) - (size / 4); // Nghiêng map
+
+                // Chuyển màu sang Nature dần
+                if (Math.random() > 0.5) p.color = PALETTE.nature[Math.floor(Math.random()*2)]; // Xanh/Cam
+
+                p.ease = 0.06;
+            }
+        }
+
+        // Hình xoắn ốc hỗn loạn (Chaos/Explosion) -> Final State
+        function shapeGalaxy() {
+            for (let i = 0; i < particles.length; i++) {
+                const p = particles[i];
+                const angle = i * 0.1;
+                const r = 100 + i * 0.2;
+
+                p.target.x = Math.cos(angle) * r;
+                p.target.y = Math.sin(angle) * r * 0.5; // Elip dẹt
+                p.target.z = (Math.random() - 0.5) * 500; // Độ sâu ngẫu nhiên
+
+                // Đổi sang màu thiên nhiên hoàn toàn
+                p.color = PALETTE.nature[Math.floor(Math.random() * PALETTE.nature.length)];
+                p.alpha = 0.8;
+                p.ease = 0.03;
+            }
+        }
+
+        // --- MAIN LOGIC ---
+
+        function init() {
+            onResize();
+            window.addEventListener('resize', onResize);
+            window.addEventListener('mousemove', onMouseMove);
+
+            // Tạo hạt ban đầu (Random vị trí)
+            for (let i = 0; i < QUANTITY; i++) {
+                const x = (Math.random() - 0.5) * width * 2;
+                const y = (Math.random() - 0.5) * height * 2;
+                const z = (Math.random() - 0.5) * 1000;
+                particles.push(new Particle(x, y, z));
+            }
+
+            // Bắt đầu vòng lặp
+            loop();
+
+            // Kịch bản (Storyboard)
+            startTimeline();
+        }
+
+        function onResize() {
+            width = window.innerWidth;
+            height = window.innerHeight;
+            canvas.width = width;
+            canvas.height = height;
+        }
+
+        function onMouseMove(e) {
+            mouse.x = e.clientX;
+            mouse.y = e.clientY;
+        }
+
+        function loop() {
+            ctx.clearRect(0, 0, width, height);
+
+            // Vẽ đường nối giữa các hạt (Chỉ vẽ khi ở Phase 1 - Globe để tạo hiệu ứng Tech)
+            if (phase === 1) {
+                ctx.beginPath();
+                // Vẽ ngẫu nhiên một số đường nối để không quá lag
+                for (let i = 0; i < particles.length; i+=10) {
+                    const p = particles[i];
+                    // Logic vẽ đường nối phức tạp sẽ làm giảm FPS, ta giả lập bằng các tia mờ
+                    if (p.pos.z > 0) { // Chỉ vẽ hạt ở gần
+                         // Code vẽ line (optional, heavy)
+                    }
+                }
+                ctx.stroke();
+            }
+
+            particles.forEach(p => {
+                p.update();
+                p.render(mouse.x, mouse.y);
+            });
+
+            animationId = requestAnimationFrame(loop);
+            frameCount++;
+        }
+
+        /* =========================================
+           5. TIMELINE & STORYTELLING
+           ========================================= */
+        const glitchTexts = [
+            "INITIALIZING KERNEL...",
+            "LOADING ASSETS...",
+            "OPTIMIZING GRAPH...",
+            "CALCULATING MST...",
+            "FINDING PATHS...",
+            "RENDERING WORLD...",
+            "WELCOME."
+        ];
+
+        function startTimeline() {
+            const textEl = document.getElementById('glitchText');
+            const progLine = document.getElementById('progLine');
+            const loaderGroup = document.getElementById('loaderGroup');
+            const heroTitle = document.getElementById('heroTitle');
+
+            // Hiệu ứng chữ chạy (Glitch Text)
+            let textIdx = 0;
+            const textInterval = setInterval(() => {
+                textEl.innerText = glitchTexts[textIdx];
+                textEl.style.opacity = Math.random() > 0.5 ? 1 : 0.5; // Flicker
+                textIdx++;
+                if (textIdx >= glitchTexts.length) clearInterval(textInterval);
+            }, 600);
+
+            // Thanh tiến trình chạy
+            setTimeout(() => { progLine.style.width = "40%"; }, 100);
+            setTimeout(() => { progLine.style.width = "70%"; shapeGlobe(); phase = 1; }, 1500);
+
+            // Giai đoạn 2: Chuyển sang Grid Map
+            setTimeout(() => {
+                progLine.style.width = "90%";
+                shapeGrid();
+                phase = 2;
+            }, 3500);
+
+            // Giai đoạn 3: Hoàn tất -> Thiên nhiên
+            setTimeout(() => {
+                finishIntro();
+            }, 5500);
+        }
+
+        // Hàm kết thúc Intro, chuyển giao diện
+        window.finishIntro = function() {
+            // 1. Full progress
+            const progLine = document.getElementById('progLine');
+            const loaderGroup = document.getElementById('loaderGroup');
+            const heroTitle = document.getElementById('heroTitle');
+
+            if(progLine) progLine.style.width = "100%";
+
+            // 2. Chuyển màu nền sang Light Mode (Nature)
+            document.body.classList.add('light-mode');
+
+            // 3. Biến hạt thành Galaxy xoay tròn quanh Logo
+            shapeGalaxy();
+            phase = 3;
+
+            // 4. Ẩn loader, hiện Title
+            setTimeout(() => {
+                if(loaderGroup) loaderGroup.style.opacity = 0;
+                heroTitle.classList.add('visible');
+
+                // Hiệu ứng nổ pháo hoa chào mừng
+                confetti({
+                    particleCount: 150,
+                    spread: 100,
+                    origin: { y: 0.6 },
+                    colors: ['#2E7D32', '#D84315', '#FBC02D']
+                });
+            }, 800);
+        };
+
+        // Button Click Event (Tự động chuyển trang)
+        document.getElementById('enterLink').addEventListener('click', (e) => {
+            e.preventDefault(); // Chặn link mặc định để chạy hiệu ứng fade out
+            document.body.style.opacity = 0;
+            setTimeout(() => {
+                window.location.href = '@Url.Action("Index", "Home")';
+            }, 1000);
+        });
+
+        // Start everything
+        init();
+
+    </script>
+</body>
+</html>

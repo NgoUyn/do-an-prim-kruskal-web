@@ -23,7 +23,10 @@ namespace Prim_Kruskal_Web.Controllers
             return View();
 
         }
-
+        public ActionResult Intro()
+        {
+            return View();
+        }
 
 
 

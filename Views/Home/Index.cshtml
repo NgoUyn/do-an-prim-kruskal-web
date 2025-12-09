@@ -5,130 +5,285 @@
 
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;700&family=Nunito:wght@400;600;800&display=swap" rel="stylesheet">
 
-<section class="hero text-light">
-    <div class="hero-overlay position-absolute top-0 start-0 w-100 h-100"></div>
+<style>
+    /* BẢNG MÀU ORGANIC NATURE (Đồng bộ toàn dự án) */
+    :root {
+        --bg-main: #F9F7F2;      /* Nền giấy gạo */
+        --text-color: #4E342E;   /* Nâu cà phê */
+        --prim-color: #2E7D32;   /* Xanh Rừng */
+        --kruskal-color: #D84315; /* Cam Đất */
+        --accent-gold: #FBC02D;  /* Vàng Nắng */
+        --glass-white: rgba(255, 255, 255, 0.9);
+        --shadow-soft: 0 10px 40px rgba(78, 52, 46, 0.1);
+    }
 
-    <div class="container text-center position-relative">
-        <h1 class="fw-bold display-4 mb-3 animate__animated animate__fadeInDown">
-            <i class="bi bi-globe-americas me-2"></i> Khám phá thế giới với <span class="brand">TourWorld</span>
+    body {
+        font-family: 'Nunito', sans-serif;
+        color: var(--text-color);
+        background-color: var(--bg-main);
+        /* Họa tiết vân giấy */
+        background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23d7ccc8' fill-opacity='0.2'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    }
+
+    /* === 1. HERO SECTION (Banner chính) === */
+    .hero {
+        position: relative;
+        height: 100vh;
+        min-height: 600px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: url('https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?ixlib=rb-4.0.3&auto=format&fit=crop&w=2021&q=80') no-repeat center center/cover;
+        overflow: hidden;
+    }
+
+    .hero-overlay {
+        position: absolute; top:0; left:0; width:100%; height:100%;
+        background: linear-gradient(to bottom, rgba(46, 125, 50, 0.4), rgba(216, 67, 21, 0.4)); /* Xanh -> Cam */
+        backdrop-filter: blur(2px);
+    }
+
+    .hero-content {
+        position: relative; z-index: 2; text-align: center; color: white;
+        text-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    }
+
+    .brand {
+        font-family: 'Quicksand', sans-serif; font-weight: 800;
+        background: linear-gradient(to right, #A5D6A7, #FFCCBC);
+        -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+
+    .btn-glow {
+        background: linear-gradient(135deg, var(--prim-color), #66BB6A);
+        color: white; border: none; padding: 15px 40px; border-radius: 50px;
+        font-weight: 800; font-size: 1.2rem; transition: 0.3s;
+        box-shadow: 0 0 20px rgba(102, 187, 106, 0.5);
+    }
+    .btn-glow:hover { transform: translateY(-5px) scale(1.05); color: white; box-shadow: 0 0 40px rgba(102, 187, 106, 0.8); }
+
+    .btn-outline-custom {
+        background: rgba(255,255,255,0.1); border: 2px solid white; color: white;
+        padding: 13px 35px; border-radius: 50px; font-weight: 700; transition: 0.3s;
+        backdrop-filter: blur(5px);
+    }
+    .btn-outline-custom:hover { background: white; color: var(--prim-color); }
+
+    /* === 2. INTRO SECTION (Giới thiệu giải thuật) === */
+    .section-title {
+        font-family: 'Quicksand', sans-serif; font-weight: 700; font-size: 2.5rem;
+        color: var(--text-color); margin-bottom: 30px; text-align: center;
+        position: relative; display: inline-block;
+    }
+    .section-title::after {
+        content: ''; display: block; width: 60px; height: 5px; background: var(--kruskal-color);
+        margin: 10px auto 0; border-radius: 5px;
+    }
+
+    .intro-grid {
+        display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 30px; margin-top: 50px;
+    }
+
+    .intro-card {
+        background: var(--glass-white);
+        border-radius: 20px; padding: 30px;
+        box-shadow: var(--shadow-soft);
+        border: 1px solid rgba(255,255,255,0.8);
+        transition: 0.4s; overflow: hidden; position: relative;
+    }
+    .intro-card:hover { transform: translateY(-10px); border-color: var(--prim-color); }
+
+    .intro-card img {
+        width: 100%; height: 200px; object-fit: cover; border-radius: 15px; margin-bottom: 20px;
+        transition: 0.4s;
+    }
+    .intro-card:hover img { transform: scale(1.05); }
+
+    .intro-card h3 { font-family: 'Quicksand'; font-weight: 800; color: var(--text-color); }
+    .intro-card p { color: #5D4037; font-size: 0.95rem; line-height: 1.6; }
+
+    /* Màu sắc riêng cho từng thẻ */
+    .card-prim h3 { color: var(--prim-color); }
+    .card-kruskal h3 { color: var(--kruskal-color); }
+    .card-app h3 { color: #1565C0; }
+
+    .btn-card {
+        display: inline-block; padding: 10px 25px; border-radius: 30px;
+        font-weight: 700; margin-top: 15px; text-decoration: none; transition: 0.3s;
+    }
+    .btn-prim { background: #E8F5E9; color: var(--prim-color); }
+    .btn-prim:hover { background: var(--prim-color); color: white; }
+
+    .btn-kruskal { background: #FBE9E7; color: var(--kruskal-color); }
+    .btn-kruskal:hover { background: var(--kruskal-color); color: white; }
+
+    .btn-app { background: #E3F2FD; color: #1565C0; }
+    .btn-app:hover { background: #1565C0; color: white; }
+
+    /* === 3. FEATURED TOURS === */
+    .featured {
+        padding: 80px 0;
+        background: linear-gradient(to bottom, #fff, #F1F8E9); /* Trắng -> Xanh nhạt */
+    }
+
+    .tour-card {
+        position: relative; border-radius: 20px; overflow: hidden; height: 350px;
+        box-shadow: 0 15px 35px rgba(0,0,0,0.1); cursor: pointer; transition: 0.4s;
+    }
+    .tour-card:hover { transform: scale(1.03); box-shadow: 0 20px 40px rgba(46, 125, 50, 0.2); }
+
+    .tour-card img { width: 100%; height: 100%; object-fit: cover; transition: 0.5s; }
+    .tour-card:hover img { transform: scale(1.1); filter: brightness(0.8); }
+
+    .tour-info {
+        position: absolute; bottom: 0; left: 0; width: 100%;
+        padding: 20px;
+        background: linear-gradient(to top, rgba(0,0,0,0.9), transparent);
+        color: white; transform: translateY(20px); transition: 0.4s;
+    }
+    .tour-card:hover .tour-info { transform: translateY(0); }
+
+    .tour-info h6 { font-family: 'Quicksand'; font-weight: 800; font-size: 1.4rem; margin-bottom: 5px; color: var(--accent-gold); }
+    .tour-info p { font-size: 0.9rem; opacity: 0.9; margin: 0; }
+
+    /* === 4. WHY CHOOSE US === */
+    .more-info { padding: 80px 0; background: var(--bg-main); }
+
+    .info-img img {
+        width: 100%; border-radius: 30px; box-shadow: -20px 20px 0 var(--kruskal-color);
+        transition: 0.3s;
+    }
+    .info-img:hover img { transform: translate(10px, -10px); box-shadow: -10px 10px 0 var(--prim-color); }
+
+    .info-text h2 { font-family: 'Quicksand'; font-weight: 800; color: var(--prim-color); margin-bottom: 20px; }
+    .info-text p { font-size: 1.1rem; line-height: 1.8; color: #5D4037; }
+
+    .highlight-box {
+        background: white; border-left: 5px solid var(--accent-gold);
+        padding: 20px; margin-top: 20px; border-radius: 0 10px 10px 0;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.05); font-weight: 600; color: var(--text-color);
+    }
+
+    /* Floating Icons Animation */
+    .floating-icons i {
+        position: absolute; color: rgba(255,255,255,0.3); font-size: 3rem;
+        animation: float 6s infinite ease-in-out;
+    }
+    .floating-icons i:nth-child(1) { top: 20%; left: 10%; animation-delay: 0s; }
+    .floating-icons i:nth-child(2) { top: 60%; left: 15%; animation-delay: 1s; font-size: 2rem; }
+    .floating-icons i:nth-child(3) { top: 30%; right: 10%; animation-delay: 2s; }
+    .floating-icons i:nth-child(4) { top: 70%; right: 15%; animation-delay: 3s; font-size: 2.5rem; }
+    .floating-icons i:nth-child(5) { bottom: 10%; left: 50%; animation-delay: 4s; }
+
+    @@keyframes float {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-20px); }
+    }
+</style>
+
+<section class="hero">
+    <div class="hero-overlay"></div>
+
+    <div class="hero-content container animate__animated animate__fadeIn">
+        <h1 class="display-3 fw-bold mb-3">
+            <i class="bi bi-geo-alt-fill text-warning"></i> Khám Phá Thế Giới Cùng <span class="brand">TourWorld</span>
         </h1>
-        <p class="lead mb-4 animate__animated animate__fadeInUp">
-            Ứng dụng sử dụng giải thuật tối ưu để gợi ý lộ trình du lịch thông minh – nhanh, tiết kiệm và tràn đầy cảm hứng.
+        <p class="lead mb-5" style="max-width: 800px; margin: 0 auto; font-weight: 500;">
+            Nền tảng du lịch thông minh ứng dụng thuật toán tối ưu hóa lộ trình, giúp bạn tiết kiệm chi phí và tận hưởng trọn vẹn từng khoảnh khắc.
         </p>
-        <div class="animate__animated animate__zoomIn">
-            <a href="@Url.Action("LienTinh","UngDung")" class="btn btn-glow px-4 py-2 rounded-pill me-2">
-                ✨ Bắt đầu Ứng dụng
+
+        <div class="d-flex justify-content-center gap-3">
+            <a href="@Url.Action("LienTinh","UngDung")" class="btn btn-glow">
+                <i class="bi bi-rocket-takeoff-fill"></i> BẮT ĐẦU NGAY
             </a>
-            <a href="#intro" class="btn btn-outline-light px-4 py-2 rounded-pill">
-                <i class="bi bi-info-circle"></i> Tìm hiểu thêm
+            <a href="#intro" class="btn btn-outline-custom">
+                <i class="bi bi-book-half"></i> Tìm Hiểu Thêm
             </a>
         </div>
     </div>
 
-    <div class="floating-icons position-absolute w-100 h-100">
-        <i class="bi bi-airplane-fill float-icon"></i>   
-        <i class="bi bi-compass float-icon"></i>        
-        <i class="bi bi-geo-alt-fill float-icon"></i>   
-        <i class="bi bi-pin-map-fill float-icon"></i>  
-        <i class="bi bi-bus-front-fill float-icon"></i>
+    <div class="floating-icons">
+        <i class="bi bi-airplane-engines"></i>
+        <i class="bi bi-compass"></i>
+        <i class="bi bi-backpack2"></i>
+        <i class="bi bi-map"></i>
+        <i class="bi bi-camera"></i>
     </div>
 </section>
 
-<section id="intro" class="intro enhanced-intro py-5">
+<section id="intro" class="py-5">
     <div class="container">
-        <h2 class="section-title" data-aos="fade-down">🌐 Giới thiệu về giải thuật</h2>
-        <p class="intro-text" data-aos="fade-down" data-aos-delay="100">
-            Có những chuyến đi bắt đầu bằng một <strong class="text-accent">giấc mơ khám phá</strong> — nơi mỗi cung đường là một nét vẽ, mỗi điểm đến là một gam màu.
-            Nhưng giữa vô vàn lựa chọn, <strong>đâu là hành trình tối ưu nhất</strong> giúp ta vừa tiết kiệm thời gian, vừa tận hưởng trọn vẹn vẻ đẹp của thế giới?
-        </p>
-        <p class="intro-text" data-aos="fade-down" data-aos-delay="200">
-            Ẩn sâu trong hệ thống của chúng tôi là hai “nghệ sĩ” của bản đồ –
-            <strong class="text-accent">Prim</strong> và <strong class="text-accent-light">Kruskal</strong>.
-            <em>Prim</em> nhẹ nhàng bắt đầu từ một điểm, mở rộng từng kết nối như nét cọ vẽ.
-            <em>Kruskal</em> thì chọn lọc những con đường ngắn nhất, liên kết chúng thành một mạng lưới hoàn hảo.
-        </p>
+        <div class="text-center mb-5" data-aos="fade-up">
+            <h2 class="section-title">Công Nghệ Cốt Lõi</h2>
+            <p class="text-muted mt-3" style="max-width: 700px; margin: 0 auto;">
+                Chúng tôi sử dụng hai thuật toán kinh điển <strong style="color:var(--prim-color)">Prim</strong> và <strong style="color:var(--kruskal-color)">Kruskal</strong> để giải quyết bài toán tối ưu hóa mạng lưới du lịch, giúp tìm ra con đường ngắn nhất kết nối mọi điểm đến.
+            </p>
+        </div>
 
         <div class="intro-grid">
-            <div class="intro-card" data-aos="fade-up" data-aos-delay="100">
-                <div class="card-overlay"></div>
-                <img src="https://images.unsplash.com/photo-1500530855697-b586d89ba3ee" alt="Thuật toán Prim">
-                <h3>Thuật toán Prim</h3>
-                <p>Mở rộng dần cây khung nhỏ nhất từ một điểm xuất phát, giúp xác định nhanh tuyến đường rút gọn.</p>
-                <ul class="intro-list">
-                    <li>🚩 Bắt đầu từ một điểm trung tâm</li>
-                    <li>🧭 Kết nối từng đỉnh theo chi phí thấp nhất</li>
-                    <li>📍 Phù hợp với bản đồ quy mô nhỏ</li>
-                </ul>
-                <a href="@Url.Action("MoPhong","MoPhong")" class="btn btn-outline-accent">Mô phỏng Prim</a>
+            <div class="intro-card card-prim" data-aos="fade-up" data-aos-delay="100">
+                <img src="https://images.unsplash.com/photo-1502082553048-f009c37129b9?auto=format&fit=crop&w=1000&q=80" alt="Prim">
+                <h3><i class="bi bi-share"></i> Thuật toán Prim</h3>
+                <p class="mt-3">Phát triển lộ trình từ một điểm xuất phát, lan tỏa như rễ cây để kết nối các điểm lân cận với chi phí thấp nhất.</p>
+                <a href="@Url.Action("MoPhong","MoPhong")" class="btn-card btn-prim">Xem Mô Phỏng</a>
             </div>
 
-            <div class="intro-card" data-aos="fade-up" data-aos-delay="200">
-                <div class="card-overlay"></div>
-                <img src="https://images.unsplash.com/photo-1473625247510-8ceb1760943f" alt="Thuật toán Kruskal">
-                <h3>Thuật toán Kruskal</h3>
-                <p>Xây dựng cây khung bằng cách chọn các cạnh ngắn nhất trước, kết nối các cụm điểm riêng lẻ.</p>
-                <ul class="intro-list">
-                    <li>📊 Chọn cạnh ngắn nhất, tránh chu trình</li>
-                    <li>🌍 Thích hợp với nhiều cụm du lịch độc lập</li>
-                    <li>💡 Hiệu quả cho mạng lưới quy mô lớn</li>
-                </ul>
-                <a href="@Url.Action("MoPhong","MoPhong")" class="btn btn-outline-accent">Mô phỏng Kruskal</a>
+            <div class="intro-card card-kruskal" data-aos="fade-up" data-aos-delay="200">
+                <img src="https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=1000&q=80" alt="Kruskal">
+                <h3><i class="bi bi-diagram-2"></i> Thuật toán Kruskal</h3>
+                <p class="mt-3">Chọn lọc các tuyến đường ngắn nhất trên toàn bản đồ và gộp chúng lại thành một mạng lưới hoàn chỉnh không chu trình.</p>
+                <a href="@Url.Action("MoPhong","MoPhong")" class="btn-card btn-kruskal">Xem Mô Phỏng</a>
             </div>
 
-            <div class="intro-card" data-aos="fade-up" data-aos-delay="300">
-                <div class="card-overlay"></div>
-                <img src="https://images.unsplash.com/photo-1526772662000-3f88f10405ff" alt="Ứng dụng trong du lịch">
-                <h3>Ứng dụng thực tế</h3>
-                <p>Khi công nghệ kết hợp cùng du lịch, thuật toán trở thành công cụ giúp vẽ nên những hành trình tối ưu.</p>
-                <ul class="intro-list">
-                    <li>🗺️ Xây dựng bản đồ tour tự động</li>
-                    <li>🚖 Tối ưu lộ trình di chuyển</li>
-                    <li>💰 Giảm thiểu chi phí vận hành</li>
-                </ul>
-                <a href="@Url.Action("LienTinh","UngDung")" class="btn btn-outline-accent">Thử ứng dụng</a>
+            <div class="intro-card card-app" data-aos="fade-up" data-aos-delay="300">
+                <img src="https://images.unsplash.com/photo-1488646953014-85cb44e25828?auto=format&fit=crop&w=1000&q=80" alt="App">
+                <h3><i class="bi bi-phone"></i> Ứng Dụng Thực Tế</h3>
+                <p class="mt-3">Áp dụng vào bài toán du lịch liên tỉnh và nội tỉnh, giúp du khách lên kế hoạch di chuyển thông minh và tiết kiệm.</p>
+                <a href="@Url.Action("LienTinh","UngDung")" class="btn-card btn-app">Thử Ứng Dụng</a>
             </div>
         </div>
     </div>
 </section>
 
-<section class="featured py-5 text-center text-light">
+<section class="featured">
     <div class="container">
-        <h2 class="section-title text-shadow" data-aos="fade-down">🌈 Tour nổi bật</h2>
+        <h2 class="section-title text-center mb-5" data-aos="fade-down">Điểm Đến Hấp Dẫn</h2>
         <div class="row g-4">
             <div class="col-lg-3 col-md-6" data-aos="zoom-in" data-aos-delay="100">
                 <div class="tour-card">
-                    <img src="~/Content/IMG/Paris.jpg" loading="lazy" alt="Paris">
+                    <img src="~/Content/IMG/Paris.jpg" alt="Paris">
                     <div class="tour-info">
-                        <h6>Paris, Pháp</h6>
-                        <p>Khám phá tháp Eiffel và dòng sông Seine thơ mộng.</p>
+                        <h6><i class="bi bi-geo-alt"></i> Paris, Pháp</h6>
+                        <p>Kinh đô ánh sáng và sự lãng mạn.</p>
                     </div>
                 </div>
             </div>
             <div class="col-lg-3 col-md-6" data-aos="zoom-in" data-aos-delay="200">
                 <div class="tour-card">
-                    <img src="~/Content/IMG/Tokyo.jpg" loading="lazy" alt="Tokyo">
+                    <img src="~/Content/IMG/Tokyo.jpg" alt="Tokyo">
                     <div class="tour-info">
-                        <h6>Tokyo, Nhật Bản</h6>
-                        <p>Hòa mình vào ánh đèn neon và văn hóa truyền thống.</p>
+                        <h6><i class="bi bi-geo-alt"></i> Tokyo, Nhật Bản</h6>
+                        <p>Sự giao thoa giữa truyền thống và hiện đại.</p>
                     </div>
                 </div>
             </div>
             <div class="col-lg-3 col-md-6" data-aos="zoom-in" data-aos-delay="300">
                 <div class="tour-card">
-                    <img src="~/Content/IMG/Bali.jpg" loading="lazy" alt="Bali">
+                    <img src="~/Content/IMG/Bali.jpg" alt="Bali">
                     <div class="tour-info">
-                        <h6>Bali, Indonesia</h6>
-                        <p>Thiên đường nghỉ dưỡng với biển xanh cát trắng.</p>
+                        <h6><i class="bi bi-geo-alt"></i> Bali, Indonesia</h6>
+                        <p>Thiên đường nhiệt đới vẫy gọi.</p>
                     </div>
                 </div>
             </div>
             <div class="col-lg-3 col-md-6" data-aos="zoom-in" data-aos-delay="400">
                 <div class="tour-card">
-                    <img src="~/Content/IMG/HaLong.jpg" loading="lazy" alt="Hạ Long">
+                    <img src="~/Content/IMG/HaLong.jpg" alt="Hạ Long">
                     <div class="tour-info">
-                        <h6>Hạ Long, Việt Nam</h6>
-                        <p>Vịnh biển kỳ quan thế giới với vẻ đẹp hùng vĩ.</p>
+                        <h6><i class="bi bi-geo-alt"></i> Hạ Long, VN</h6>
+                        <p>Kỳ quan thiên nhiên hùng vĩ.</p>
                     </div>
                 </div>
             </div>
@@ -136,28 +291,25 @@
     </div>
 </section>
 
-<section class="more-info py-5">
+<section class="more-info">
     <div class="container">
         <div class="row align-items-center g-5">
             <div class="col-lg-6" data-aos="fade-right">
                 <div class="info-img">
-                    <img src="https://images.unsplash.com/photo-1504384308090-c894fdcc538d" alt="Giới thiệu TourWorld">
+                    <img src="https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&w=1000&q=80" alt="Về TourWorld">
                 </div>
             </div>
-            <div class="col-lg-6" data-aos="fade-left" data-aos-delay="100">
+            <div class="col-lg-6" data-aos="fade-left">
                 <div class="info-text">
-                    <h2 class="section-title text-start">Vì sao chọn TourWorld?</h2>
+                    <h2>Tại Sao Chọn TourWorld?</h2>
                     <p>
-                        TourWorld không chỉ là hệ thống đặt vé du lịch, mà còn là nền tảng ứng dụng các thuật toán tối ưu giúp hành trình của bạn
-                        tiết kiệm thời gian, chi phí và đầy trải nghiệm.
+                        Không chỉ là một website đặt vé, TourWorld mang đến giải pháp công nghệ giúp tối ưu hóa từng km di chuyển của bạn. Chúng tôi tin rằng một hành trình trọn vẹn bắt đầu từ một lộ trình thông minh.
                     </p>
-                    <p>
-                        Với giao diện thân thiện, mô phỏng trực quan và thuật toán Prim - Kruskal mạnh mẽ,
-                        chúng tôi giúp bạn thấy được cách khoa học và du lịch gặp nhau trong từng hành trình.
-                    </p>
-                    <p class="text-accent-light fw-bold mt-3">
-                        ✨ Từ bản đồ đến thực tế, mọi chuyến đi đều được tính toán thông minh.
-                    </p>
+                    <div class="highlight-box">
+                        <i class="bi bi-lightbulb-fill text-warning me-2"></i>
+                        "Từ bản đồ giấy đến thuật toán số, chúng tôi biến việc lên kế hoạch du lịch trở nên dễ dàng và thú vị hơn bao giờ hết."
+                    </div>
+                    <a href="@Url.Action("Contact","Home")" class="btn btn-outline-dark mt-4 px-4 py-2 rounded-pill fw-bold">Liên Hệ Ngay</a>
                 </div>
             </div>
         </div>

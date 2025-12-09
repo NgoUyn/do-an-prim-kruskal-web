@@ -4,226 +4,250 @@
 }
 
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css">
-<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;700&family=Nunito:wght@400;600;800&display=swap" rel="stylesheet">
+<link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;500;800&family=Playfair+Display:ital,wght@1,600&family=Nunito:wght@400;600;800&family=Quicksand:wght@500;700&display=swap" rel="stylesheet">
 
 <style>
-    /* BẢNG MÀU ORGANIC NATURE (Đồng bộ toàn dự án) */
+    /* === GLOBAL VARIABLES === */
     :root {
-        --bg-main: #F9F7F2;      /* Nền giấy gạo */
-        --text-color: #4E342E;   /* Nâu cà phê */
-        --prim-color: #2E7D32;   /* Xanh Rừng */
-        --kruskal-color: #D84315; /* Cam Đất */
-        --accent-gold: #FBC02D;  /* Vàng Nắng */
-        --glass-white: rgba(255, 255, 255, 0.9);
-        --shadow-soft: 0 10px 40px rgba(78, 52, 46, 0.1);
+        --bg-main: #F9F7F2;
+        --text-color: #4E342E;
+        --prim-color: #2E7D32;   /* Xanh lá chủ đạo */
+        --kruskal-color: #D84315; /* Cam đất */
+        --accent-gold: #FBC02D;   /* Vàng */
+        --glass-white: rgba(255, 255, 255, 0.85);
+        --shadow-soft: 0 15px 40px rgba(78, 52, 46, 0.08);
+        --border-radius-lg: 24px;
     }
 
     body {
         font-family: 'Nunito', sans-serif;
         color: var(--text-color);
         background-color: var(--bg-main);
-        /* Họa tiết vân giấy */
-        background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23d7ccc8' fill-opacity='0.2'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        overflow-x: hidden;
     }
 
-    /* === 1. HERO SECTION (Banner chính) === */
-    .hero {
+    /* === 1. HERO SECTION ĐỘT PHÁ (INTERACTIVE NETWORK) === */
+    .hero-breakthrough {
         position: relative;
         height: 100vh;
-        min-height: 600px;
+        width: 100%;
+        overflow: hidden;
         display: flex;
         align-items: center;
         justify-content: center;
-        background: url('https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?ixlib=rb-4.0.3&auto=format&fit=crop&w=2021&q=80') no-repeat center center/cover;
-        overflow: hidden;
+        background: #000;
     }
 
-    .hero-overlay {
-        position: absolute; top:0; left:0; width:100%; height:100%;
-        background: linear-gradient(to bottom, rgba(46, 125, 50, 0.4), rgba(216, 67, 21, 0.4)); /* Xanh -> Cam */
-        backdrop-filter: blur(2px);
+    .hero-bg-video {
+        position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+        object-fit: cover;
+        opacity: 0.6; /* Làm tối nền để nổi bật mạng lưới */
+        z-index: 1;
     }
 
-    .hero-content {
-        position: relative; z-index: 2; text-align: center; color: white;
-        text-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    #networkCanvas {
+        position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+        z-index: 2; /* Nằm trên video */
+        pointer-events: none; /* Để chuột vẫn click được nút */
     }
 
-    .brand {
-        font-family: 'Quicksand', sans-serif; font-weight: 800;
-        background: linear-gradient(to right, #A5D6A7, #FFCCBC);
-        -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-    }
-
-    .btn-glow {
-        background: linear-gradient(135deg, var(--prim-color), #66BB6A);
-        color: white; border: none; padding: 15px 40px; border-radius: 50px;
-        font-weight: 800; font-size: 1.2rem; transition: 0.3s;
-        box-shadow: 0 0 20px rgba(102, 187, 106, 0.5);
-    }
-    .btn-glow:hover { transform: translateY(-5px) scale(1.05); color: white; box-shadow: 0 0 40px rgba(102, 187, 106, 0.8); }
-
-    .btn-outline-custom {
-        background: rgba(255,255,255,0.1); border: 2px solid white; color: white;
-        padding: 13px 35px; border-radius: 50px; font-weight: 700; transition: 0.3s;
+    .hero-content-box {
+        position: relative; z-index: 3;
+        text-align: center; color: #fff;
+        max-width: 1000px;
+        padding: 60px 40px;
+        background: rgba(255, 255, 255, 0.05); /* Kính mờ siêu nhẹ */
         backdrop-filter: blur(5px);
+        border-radius: 30px;
+        border: 1px solid rgba(255,255,255,0.1);
+        box-shadow: 0 20px 50px rgba(0,0,0,0.5);
     }
-    .btn-outline-custom:hover { background: white; color: var(--prim-color); }
 
-    /* === 2. INTRO SECTION (Giới thiệu giải thuật) === */
+    .hero-big-text {
+        font-family: 'Outfit', sans-serif;
+        font-size: clamp(2.5rem, 5vw, 5rem);
+        font-weight: 800; line-height: 1.1;
+        margin-bottom: 20px; text-transform: uppercase; letter-spacing: -2px;
+        color: white;
+    }
+
+    .hero-highlight {
+        font-family: 'Playfair Display', serif; font-style: italic;
+        color: #4CAF50; /* Màu xanh nổi bật */
+        font-weight: 400;
+    }
+
+    .hero-desc {
+        font-size: 1.2rem; color: rgba(255,255,255,0.9);
+        margin-bottom: 40px; font-weight: 300; letter-spacing: 0.5px;
+    }
+
+    .btn-hero-tech {
+        padding: 18px 45px; font-size: 1rem; font-weight: 700; color: #fff;
+        background: transparent; border: 1px solid rgba(255,255,255,0.3);
+        border-radius: 100px; cursor: pointer; position: relative; overflow: hidden;
+        transition: 0.4s; text-decoration: none; display: inline-flex; align-items: center; gap: 10px;
+        text-transform: uppercase; letter-spacing: 2px;
+    }
+    .btn-hero-tech::before {
+        content: ''; position: absolute; top: 0; left: 0; width: 0%; height: 100%;
+        background: var(--prim-color); transition: 0.4s cubic-bezier(0.19, 1, 0.22, 1); z-index: -1;
+    }
+    .btn-hero-tech:hover { border-color: var(--prim-color); color: white; }
+    .btn-hero-tech:hover::before { width: 100%; }
+
+    /* Hiệu ứng cuộn chuột */
+    .mouse-scroll {
+        position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%); z-index: 3;
+        width: 30px; height: 50px; border: 2px solid rgba(255,255,255,0.3); border-radius: 20px;
+    }
+    .mouse-scroll::before {
+        content: ''; position: absolute; top: 10px; left: 50%; transform: translateX(-50%);
+        width: 6px; height: 6px; background: #fff; border-radius: 50%; animation: scrollWheel 2s infinite;
+    }
+    @@keyframes scrollWheel { 0% {top: 10px; opacity: 1;} 100% {top: 30px; opacity: 0;} }
+
+
+    /* === 2. CÁC STYLE KHÁC (GIỮ NGUYÊN TỪ BẢN ĐẸP) === */
+    .section-header { text-align: center; margin-bottom: 60px; }
+    .section-subtitle { font-family: 'Playfair Display', serif; font-style: italic; font-size: 1.5rem; color: var(--kruskal-color); margin-bottom: 10px; display: block; }
     .section-title {
-        font-family: 'Quicksand', sans-serif; font-weight: 700; font-size: 2.5rem;
-        color: var(--text-color); margin-bottom: 30px; text-align: center;
-        position: relative; display: inline-block;
+        font-family: 'Quicksand', sans-serif; font-weight: 800; font-size: 2.5rem;
+        color: var(--text-color); position: relative; display: inline-block;
     }
     .section-title::after {
-        content: ''; display: block; width: 60px; height: 5px; background: var(--kruskal-color);
-        margin: 10px auto 0; border-radius: 5px;
+        content: ''; display: block; width: 80px; height: 6px; background: var(--prim-color);
+        margin: 15px auto 0; border-radius: 10px;
     }
 
-    .intro-grid {
-        display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 30px; margin-top: 50px;
+    /* Process Steps */
+    .process-section { padding: 80px 0; background: white; }
+    .step-card {
+        text-align: center; padding: 30px; border-radius: var(--border-radius-lg);
+        background: var(--bg-main); transition: 0.3s; height: 100%; border: 1px dashed #ccc;
     }
+    .step-card:hover { transform: translateY(-10px); border-style: solid; border-color: var(--prim-color); box-shadow: var(--shadow-soft); }
+    .step-number {
+        width: 50px; height: 50px; line-height: 50px; background: var(--prim-color); color: white;
+        border-radius: 50%; font-weight: bold; font-size: 1.2rem; margin: 0 auto 20px;
+    }
+    .step-icon { font-size: 3rem; color: var(--kruskal-color); margin-bottom: 15px; }
 
+    /* Intro Cards */
+    .intro-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 30px; }
     .intro-card {
-        background: var(--glass-white);
-        border-radius: 20px; padding: 30px;
-        box-shadow: var(--shadow-soft);
-        border: 1px solid rgba(255,255,255,0.8);
-        transition: 0.4s; overflow: hidden; position: relative;
+        background: var(--glass-white); backdrop-filter: blur(10px);
+        border-radius: var(--border-radius-lg); padding: 30px;
+        box-shadow: var(--shadow-soft); border: 1px solid rgba(255,255,255,0.6); transition: 0.4s;
     }
-    .intro-card:hover { transform: translateY(-10px); border-color: var(--prim-color); }
+    .intro-card:hover { transform: translateY(-10px); border-color: var(--prim-color); background: white; }
+    .intro-card img { width: 100%; height: 220px; object-fit: cover; border-radius: 15px; margin-bottom: 20px; }
+    .btn-card { display: inline-block; padding: 10px 25px; border-radius: 30px; font-weight: 700; margin-top: 15px; text-decoration: none; transition: 0.3s; }
+    .btn-prim { background: #E8F5E9; color: var(--prim-color); } .btn-prim:hover { background: var(--prim-color); color: white; }
+    .btn-kruskal { background: #FBE9E7; color: var(--kruskal-color); } .btn-kruskal:hover { background: var(--kruskal-color); color: white; }
+    .btn-app { background: #E3F2FD; color: #1565C0; } .btn-app:hover { background: #1565C0; color: white; }
 
-    .intro-card img {
-        width: 100%; height: 200px; object-fit: cover; border-radius: 15px; margin-bottom: 20px;
-        transition: 0.4s;
-    }
-    .intro-card:hover img { transform: scale(1.05); }
+    /* Gallery */
+    .gallery-section { padding: 80px 0; }
+    .gallery-grid { display: grid; grid-template-columns: repeat(4, 1fr); grid-template-rows: repeat(2, 200px); gap: 15px; }
+    .gallery-item { position: relative; overflow: hidden; border-radius: 15px; cursor: pointer; }
+    .gallery-item img { width: 100%; height: 100%; object-fit: cover; transition: 0.5s; }
+    .gallery-item:hover img { transform: scale(1.1); }
+    .g-item-1 { grid-column: 1 / 3; grid-row: 1 / 3; height: 100%; }
+    .g-item-2 { grid-column: 3 / 4; grid-row: 1 / 2; }
+    .g-item-3 { grid-column: 4 / 5; grid-row: 1 / 2; }
+    .g-item-4 { grid-column: 3 / 5; grid-row: 2 / 3; }
+    @@media (max-width: 768px) { .gallery-grid { grid-template-columns: 1fr 1fr; grid-template-rows: auto; } .g-item-1, .g-item-2, .g-item-3, .g-item-4 { grid-column: auto; grid-row: auto; height: 250px; } }
 
-    .intro-card h3 { font-family: 'Quicksand'; font-weight: 800; color: var(--text-color); }
-    .intro-card p { color: #5D4037; font-size: 0.95rem; line-height: 1.6; }
-
-    /* Màu sắc riêng cho từng thẻ */
-    .card-prim h3 { color: var(--prim-color); }
-    .card-kruskal h3 { color: var(--kruskal-color); }
-    .card-app h3 { color: #1565C0; }
-
-    .btn-card {
-        display: inline-block; padding: 10px 25px; border-radius: 30px;
-        font-weight: 700; margin-top: 15px; text-decoration: none; transition: 0.3s;
-    }
-    .btn-prim { background: #E8F5E9; color: var(--prim-color); }
-    .btn-prim:hover { background: var(--prim-color); color: white; }
-
-    .btn-kruskal { background: #FBE9E7; color: var(--kruskal-color); }
-    .btn-kruskal:hover { background: var(--kruskal-color); color: white; }
-
-    .btn-app { background: #E3F2FD; color: #1565C0; }
-    .btn-app:hover { background: #1565C0; color: white; }
-
-    /* === 3. FEATURED TOURS === */
-    .featured {
-        padding: 80px 0;
-        background: linear-gradient(to bottom, #fff, #F1F8E9); /* Trắng -> Xanh nhạt */
-    }
-
-    .tour-card {
-        position: relative; border-radius: 20px; overflow: hidden; height: 350px;
-        box-shadow: 0 15px 35px rgba(0,0,0,0.1); cursor: pointer; transition: 0.4s;
-    }
-    .tour-card:hover { transform: scale(1.03); box-shadow: 0 20px 40px rgba(46, 125, 50, 0.2); }
-
-    .tour-card img { width: 100%; height: 100%; object-fit: cover; transition: 0.5s; }
-    .tour-card:hover img { transform: scale(1.1); filter: brightness(0.8); }
-
-    .tour-info {
-        position: absolute; bottom: 0; left: 0; width: 100%;
-        padding: 20px;
-        background: linear-gradient(to top, rgba(0,0,0,0.9), transparent);
-        color: white; transform: translateY(20px); transition: 0.4s;
-    }
-    .tour-card:hover .tour-info { transform: translateY(0); }
-
-    .tour-info h6 { font-family: 'Quicksand'; font-weight: 800; font-size: 1.4rem; margin-bottom: 5px; color: var(--accent-gold); }
-    .tour-info p { font-size: 0.9rem; opacity: 0.9; margin: 0; }
-
-    /* === 4. WHY CHOOSE US === */
-    .more-info { padding: 80px 0; background: var(--bg-main); }
-
-    .info-img img {
-        width: 100%; border-radius: 30px; box-shadow: -20px 20px 0 var(--kruskal-color);
-        transition: 0.3s;
-    }
-    .info-img:hover img { transform: translate(10px, -10px); box-shadow: -10px 10px 0 var(--prim-color); }
-
-    .info-text h2 { font-family: 'Quicksand'; font-weight: 800; color: var(--prim-color); margin-bottom: 20px; }
-    .info-text p { font-size: 1.1rem; line-height: 1.8; color: #5D4037; }
-
-    .highlight-box {
-        background: white; border-left: 5px solid var(--accent-gold);
-        padding: 20px; margin-top: 20px; border-radius: 0 10px 10px 0;
-        box-shadow: 0 5px 15px rgba(0,0,0,0.05); font-weight: 600; color: var(--text-color);
-    }
-
-    /* Floating Icons Animation */
-    .floating-icons i {
-        position: absolute; color: rgba(255,255,255,0.3); font-size: 3rem;
-        animation: float 6s infinite ease-in-out;
-    }
-    .floating-icons i:nth-child(1) { top: 20%; left: 10%; animation-delay: 0s; }
-    .floating-icons i:nth-child(2) { top: 60%; left: 15%; animation-delay: 1s; font-size: 2rem; }
-    .floating-icons i:nth-child(3) { top: 30%; right: 10%; animation-delay: 2s; }
-    .floating-icons i:nth-child(4) { top: 70%; right: 15%; animation-delay: 3s; font-size: 2.5rem; }
-    .floating-icons i:nth-child(5) { bottom: 10%; left: 50%; animation-delay: 4s; }
-
-    @@keyframes float {
-        0%, 100% { transform: translateY(0); }
-        50% { transform: translateY(-20px); }
-    }
+    /* Testimonials & Newsletter */
+    .testimonials { background: #F1F8E9; padding: 80px 0; }
+    .testi-card { background: white; padding: 30px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); position: relative; }
+    .testi-card::before { content: '\201C'; font-size: 4rem; color: var(--prim-color); opacity: 0.2; position: absolute; top: 10px; left: 20px; font-family: serif; }
+    .user-avatar { width: 60px; height: 60px; border-radius: 50%; object-fit: cover; margin-right: 15px; }
+    .newsletter { background: linear-gradient(135deg, var(--text-color), #2d1e1a); color: white; padding: 60px 0; border-radius: 30px; margin: 50px auto; width: 90%; }
+    .input-newsletter { border-radius: 50px 0 0 50px; border: none; padding: 15px 25px; outline: none; width: 60%; }
+    .btn-newsletter { border-radius: 0 50px 50px 0; background: var(--accent-gold); border: none; padding: 15px 30px; color: var(--text-color); font-weight: bold; }
 </style>
 
-<section class="hero">
-    <div class="hero-overlay"></div>
+<section class="hero-breakthrough" id="homeHero">
+    <video class="hero-bg-video" autoplay muted loop playsinline>
+        <source src="https://videos.pexels.com/video-files/3205634/3205634-hd_1920_1080_25fps.mp4" type="video/mp4">
+    </video>
 
-    <div class="hero-content container animate__animated animate__fadeIn">
-        <h1 class="display-3 fw-bold mb-3">
-            <i class="bi bi-geo-alt-fill text-warning"></i> Khám Phá Thế Giới Cùng <span class="brand">TourWorld</span>
+    <canvas id="networkCanvas"></canvas>
+
+    <div class="hero-content-box" data-aos="zoom-in" data-aos-duration="1200">
+        <h1 class="hero-big-text">
+            Tối Ưu Hóa <br>
+            <span class="hero-highlight">Hành Trình</span> Của Bạn
         </h1>
-        <p class="lead mb-5" style="max-width: 800px; margin: 0 auto; font-weight: 500;">
-            Nền tảng du lịch thông minh ứng dụng thuật toán tối ưu hóa lộ trình, giúp bạn tiết kiệm chi phí và tận hưởng trọn vẹn từng khoảnh khắc.
+        <p class="hero-desc">
+            Sự kết hợp hoàn hảo giữa <strong class="text-white">Thuật toán đồ thị</strong> và <strong class="text-white">Trải nghiệm du lịch</strong>.
         </p>
 
-        <div class="d-flex justify-content-center gap-3">
-            <a href="@Url.Action("LienTinh","UngDung")" class="btn btn-glow">
-                <i class="bi bi-rocket-takeoff-fill"></i> BẮT ĐẦU NGAY
+        <div class="d-flex justify-content-center gap-4 flex-wrap">
+            <a href="@Url.Action("LienTinh","UngDung")" class="btn-hero-tech">
+                Bắt đầu ngay <i class="bi bi-arrow-right"></i>
             </a>
-            <a href="#intro" class="btn btn-outline-custom">
-                <i class="bi bi-book-half"></i> Tìm Hiểu Thêm
+            <a href="#intro" class="btn-hero-tech" style="border-color: #D84315;">
+                <i class="bi bi-play-fill" style="font-size: 1.2rem;"></i> Demo Kruskal
+                <style>
+                    .btn-hero-tech:last-child::before {
+                        background: #D84315;
+                    }
+                </style>
             </a>
         </div>
     </div>
 
-    <div class="floating-icons">
-        <i class="bi bi-airplane-engines"></i>
-        <i class="bi bi-compass"></i>
-        <i class="bi bi-backpack2"></i>
-        <i class="bi bi-map"></i>
-        <i class="bi bi-camera"></i>
+    <div class="mouse-scroll"></div>
+</section>
+
+<section class="process-section">
+    <div class="container">
+        <div class="section-header" data-aos="fade-up">
+            <span class="section-subtitle">Đơn giản hóa mọi thứ</span>
+            <h2 class="section-title">Cách Hoạt Động</h2>
+        </div>
+        <div class="row g-4">
+            <div class="col-md-4" data-aos="fade-up" data-aos-delay="100">
+                <div class="step-card">
+                    <div class="step-number">1</div>
+                    <div class="step-icon"><i class="bi bi-map"></i></div>
+                    <h4>Chọn Điểm Đến</h4>
+                    <p class="text-muted">Nhập danh sách các thành phố hoặc địa điểm bạn muốn ghé thăm trong hành trình.</p>
+                </div>
+            </div>
+            <div class="col-md-4" data-aos="fade-up" data-aos-delay="200">
+                <div class="step-card">
+                    <div class="step-number">2</div>
+                    <div class="step-icon"><i class="bi bi-cpu"></i></div>
+                    <h4>Chọn Thuật Toán</h4>
+                    <p class="text-muted">Lựa chọn <strong class="text-success">Prim</strong> hoặc <strong class="text-danger">Kruskal</strong> để hệ thống tính toán mạng lưới tối ưu.</p>
+                </div>
+            </div>
+            <div class="col-md-4" data-aos="fade-up" data-aos-delay="300">
+                <div class="step-card">
+                    <div class="step-number">3</div>
+                    <div class="step-icon"><i class="bi bi-signpost-2"></i></div>
+                    <h4>Nhận Lộ Trình</h4>
+                    <p class="text-muted">Hệ thống trả về bản đồ đường đi ngắn nhất, tiết kiệm chi phí và thời gian nhất.</p>
+                </div>
+            </div>
+        </div>
     </div>
 </section>
 
-<section id="intro" class="py-5">
+<section id="intro" class="py-5" style="background-color: #FDFBF7;">
     <div class="container">
-        <div class="text-center mb-5" data-aos="fade-up">
-            <h2 class="section-title">Công Nghệ Cốt Lõi</h2>
-            <p class="text-muted mt-3" style="max-width: 700px; margin: 0 auto;">
-                Chúng tôi sử dụng hai thuật toán kinh điển <strong style="color:var(--prim-color)">Prim</strong> và <strong style="color:var(--kruskal-color)">Kruskal</strong> để giải quyết bài toán tối ưu hóa mạng lưới du lịch, giúp tìm ra con đường ngắn nhất kết nối mọi điểm đến.
-            </p>
+        <div class="section-header" data-aos="fade-up">
+            <span class="section-subtitle">Sức mạnh của Toán học</span>
+            <h2 class="section-title">Thuật Toán Cốt Lõi</h2>
         </div>
 
         <div class="intro-grid">
-            <div class="intro-card card-prim" data-aos="fade-up" data-aos-delay="100">
+            <div class="intro-card card-prim" data-aos="fade-right" data-aos-delay="100">
                 <img src="https://images.unsplash.com/photo-1502082553048-f009c37129b9?auto=format&fit=crop&w=1000&q=80" alt="Prim">
                 <h3><i class="bi bi-share"></i> Thuật toán Prim</h3>
                 <p class="mt-3">Phát triển lộ trình từ một điểm xuất phát, lan tỏa như rễ cây để kết nối các điểm lân cận với chi phí thấp nhất.</p>
@@ -237,7 +261,7 @@
                 <a href="@Url.Action("MoPhong","MoPhong")" class="btn-card btn-kruskal">Xem Mô Phỏng</a>
             </div>
 
-            <div class="intro-card card-app" data-aos="fade-up" data-aos-delay="300">
+            <div class="intro-card card-app" data-aos="fade-left" data-aos-delay="300">
                 <img src="https://images.unsplash.com/photo-1488646953014-85cb44e25828?auto=format&fit=crop&w=1000&q=80" alt="App">
                 <h3><i class="bi bi-phone"></i> Ứng Dụng Thực Tế</h3>
                 <p class="mt-3">Áp dụng vào bài toán du lịch liên tỉnh và nội tỉnh, giúp du khách lên kế hoạch di chuyển thông minh và tiết kiệm.</p>
@@ -247,43 +271,87 @@
     </div>
 </section>
 
-<section class="featured">
+<section class="gallery-section">
     <div class="container">
-        <h2 class="section-title text-center mb-5" data-aos="fade-down">Điểm Đến Hấp Dẫn</h2>
+        <div class="section-header" data-aos="fade-down">
+            <span class="section-subtitle">Khoảnh khắc đáng nhớ</span>
+            <h2 class="section-title">Thư Viện Điểm Đến</h2>
+        </div>
+
+        <div class="gallery-grid">
+            <div class="gallery-item g-item-1" data-aos="zoom-in">
+                <img src="https://images.unsplash.com/photo-1528127269322-539801943592?q=80&w=1000&auto=format&fit=crop" alt="Hạ Long">
+            </div>
+            <div class="gallery-item g-item-2" data-aos="zoom-in" data-aos-delay="100">
+                <img src="https://images.unsplash.com/photo-1555921090-b1cd30b6d95a?q=80&w=1000&auto=format&fit=crop" alt="Hội An">
+            </div>
+            <div class="gallery-item g-item-3" data-aos="zoom-in" data-aos-delay="200">
+                <img src="https://images.unsplash.com/photo-1504214208698-ea1916a2195a?q=80&w=1000&auto=format&fit=crop" alt="Đà Lạt">
+            </div>
+            <div class="gallery-item g-item-4" data-aos="zoom-in" data-aos-delay="300">
+                <img src="https://images.unsplash.com/photo-1583417319070-4a69db38a482?q=80&w=1000&auto=format&fit=crop" alt="Sapa">
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="more-info py-5">
+    <div class="container">
+        <div class="row align-items-center g-5">
+            <div class="col-lg-6" data-aos="fade-right">
+                <div class="info-img position-relative">
+                    <img src="https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&w=1000&q=80" alt="Về TourWorld" class="img-fluid rounded-4 shadow">
+                    <div style="position: absolute; bottom: -20px; right: -20px; background: white; padding: 20px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); max-width: 200px;">
+                        <h5 class="fw-bold text-success mb-1">100%</h5>
+                        <small class="text-muted">Tối ưu hóa chi phí di chuyển</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6" data-aos="fade-left">
+                <div class="info-text ps-lg-4">
+                    <span class="text-warning fw-bold text-uppercase ls-1">Về Chúng Tôi</span>
+                    <h2 class="display-6 fw-bold mb-4" style="color: var(--prim-color);">Tại Sao Chọn TourWorld?</h2>
+                    <ul class="list-unstyled mt-4">
+                        <li class="mb-3 d-flex align-items-center"><i class="bi bi-check-circle-fill text-success me-3 fs-4"></i><span>Tiết kiệm chi phí xăng xe và vé cầu đường.</span></li>
+                        <li class="mb-3 d-flex align-items-center"><i class="bi bi-check-circle-fill text-success me-3 fs-4"></i><span>Giảm thiểu thời gian di chuyển vô ích.</span></li>
+                        <li class="mb-3 d-flex align-items-center"><i class="bi bi-check-circle-fill text-success me-3 fs-4"></i><span>Giao diện trực quan, dễ sử dụng.</span></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="testimonials">
+    <div class="container">
+        <div class="section-header" data-aos="fade-up">
+            <h2 class="section-title">Người Dùng Nói Gì?</h2>
+        </div>
         <div class="row g-4">
-            <div class="col-lg-3 col-md-6" data-aos="zoom-in" data-aos-delay="100">
-                <div class="tour-card">
-                    <img src="~/Content/IMG/Paris.jpg" alt="Paris">
-                    <div class="tour-info">
-                        <h6><i class="bi bi-geo-alt"></i> Paris, Pháp</h6>
-                        <p>Kinh đô ánh sáng và sự lãng mạn.</p>
+            <div class="col-md-4" data-aos="fade-up" data-aos-delay="100">
+                <div class="testi-card">
+                    <p class="text-muted fst-italic mb-4">"Thuật toán chạy rất nhanh, giúp tôi lên lịch trình đi phượt xuyên Việt tiết kiệm."</p>
+                    <div class="d-flex align-items-center">
+                        <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="User" class="user-avatar">
+                        <div><h6 class="mb-0 fw-bold">Minh Tuấn</h6><small class="text-muted">Phượt thủ</small></div>
                     </div>
                 </div>
             </div>
-            <div class="col-lg-3 col-md-6" data-aos="zoom-in" data-aos-delay="200">
-                <div class="tour-card">
-                    <img src="~/Content/IMG/Tokyo.jpg" alt="Tokyo">
-                    <div class="tour-info">
-                        <h6><i class="bi bi-geo-alt"></i> Tokyo, Nhật Bản</h6>
-                        <p>Sự giao thoa giữa truyền thống và hiện đại.</p>
+            <div class="col-md-4" data-aos="fade-up" data-aos-delay="200">
+                <div class="testi-card">
+                    <p class="text-muted fst-italic mb-4">"Giao diện đẹp. Phần mô phỏng Kruskal giúp tôi hiểu rõ hơn về thuật toán."</p>
+                    <div class="d-flex align-items-center">
+                        <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="User" class="user-avatar">
+                        <div><h6 class="mb-0 fw-bold">Lan Anh</h6><small class="text-muted">Sinh viên IT</small></div>
                     </div>
                 </div>
             </div>
-            <div class="col-lg-3 col-md-6" data-aos="zoom-in" data-aos-delay="300">
-                <div class="tour-card">
-                    <img src="~/Content/IMG/Bali.jpg" alt="Bali">
-                    <div class="tour-info">
-                        <h6><i class="bi bi-geo-alt"></i> Bali, Indonesia</h6>
-                        <p>Thiên đường nhiệt đới vẫy gọi.</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-3 col-md-6" data-aos="zoom-in" data-aos-delay="400">
-                <div class="tour-card">
-                    <img src="~/Content/IMG/HaLong.jpg" alt="Hạ Long">
-                    <div class="tour-info">
-                        <h6><i class="bi bi-geo-alt"></i> Hạ Long, VN</h6>
-                        <p>Kỳ quan thiên nhiên hùng vĩ.</p>
+            <div class="col-md-4" data-aos="fade-up" data-aos-delay="300">
+                <div class="testi-card">
+                    <p class="text-muted fst-italic mb-4">"Ứng dụng tuyệt vời cho các công ty du lịch muốn tối ưu hóa lộ trình tour."</p>
+                    <div class="d-flex align-items-center">
+                        <img src="https://randomuser.me/api/portraits/men/85.jpg" alt="User" class="user-avatar">
+                        <div><h6 class="mb-0 fw-bold">Hoàng Nam</h6><small class="text-muted">Hướng dẫn viên</small></div>
                     </div>
                 </div>
             </div>
@@ -291,27 +359,90 @@
     </div>
 </section>
 
-<section class="more-info">
-    <div class="container">
-        <div class="row align-items-center g-5">
-            <div class="col-lg-6" data-aos="fade-right">
-                <div class="info-img">
-                    <img src="https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&w=1000&q=80" alt="Về TourWorld">
-                </div>
-            </div>
-            <div class="col-lg-6" data-aos="fade-left">
-                <div class="info-text">
-                    <h2>Tại Sao Chọn TourWorld?</h2>
-                    <p>
-                        Không chỉ là một website đặt vé, TourWorld mang đến giải pháp công nghệ giúp tối ưu hóa từng km di chuyển của bạn. Chúng tôi tin rằng một hành trình trọn vẹn bắt đầu từ một lộ trình thông minh.
-                    </p>
-                    <div class="highlight-box">
-                        <i class="bi bi-lightbulb-fill text-warning me-2"></i>
-                        "Từ bản đồ giấy đến thuật toán số, chúng tôi biến việc lên kế hoạch du lịch trở nên dễ dàng và thú vị hơn bao giờ hết."
-                    </div>
-                    <a href="@Url.Action("Contact","Home")" class="btn btn-outline-dark mt-4 px-4 py-2 rounded-pill fw-bold">Liên Hệ Ngay</a>
-                </div>
-            </div>
-        </div>
+<div class="container" data-aos="zoom-in">
+    <div class="newsletter text-center">
+        <h3 class="fw-bold mb-3">Đăng Ký Nhận Tin Tức</h3>
+        <p class="mb-4 opacity-75">Nhận các mẹo du lịch và cập nhật tính năng mới nhất.</p>
+        <form class="d-flex justify-content-center">
+            <input type="email" class="input-newsletter" placeholder="Nhập email của bạn...">
+            <button type="button" class="btn-newsletter">ĐĂNG KÝ</button>
+        </form>
     </div>
-</section>
+</div>
+
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+<script>
+    // Khởi tạo AOS
+    AOS.init({ duration: 800, offset: 100, once: true });
+
+    // === SCRIPT VẼ MẠNG LƯỚI CHO HERO (CANVAS ANIMATION) ===
+    const canvas = document.getElementById('networkCanvas');
+    const ctx = canvas.getContext('2d');
+    let width, height;
+    let particles = [];
+    const config = { particleCount: 70, connectionDistance: 150, mouseDistance: 200, speed: 0.5 };
+    let mouse = { x: null, y: null };
+
+    // Theo dõi chuột
+    document.getElementById('homeHero').addEventListener('mousemove', (e) => {
+        const rect = canvas.getBoundingClientRect();
+        mouse.x = e.clientX - rect.left; mouse.y = e.clientY - rect.top;
+    });
+    document.getElementById('homeHero').addEventListener('mouseleave', () => { mouse.x = null; mouse.y = null; });
+
+    function resize() {
+        width = canvas.width = document.getElementById('homeHero').offsetWidth;
+        height = canvas.height = document.getElementById('homeHero').offsetHeight;
+    }
+    window.addEventListener('resize', resize);
+    resize();
+
+    class Particle {
+        constructor() {
+            this.x = Math.random() * width; this.y = Math.random() * height;
+            this.vx = (Math.random() - 0.5) * config.speed; this.vy = (Math.random() - 0.5) * config.speed;
+            this.size = Math.random() * 2 + 1;
+        }
+        update() {
+            this.x += this.vx; this.y += this.vy;
+            if (this.x < 0 || this.x > width) this.vx *= -1;
+            if (this.y < 0 || this.y > height) this.vy *= -1;
+            if (mouse.x != null) {
+                let dx = mouse.x - this.x; let dy = mouse.y - this.y;
+                let distance = Math.sqrt(dx * dx + dy * dy);
+                if (distance < config.mouseDistance) {
+                    const force = (config.mouseDistance - distance) / config.mouseDistance;
+                    this.vx -= (dx / distance) * force * 0.05; this.vy -= (dy / distance) * force * 0.05;
+                }
+            }
+        }
+        draw() { ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2); ctx.fillStyle = 'rgba(255, 255, 255, 0.8)'; ctx.fill(); }
+    }
+
+    function init() { particles = []; for (let i = 0; i < config.particleCount; i++) particles.push(new Particle()); }
+    function animate() {
+        ctx.clearRect(0, 0, width, height);
+        for (let i = 0; i < particles.length; i++) {
+            particles[i].update(); particles[i].draw();
+            for (let j = i; j < particles.length; j++) {
+                let dx = particles[i].x - particles[j].x; let dy = particles[i].y - particles[j].y;
+                let distance = Math.sqrt(dx * dx + dy * dy);
+                if (distance < config.connectionDistance) {
+                    let opacity = 1 - (distance / config.connectionDistance);
+                    ctx.beginPath(); ctx.strokeStyle = 'rgba(255, 255, 255,' + opacity * 0.3 + ')';
+                    ctx.lineWidth = 1; ctx.moveTo(particles[i].x, particles[i].y); ctx.lineTo(particles[j].x, particles[j].y); ctx.stroke();
+                }
+            }
+            if (mouse.x != null) {
+                let dx = particles[i].x - mouse.x; let dy = particles[i].y - mouse.y;
+                let distance = Math.sqrt(dx * dx + dy * dy);
+                if (distance < config.connectionDistance) {
+                    ctx.beginPath(); ctx.strokeStyle = 'rgba(76, 175, 80,' + (1 - distance / config.connectionDistance) + ')';
+                    ctx.moveTo(particles[i].x, particles[i].y); ctx.lineTo(mouse.x, mouse.y); ctx.stroke();
+                }
+            }
+        }
+        requestAnimationFrame(animate);
+    }
+    init(); animate();
+</script>

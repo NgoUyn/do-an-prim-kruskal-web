@@ -3,46 +3,55 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Web;
 
 namespace Prim_Kruskal_Web.Services
 {
     public class PrimAlgorithm_Services : IPrimAlgorithm_Service
     {
-        private const string ALGORITHM_NAME = "Prim's Algorithm";
+        private const string ALGORITHM_NAME = "Prim's Algorithm (Optimized)";
         private const string TIME_COMPLEXITY = "O(V²)";
-
-        // startNodeId = index into graph.Nodes list (not DB id). If caller provides -1, we'll start at index 0.
 
         public AlgorithmResult FindMST(Graph graph, int startNodeIndex)
         {
+            // 1. Khởi động đồng hồ đo
             var sw = Stopwatch.StartNew();
             var result = new AlgorithmResult
             {
                 AlgorithmName = ALGORITHM_NAME,
-                TimeComplexity = TIME_COMPLEXITY
+                TimeComplexity = TIME_COMPLEXITY,
+                Steps = new List<AlgorithmStep>(),
+                MSTEdges = new List<Edge>()
             };
 
             int n = graph.Nodes.Count;
-            if (n == 0)
+            if (n == 0) { sw.Stop(); return result; }
+
+            // 2. Pre-processing: Chuyển Edge List sang Adjacency List (Mảng các List)
+            // Việc này giúp truy xuất O(1) thay vì O(E)
+            var adj = new List<Edge>[n];
+            for (int i = 0; i < n; i++) adj[i] = new List<Edge>();
+
+            // Map ID -> Index để dùng mảng (nhanh hơn Dictionary)
+            var idToIndex = new Dictionary<int, int>(n);
+            for (int i = 0; i < n; i++) idToIndex[graph.Nodes[i].Id] = i;
+
+            foreach (var edge in graph.Edges)
             {
-                sw.Stop();
-                result.ExecutionTimeMs = sw.Elapsed.TotalMilliseconds;
-                return result;
+                if (idToIndex.TryGetValue(edge.SourceId, out int u) && idToIndex.TryGetValue(edge.DestinationId, out int v))
+                {
+                    adj[u].Add(edge);
+                    adj[v].Add(edge);
+                }
             }
 
-            // Khởi tạo
-            var idToIndex = new Dictionary<int, int>();
-            for (int i = 0; i < n; i++)
-                idToIndex[graph.Nodes[i].Id] = i;
+            // 3. Khởi tạo cấu trúc dữ liệu Prim
+            if (startNodeIndex < 0 || startNodeIndex >= n) startNodeIndex = 0;
 
-            if (startNodeIndex < 0 || startNodeIndex >= n)
-                startNodeIndex = 0;
+            double[] key = new double[n];   // Khoảng cách ngắn nhất
+            bool[] inMST = new bool[n];     // Đánh dấu đã thăm
+            int[] parent = new int[n];      // Lưu vết cha con
 
-            double[] key = new double[n];
-            bool[] inMST = new bool[n];
-            int[] parent = new int[n];
-
+            // Khởi tạo giá trị (Dùng vòng lặp for thay vì Enumerable để nhanh hơn)
             for (int i = 0; i < n; i++)
             {
                 key[i] = double.MaxValue;
@@ -50,105 +59,94 @@ namespace Prim_Kruskal_Web.Services
             }
             key[startNodeIndex] = 0;
 
-            int stepCount = 0;
+            // --- QUYẾT ĐỊNH CHẾ ĐỘ CHẠY ---
+            // Nếu N > 100: Chạy chế độ "Đua tốc độ" (Không ghi Log)
+            // Nếu N <= 100: Chạy chế độ "Mô phỏng" (Ghi Log đầy đủ để vẽ hình)
+            bool isBenchmarkMode = n > 100;
 
-            // Lặp V lần
+            // 4. VÒNG LẶP CHÍNH O(V^2)
             for (int count = 0; count < n; count++)
             {
-                int u = FindMinKeyNode(key, inMST, n);
-                if (u == -1) break;
+                // Bước 4a: Tìm đỉnh u có key nhỏ nhất chưa vào MST
+                // Đây là đoạn O(V) thuần túy
+                double minVal = double.MaxValue;
+                int u = -1;
+
+                for (int v = 0; v < n; v++)
+                {
+                    if (!inMST[v] && key[v] < minVal)
+                    {
+                        minVal = key[v];
+                        u = v;
+                    }
+                }
+
+                if (u == -1) break; // Đồ thị ngắt quãng hoặc xong
 
                 inMST[u] = true;
-                stepCount++;
 
-                // Thêm bước
-                result.Steps.Add(new AlgorithmStep
+                // LOGGING (Chỉ chạy khi N nhỏ)
+                if (!isBenchmarkMode)
                 {
-                    StepNumber = stepCount,
-                    Description = $"Chọn đỉnh '{graph.Nodes[u].Name}' (Chi phí: {key[u]:F2})",
-                    VisitedNodes = GetVisitedNodes(inMST),
-                    CurrentMSTEdges = new List<Edge>(result.MSTEdges)
-                });
-
-                // Duyệt tất cả cạnh từ u
-                foreach (var edge in graph.Edges)
-                {
-                    int srcIdx = idToIndex[edge.SourceId];
-                    int destIdx = idToIndex[edge.DestinationId];
-                    int v = -1;
-
-                    if (srcIdx == u && !inMST[destIdx])
-                        v = destIdx;
-                    else if (destIdx == u && !inMST[srcIdx])
-                        v = srcIdx;
-
-                    if (v != -1)
+                    // Lưu ý: Đoạn code này rất chậm vì tạo Object mới liên tục
+                    result.Steps.Add(new AlgorithmStep
                     {
-                        double weight = edge.KhoangCach ?? double.MaxValue;
-                        if (weight < key[v])
-                        {
-                            key[v] = weight;
-                            parent[v] = u;
-                            stepCount++;
-                        }
+                        StepNumber = count + 1,
+                        Description = $"Chọn đỉnh {u} (W: {minVal:F1})",
+                        // Copy danh sách chỉ để hiển thị (Rất tốn RAM/CPU)
+                        CurrentMSTEdges = new List<Edge>(result.MSTEdges)
+                    });
+                }
+
+                // Bước 4b: Cập nhật trọng số cho các đỉnh kề
+                // Duyệt qua danh sách kề adj[u] thay vì toàn bộ Edges
+                var neighbors = adj[u];
+                int neighborsCount = neighbors.Count;
+
+                for (int k = 0; k < neighborsCount; k++)
+                {
+                    var edge = neighbors[k];
+                    // Tìm index của đỉnh kia
+                    int vDbId = (edge.SourceId == graph.Nodes[u].Id) ? edge.DestinationId : edge.SourceId;
+                    int v = idToIndex[vDbId];
+
+                    if (inMST[v]) continue;
+
+                    double weight = edge.KhoangCach ?? edge.Cost ?? double.MaxValue;
+
+                    if (weight < key[v])
+                    {
+                        key[v] = weight;
+                        parent[v] = u;
                     }
                 }
             }
 
-            // Xây dựng MST từ parent[]
+            // 5. Tổng hợp kết quả (Reconstruct MST)
             for (int i = 0; i < n; i++)
             {
                 if (parent[i] != -1)
                 {
                     int uDbId = graph.Nodes[parent[i]].Id;
                     int vDbId = graph.Nodes[i].Id;
-                    var edge = FindEdgeBetween(graph, uDbId, vDbId);
+
+                    // Tìm lại reference cạnh gốc
+                    var edge = adj[i].FirstOrDefault(e =>
+                        (e.SourceId == uDbId && e.DestinationId == vDbId) ||
+                        (e.SourceId == vDbId && e.DestinationId == uDbId));
 
                     if (edge != null)
                     {
                         result.MSTEdges.Add(edge);
-                        double cost = edge.Cost ?? edge.KhoangCach ?? 0;
-                        result.TotalCost += cost;
+                        result.TotalCost += (edge.Cost ?? edge.KhoangCach ?? 0);
                     }
                 }
             }
 
             sw.Stop();
             result.ExecutionTimeMs = sw.Elapsed.TotalMilliseconds;
-            result.StepCount = stepCount;
+            result.StepCount = n; // Tổng số bước = số đỉnh
             return result;
-        }
-
-        private int FindMinKeyNode(double[] key, bool[] inMST, int n)
-        {
-            double min = double.MaxValue;
-            int minIndex = -1;
-
-            for (int i = 0; i < n; i++)
-            {
-                if (!inMST[i] && key[i] < min)
-                {
-                    min = key[i];
-                    minIndex = i;
-                }
-            }
-            return minIndex;
-        }
-
-        private List<int> GetVisitedNodes(bool[] inMST)
-        {
-            var visited = new List<int>();
-            for (int i = 0; i < inMST.Length; i++)
-                if (inMST[i])
-                    visited.Add(i);
-            return visited;
-        }
-
-        private Edge FindEdgeBetween(Graph graph, int uDbId, int vDbId)
-        {
-            return graph.Edges.FirstOrDefault(e =>
-                (e.SourceId == uDbId && e.DestinationId == vDbId) ||
-                (e.SourceId == vDbId && e.DestinationId == uDbId));
         }
     }
 }

@@ -203,12 +203,24 @@ namespace Prim_Kruskal_Web.Controllers
         {
             return await Task.Run(() =>
             {
+                // 1. Chạy 2 thuật toán
                 var prim = _primService.FindMST(graph, 0);
                 var kruskal = _kruskalService.FindMST(graph);
 
-                bool usePrim = prim.TotalCost <= kruskal.TotalCost;
-                var bestEdges = usePrim ? prim.MSTEdges : kruskal.MSTEdges;
+                // 2. Logic chọn thuật toán Tối ưu (SỬA LẠI)
+                // Ưu tiên 1: Chi phí thấp hơn
+                // Ưu tiên 2: Nếu chi phí bằng nhau, chọn cái chạy NHANH hơn
+                bool usePrim;
+                if (prim.TotalCost < kruskal.TotalCost) usePrim = true;
+                else if (kruskal.TotalCost < prim.TotalCost) usePrim = false;
+                else
+                {
+                    // Chi phí bằng nhau -> So thời gian
+                    usePrim = prim.ExecutionTimeMs <= kruskal.ExecutionTimeMs;
+                }
+
                 var bestResult = usePrim ? prim : kruskal;
+                var bestEdges = bestResult.MSTEdges;
 
                 var routeNames = new List<string>();
                 foreach (var e in bestEdges)
@@ -217,14 +229,11 @@ namespace Prim_Kruskal_Web.Controllers
                     if (e.Destination != null && !routeNames.Contains(e.Destination.Name)) routeNames.Add(e.Destination.Name);
                 }
 
-                // --- LOGIC TÍNH TIỀN MỚI ---
-                double PRICE_PER_KM = 15000; // Đơn giá: 15.000 VNĐ / 1 Km
+                double PRICE_PER_KM = 15000;
 
                 return Json(new
                 {
                     success = true,
-
-                    // Kết quả Prim (đã nhân tiền)
                     primResult = new
                     {
                         totalCost = prim.TotalCost * PRICE_PER_KM,
@@ -232,8 +241,6 @@ namespace Prim_Kruskal_Web.Controllers
                         operationCount = prim.StepCount,
                         edgeCount = prim.MSTEdges.Count
                     },
-
-                    // Kết quả Kruskal (đã nhân tiền)
                     kruskalResult = new
                     {
                         totalCost = kruskal.TotalCost * PRICE_PER_KM,
@@ -241,23 +248,20 @@ namespace Prim_Kruskal_Web.Controllers
                         operationCount = kruskal.StepCount,
                         edgeCount = kruskal.MSTEdges.Count
                     },
-
-                    // Lộ trình tối ưu
                     optimalRoute = new
                     {
-                        algorithmName = usePrim ? "Prim" : "Kruskal",
-                        totalCost = bestResult.TotalCost * PRICE_PER_KM, // Tiền = Km * Đơn giá
-                        totalDistance = bestResult.TotalCost,            // Km giữ nguyên
+                        algorithmName = usePrim ? "Prim" : "Kruskal", // Tên thuật toán thắng cuộc
+                        totalCost = bestResult.TotalCost * PRICE_PER_KM,
+                        totalDistance = bestResult.TotalCost,
                         executionTime = bestResult.ExecutionTimeMs,
                         routeNames,
                         edges = bestEdges.Select(e => new {
                             fromName = e.Src?.Name,
                             toName = e.Destination?.Name,
                             distance = e.Weight,
-                            cost = e.Weight * PRICE_PER_KM // Tiền từng chặng
+                            cost = e.Weight * PRICE_PER_KM
                         })
                     },
-
                     comparison = new
                     {
                         costDifference = Math.Abs(prim.TotalCost - kruskal.TotalCost) * PRICE_PER_KM,

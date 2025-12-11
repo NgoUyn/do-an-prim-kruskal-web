@@ -1,580 +1,761 @@
-﻿@model Prim_Kruskal_Web.Models.CompareResult
-@{
-    ViewBag.Title = "Algorithm Visualization Studio";
+﻿@{
+    ViewBag.Title = "Advanced Algorithm Lab - Full Upgrade";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+
 <script src="https://d3js.org/d3.v7.min.js"></script>
-<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&family=Quicksand:wght@500;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
 <style>
     :root {
-        --bg-main: #F9F7F2;
-        --text-color: #4E342E;
-        --panel-bg: #FFFFFF;
-
-        --prim-color: #2E7D32;   /* Forest Green */
-        --kruskal-color: #D84315; /* Burnt Clay */
-        --node-color: #5D4037;   /* Coffee Bean */
-        --edge-color: #BCAAA4;   /* Light Brown */
-
-        --shadow-soft: 0 10px 30px rgba(78, 52, 46, 0.08);
-        --border-radius: 24px;
+        --prim-color: #2E7D32;
+        --kruskal-color: #D84315;
+        --card-bg: #FFFFFF;
+        --bg-body: #ECEFF1;
+        --log-highlight: #FFF9C4;
+        --log-reject: #FFEBEE;
     }
 
     body {
+        background-color: var(--bg-body);
         font-family: 'Nunito', sans-serif;
-        background-color: var(--bg-main);
-        background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23d7ccc8' fill-opacity='0.2'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
-        color: var(--text-color);
+        overflow-y: auto !important;
+        min-height: 100vh;
     }
 
-    .app-container {
+    .lab-container {
         display: grid;
-        grid-template-columns: 350px 1fr 320px;
-        gap: 25px;
-        max-width: 1600px;
-        margin: 0 auto;
+        grid-template-columns: 340px 1fr 1fr;
+        grid-template-rows: auto auto auto;
+        gap: 20px;
         padding: 20px;
-        height: calc(100vh - 80px); /* Full height trừ header */
+        max-width: 100%;
+        margin-bottom: 50px;
     }
 
-    /* === CARD STYLING === */
-    .glass-card {
-        background: var(--panel-bg);
-        border-radius: var(--border-radius);
-        box-shadow: var(--shadow-soft);
-        border: 1px solid rgba(78, 52, 46, 0.05);
+    .panel {
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.05);
         display: flex;
         flex-direction: column;
+        border: 1px solid #CFD8DC;
         overflow: hidden;
     }
 
-    .card-header {
-        padding: 20px;
-        border-bottom: 2px dashed #EFEBE9;
+    .panel-head {
+        padding: 15px;
+        font-weight: 800;
+        text-transform: uppercase;
+        font-size: 0.95rem;
         display: flex;
         justify-content: space-between;
         align-items: center;
+        border-bottom: 2px solid #F5F5F5;
+        color: #37474F;
     }
-    .card-title {
-        font-family: 'Quicksand', sans-serif;
-        font-weight: 700;
+
+    .canvas-area {
+        height: 450px;
+        position: relative;
+        cursor: crosshair;
+        background: #fff;
+        border-bottom: 1px solid #eee;
+        overflow: hidden;
+    }
+
+    .stats-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 10px;
+        padding: 10px;
+        background: #FAFAFA;
+    }
+
+    .stat-card {
+        background: #fff;
+        padding: 8px;
+        border-radius: 8px;
+        text-align: center;
+        border: 1px solid #E0E0E0;
+    }
+
+    .stat-val {
         font-size: 1.1rem;
-        color: var(--text-color);
-        display: flex; align-items: center; gap: 8px;
+        font-weight: 900;
+        margin-bottom: 3px;
+        color: #263238;
     }
-    .card-body { padding: 20px; flex: 1; overflow-y: auto; }
 
-    /* === LEFT PANEL: INPUT === */
-    .input-group label { font-size: 0.85rem; font-weight: 700; color: #8D6E63; display: block; margin-bottom: 5px; }
-    .custom-input {
-        width: 100%; padding: 10px 15px; border: 2px solid #EFEBE9; border-radius: 12px;
-        font-family: 'Nunito', sans-serif; font-size: 0.95rem; color: var(--text-color);
-        background: #FAFAFA; transition: 0.3s; margin-bottom: 15px;
+    .stat-lbl {
+        font-size: 0.65rem;
+        text-transform: uppercase;
+        color: #78909C;
+        font-weight: 700;
     }
-    .custom-input:focus { outline: none; border-color: var(--kruskal-color); background: #fff; }
 
-    .edge-row { display: flex; gap: 5px; margin-bottom: 8px; }
-    .edge-row input { flex: 1; padding: 8px; border-radius: 8px; border: 1px solid #EFEBE9; }
-
-    .btn-action {
-        width: 100%; padding: 12px; border: none; border-radius: 12px;
-        font-weight: 700; cursor: pointer; transition: 0.3s;
-        display: flex; align-items: center; justify-content: center; gap: 8px;
+    .log-panel {
+        grid-column: 2 / -1;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+        padding: 0;
+        height: 500px;
+        background: #FAFAFA;
     }
-    .btn-add { background: #F1F8E9; color: var(--prim-color); margin-top: 5px; }
-    .btn-add:hover { background: #DCEDC8; }
+
+    .log-col {
+        display: flex;
+        flex-direction: column;
+        border-right: 1px solid #ddd;
+        background: #fff;
+    }
+
+    .log-table-wrapper {
+        flex: 1;
+        overflow-y: auto;
+    }
+
+    table.log-table {
+        width: 100%;
+        font-size: 0.85rem;
+        border-collapse: collapse;
+    }
+
+        table.log-table th {
+            position: sticky;
+            top: 0;
+            background: #f5f5f5;
+            padding: 8px;
+            text-align: left;
+            font-weight: 700;
+            border-bottom: 2px solid #ddd;
+        }
+
+        table.log-table td {
+            padding: 6px 8px;
+            border-bottom: 1px solid #f5f5f5;
+            color: #455A64;
+        }
+
+    .log-step-select {
+        background-color: #E8F5E9;
+        border-left: 4px solid var(--prim-color);
+    }
+
+    .log-step-reject {
+        background-color: var(--log-reject);
+        color: #B71C1C;
+        opacity: 0.7;
+    }
+
+    .log-step-consider {
+        background-color: #E3F2FD;
+    }
+
+    .btn-tool {
+        border: none;
+        padding: 10px 15px;
+        border-radius: 6px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: 0.2s;
+    }
+
+    .btn-gen {
+        background: #E3F2FD;
+        color: #1565C0;
+        border: 1px solid #BBDEFB;
+        margin-right: 5px;
+        font-size: 0.8rem;
+    }
+
+        .btn-gen:hover {
+            background: #BBDEFB;
+        }
 
     .btn-run {
-        background: linear-gradient(135deg, #FF7043 0%, #D84315 100%);
-        color: white; font-size: 1rem; margin-top: 20px;
-        box-shadow: 0 8px 20px rgba(216, 67, 21, 0.2);
-    }
-    .btn-run:hover { transform: translateY(-2px); box-shadow: 0 12px 25px rgba(216, 67, 21, 0.3); }
-
-    .sample-group { display: flex; gap: 10px; margin-top: 10px; }
-    .btn-sample { flex: 1; background: #fff; border: 1px solid #D7CCC8; color: #8D6E63; font-size: 0.8rem; padding: 8px; border-radius: 8px; cursor: pointer; }
-    .btn-sample:hover { background: #EFEBE9; color: var(--text-color); }
-
-    /* NÚT CHUYỂN TRANG COMPARE/ARENA */
-    .btn-arena {
-        background: linear-gradient(135deg, #42A5F5 0%, #1976D2 100%);
-        color: white; margin-bottom: 20px;
-        box-shadow: 0 8px 20px rgba(25, 118, 210, 0.2);
-    }
-    .btn-arena:hover { transform: translateY(-2px); box-shadow: 0 12px 25px rgba(25, 118, 210, 0.3); }
-
-    /* === CENTER PANEL: CANVAS === */
-    .canvas-wrapper { position: relative; width: 100%; height: 100%; background-color: #F5F5F5; overflow: hidden; cursor: grab; }
-    .canvas-wrapper:active { cursor: grabbing; }
-
-    .canvas-bg {
-        position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-        background-image: radial-gradient(#CFD8DC 1px, transparent 1px);
-        background-size: 20px 20px;
-        pointer-events: none;
+        background: linear-gradient(135deg, #FF7043, #D84315);
+        color: white;
+        width: 100%;
+        font-size: 1.1rem;
+        padding: 15px;
+        margin-top: 15px;
     }
 
-    .canvas-toolbar {
-        position: absolute; top: 15px; right: 15px;
-        display: flex; flex-direction: column; gap: 8px;
+    .benchmark-panel {
+        grid-column: 1 / -1;
+        padding: 20px;
+        display: grid;
+        grid-template-columns: 300px 1fr;
+        gap: 30px;
     }
-    .tool-btn {
-        width: 40px; height: 40px; border-radius: 10px; background: white; border: 1px solid #EFEBE9;
-        display: flex; align-items: center; justify-content: center;
-        color: #5D4037; font-size: 1rem; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.05); transition: 0.2s;
+
+    .chart-container {
+        position: relative;
+        height: 350px;
+        width: 100%;
     }
-    .tool-btn:hover { background: var(--prim-color); color: white; border-color: var(--prim-color); }
 
-    .playback-controls {
-        position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%);
-        background: white; padding: 8px 15px; border-radius: 50px;
-        display: flex; gap: 15px; align-items: center;
-        box-shadow: 0 8px 25px rgba(0,0,0,0.1); border: 1px solid #EFEBE9;
+    .time-control {
+        padding: 10px 15px;
+        margin-top: -15px;
+        position: relative;
+        z-index: 5;
+        background: rgba(255,255,255,0.9);
+        border-bottom: 1px solid #eee;
     }
-    .play-btn {
-        width: 50px; height: 50px; border-radius: 50%; border: none;
-        background: var(--prim-color); color: white; font-size: 1.2rem;
-        cursor: pointer; display: flex; align-items: center; justify-content: center;
-        transition: 0.3s;
+
+    input[type=range] {
+        width: 100%;
+        cursor: pointer;
     }
-    .play-btn:hover { transform: scale(1.1); box-shadow: 0 5px 15px rgba(46, 125, 50, 0.3); }
 
-    .speed-slider { width: 100px; accent-color: var(--kruskal-color); }
-
-    /* === RIGHT PANEL: STEPS === */
-    .step-list { display: flex; flex-direction: column; gap: 10px; }
-    .step-card {
-        background: #fff; border: 1px solid #EFEBE9; padding: 12px; border-radius: 12px;
-        font-size: 0.9rem; transition: 0.3s;
-        border-left: 4px solid transparent;
-    }
-    .step-card.active { border-left-color: var(--prim-color); background: #F1F8E9; transform: translateX(-5px); box-shadow: 0 4px 12px rgba(46, 125, 50, 0.1); }
-    .step-card.kruskal-active { border-left-color: var(--kruskal-color); background: #FBE9E7; }
-
-    .step-number { font-weight: 800; color: #8D6E63; margin-right: 8px; }
-    .step-desc { color: var(--text-color); line-height: 1.4; }
-
-    /* Responsive */
     @@media (max-width: 1200px) {
-        .app-container { grid-template-columns: 1fr; height: auto; }
-        .canvas-wrapper { height: 500px; border-radius: 20px; }
+        .lab-container {
+            grid-template-columns: 1fr;
+        }
+
+        .log-panel {
+            grid-column: auto;
+            height: auto;
+            grid-template-columns: 1fr;
+        }
+
+        .log-col {
+            height: 300px;
+            border-right: none;
+        }
+
+        .benchmark-panel {
+            grid-template-columns: 1fr;
+        }
     }
 </style>
 
-<div class="app-container">
-
-    <div class="glass-card">
-        <div class="card-header">
-            <div class="card-title"><i class="fas fa-sliders-h"></i> Cấu Hình Đồ Thị</div>
+<div class="lab-container">
+    <div class="panel">
+        <div class="panel-head">
+            <span><i class="fas fa-project-diagram"></i> Input Graph</span>
+            <span style="font-size:0.8rem; color:#1976D2" id="nodeCount">0 Nodes</span>
         </div>
-        <div class="card-body">
 
-            <a href="@Url.Action("Compare", "MoPhong")" class="btn-action btn-arena" style="text-decoration:none; text-align:center;">
-                <i class="fas fa-bolt"></i> CHUYỂN SANG ĐẤU TRƯỜNG (RACE)
-            </a>
+        <div style="padding: 15px; border-bottom: 1px solid #eee; background:#FAFAFA">
+            <div style="margin-bottom: 10px;">
+                <label style="font-weight:bold; color:#455A64; font-size:0.85rem;">1. Chọn Chế độ:</label>
+                <select id="graphMode" class="btn-tool" style="width:100%; border:1px solid #B0BEC5; margin-top:5px; background:white;" onchange="updateModeInfo()">
+                    <option value="sparse">🔵 Thưa (Sparse - Kruskal Win)</option>
+                    <option value="fair">🟣 Trung Bình (Fair - Cân sức)</option>
+                    <option value="dense">🔴 Dày (Dense - Prim Win)</option>
+                </select>
+                <div id="modeInfo" style="font-size:0.75rem; color:#E65100; margin-top:5px; font-style:italic;">* Mật độ thấp. Kruskal rất nhanh.</div>
+            </div>
 
-            <div style="border-bottom: 1px dashed #EFEBE9; margin-bottom: 20px;"></div>
-
-            <form method="post" action="@Url.Action("Result", "MoPhong")" id="graphForm">
-                <div class="input-group">
-                    <label>Danh sách Đỉnh (cách nhau dấu phẩy)</label>
-                    <input type="text" name="nodes" id="nodesInput" class="custom-input"
-                           value="@(ViewBag.Nodes ?? "A,B,C,D,E")" placeholder="VD: A, B, C..." required />
-                </div>
-
-                <div class="input-group">
-                    <label>Danh sách Cạnh (Từ - Đến - Trọng số)</label>
-                    <div id="edgesContainer" style="max-height: 250px; overflow-y: auto; margin-bottom: 10px;">
-                        @if (ViewBag.Src != null)
-                        {
-                            var s = ViewBag.Src as string[]; var d = ViewBag.Dest as string[]; var w = ViewBag.Weight as int[];
-                            for (int i = 0; i < s.Length; i++)
-                            {
-                                <div class="edge-row">
-                                    <input type="text" name="src[]" value="@s[i]" placeholder="Từ" required>
-                                    <input type="text" name="dest[]" value="@d[i]" placeholder="Đến" required>
-                                    <input type="number" name="weight[]" value="@w[i]" placeholder="W" required>
-                                </div>
-                            }
-                        }
-                        else
-                        {
-                            <div class="edge-row">
-                                <input type="text" name="src[]" placeholder="Từ" required>
-                                <input type="text" name="dest[]" placeholder="Đến" required>
-                                <input type="number" name="weight[]" placeholder="W" required>
-                            </div>
-                        }
+            <div style="margin-bottom:10px;">
+                <label style="font-weight:bold; color:#455A64; font-size:0.85rem; display:block; margin-bottom:5px">2. Tạo mẫu:</label>
+                <button class="btn-tool btn-gen" onclick="genRandom(10)">Nhỏ (10)</button>
+                <button class="btn-tool btn-gen" onclick="genRandom(30)">Vừa (30)</button>
+                <button class="btn-tool btn-gen" onclick="genRandom(50)">Lớn (50)</button>
+                <div style="margin-top:10px; border-top:1px dashed #ccc; padding-top:10px;">
+                    <label style="font-size:0.8rem; font-weight:bold;">Số lượng tùy ý:</label>
+                    <div style="display:flex; gap:5px;">
+                        <input type="number" id="customN" value="100" style="width:60px; padding:5px; border:1px solid #ccc; border-radius:4px;">
+                        <button class="btn-tool" style="background:#263238; color:white; flex:1;" onclick="genCustom()">
+                            Tạo
+                        </button>
                     </div>
-                    <button type="button" class="btn-action btn-add" onclick="addEdgeRow()">
-                        <i class="fas fa-plus-circle"></i> Thêm Cạnh
-                    </button>
                 </div>
+            </div>
+        </div>
 
-                <div class="input-group" style="margin-top: 20px;">
-                    <label>Thuật Toán</label>
-                    <select name="algorithm" class="custom-input">
-                        <option value="Prim" @(ViewBag.Algorithm == "Prim" ? "selected" : "")>Prim (Loang dầu)</option>
-                        <option value="Kruskal" @(ViewBag.Algorithm == "Kruskal" ? "selected" : "")>Kruskal (Kết nối)</option>
-                    </select>
-                </div>
-
-                <div class="sample-group">
-                    <button type="button" class="btn-sample" onclick="loadSample(1)">Mẫu Nhỏ</button>
-                    <button type="button" class="btn-sample" onclick="loadSample(2)">Mẫu Lớn</button>
-                </div>
-
-                <button type="submit" class="btn-action btn-run">
-                    <i class="fas fa-play"></i> CHẠY MÔ PHỎNG
-                </button>
-            </form>
-            @if (ViewBag.Error != null)
-            {<div style="color: #D32F2F; margin-top: 10px; font-size: 0.9rem;">@ViewBag.Error</div>}
+        <div class="canvas-area" style="height: 350px;">
+            <canvas id="inputCanvas"></canvas>
+        </div>
+        <div style="padding:15px;">
+            <button class="btn-tool" style="background:#FFEBEE; color:#C62828; width:100%; margin-bottom:10px;" onclick="clearCanvas()">
+                <i class="fas fa-trash"></i> Xóa Trắng
+            </button>
+            <button class="btn-tool btn-run" onclick="runAlgorithmsAsync()">
+                <i class="fas fa-play"></i> CHẠY SO SÁNH
+            </button>
         </div>
     </div>
 
-    <div class="glass-card" style="overflow: visible;">
-        <div class="canvas-wrapper" id="canvasContainer">
-            <div class="canvas-bg"></div>
-            <canvas id="mainCanvas"></canvas>
-
-            <div class="canvas-toolbar">
-                <button class="tool-btn" onclick="zoomCanvas(1.1)"><i class="fas fa-plus"></i></button>
-                <button class="tool-btn" onclick="zoomCanvas(0.9)"><i class="fas fa-minus"></i></button>
-                <button class="tool-btn" onclick="resetCanvas()"><i class="fas fa-compress"></i></button>
-            </div>
-
-            <div class="playback-controls">
-                <button class="play-btn" id="playPauseBtn"><i class="fas fa-play"></i></button>
-                <div style="display:flex; flex-direction:column; gap:2px;">
-                    <span style="font-size:0.7rem; font-weight:700; color:#8D6E63">TỐC ĐỘ</span>
-                    <input type="range" class="speed-slider" min="100" max="2000" step="100" value="1000" id="speedRange">
-                </div>
-                <div style="font-size:0.9rem; font-weight:800; color:var(--text-color);" id="stepIndicator">0 / 0</div>
+    <div class="panel" style="border-top: 4px solid var(--prim-color)">
+        <div class="panel-head">
+            <span style="color:var(--prim-color)">PRIM (Loang Dầu)</span>
+            <span id="p-status" style="font-size:0.7rem; background:#E8F5E9; padding:2px 6px; border-radius:4px;">Ready</span>
+        </div>
+        <div class="canvas-area" id="primViz"></div>
+        <div class="time-control">
+            <input type="range" id="primSlider" min="0" value="0" disabled oninput="updateTimeTravel('Prim', this.value)">
+            <div style="display:flex; justify-content:space-between; font-size:0.75rem; font-weight:700; color:#546E7A; margin-top:5px;">
+                <span>Start</span>
+                <span>Tiến độ: <span id="primStepLbl">0</span>/<span id="primTotalLbl">0</span></span>
+                <span>End</span>
             </div>
         </div>
-    </div>
-
-    <div class="glass-card">
-        <div class="card-header">
-            <div class="card-title"><i class="fas fa-list-ul"></i> Nhật Ký Chạy</div>
-            <div class="card-title" style="font-size:0.9rem; color:#8D6E63">
-                @(ViewBag.Result != null ? ((List<Prim_Kruskal_Web.Models.Edge>)ViewBag.Result).Sum(e => e.Weight) + " Tổng W" : "0")
+        <div class="stats-row prim-stats">
+            <div class="stat-card">
+                <div class="stat-val" style="color:var(--prim-color)" id="p-cost">0</div>
+                <div class="stat-lbl">Chi Phí</div>
             </div>
-        </div>
-        <div class="card-body">
-            <div class="step-list" id="stepList">
-                <div style="text-align:center; color:#BCAAA4; margin-top:50px;">
-                    <i class="fas fa-wind" style="font-size:3rem; margin-bottom:10px;"></i>
-                    <p>Chưa có dữ liệu chạy.</p>
-                </div>
+            <div class="stat-card">
+                <div class="stat-val" id="p-time">0</div>
+                <div class="stat-lbl">Time (ms)</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-val" id="p-steps">0</div>
+                <div class="stat-lbl">Steps</div>
             </div>
         </div>
     </div>
 
+    <div class="panel" style="border-top: 4px solid var(--kruskal-color)">
+        <div class="panel-head">
+            <span style="color:var(--kruskal-color)">KRUSKAL (Rừng Cây)</span>
+            <span id="k-status" style="font-size:0.7rem; background:#FBE9E7; padding:2px 6px; border-radius:4px;">Ready</span>
+        </div>
+        <div class="canvas-area" id="kruskalViz"></div>
+        <div class="time-control">
+            <input type="range" id="kruskalSlider" min="0" value="0" disabled oninput="updateTimeTravel('Kruskal', this.value)">
+            <div style="display:flex; justify-content:space-between; font-size:0.75rem; font-weight:700; color:#546E7A; margin-top:5px;">
+                <span>Start</span>
+                <span>Tiến độ: <span id="kruskalStepLbl">0</span>/<span id="kruskalTotalLbl">0</span></span>
+                <span>End</span>
+            </div>
+        </div>
+        <div class="stats-row kruskal-stats">
+            <div class="stat-card">
+                <div class="stat-val" style="color:var(--kruskal-color)" id="k-cost">0</div>
+                <div class="stat-lbl">Chi Phí</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-val" id="k-time">0</div>
+                <div class="stat-lbl">Time (ms)</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-val" id="k-steps">0</div>
+                <div class="stat-lbl">Steps</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="panel log-panel">
+        <div class="log-col">
+            <div class="log-header" style="color:var(--prim-color)">Nhật Ký Prim</div>
+            <div class="log-table-wrapper">
+                <table class="log-table" id="primLog"><thead><tr><th>#</th><th>Hành động</th><th>W</th></tr></thead><tbody></tbody></table>
+            </div>
+        </div>
+        <div class="log-col">
+            <div class="log-header" style="color:var(--kruskal-color)">Nhật Ký Kruskal</div>
+            <div class="log-table-wrapper">
+                <table class="log-table" id="kruskalLog"><thead><tr><th>#</th><th>Hành động</th><th>W</th></tr></thead><tbody></tbody></table>
+            </div>
+        </div>
+    </div>
+
+    <div class="panel benchmark-panel">
+        <div>
+            <h3 style="color:#263238; margin-top:0"><i class="fas fa-tachometer-alt"></i> Benchmark</h3>
+            <p style="font-size:0.9rem; color:#546E7A">Chạy ngầm so sánh hiệu năng theo Chế độ đã chọn.</p>
+            <div id="benchmarkConfig" style="font-size:0.85rem; color:#455A64; margin-bottom:15px; font-style:italic"></div>
+            <button id="btnBenchmark" class="btn-tool" style="background:#263238; color:#fff; width:100%" onclick="runBenchmark()">
+                <i class="fas fa-rocket"></i> BẮT ĐẦU TEST
+            </button>
+            <div id="benchStatus" style="margin-top:10px; font-size:0.8rem; text-align:center; color:#D84315; font-weight:bold; min-height:20px;"></div>
+        </div>
+        <div style="background:#fff; border-radius:8px; border:1px solid #eee; padding:10px;">
+            <div class="chart-container"><canvas id="benchChart"></canvas></div>
+        </div>
+    </div>
 </div>
 
 <script>
-    // DATA FROM SERVER
-    const rawNodes = @Html.Raw(ViewBag.NodesJson ?? "[]");
-    const allEdges = @Html.Raw(ViewBag.AllEdgesJson ?? "[]");
-    const primSteps = @Html.Raw(ViewBag.PrimStepsJson ?? "[]");
-    const kruskalSteps = @Html.Raw(ViewBag.KruskalStepsJson ?? "[]");
-    const resultEdges = @Html.Raw(ViewBag.ResultJson ?? "[]");
-    const currentAlgo = '@ViewBag.Algorithm';
+    // --- GLOBAL VARS ---
+    let inputNodes = [], inputEdges = [], nextChar = 0;
+    let lastResult = null;
+    let primSvgGroups = null, kruskalSvgGroups = null;
+    let primDetailedSteps = [], kruskalDetailedSteps = [];
 
-    const steps = currentAlgo === 'Kruskal' ? kruskalSteps : primSteps;
-    const activeColor = currentAlgo === 'Kruskal' ? '#D84315' : '#2E7D32'; // Cam hoặc Xanh
-    const activeClass = currentAlgo === 'Kruskal' ? 'kruskal-active' : 'active';
+    const iCanvas = document.getElementById('inputCanvas');
+    const iCtx = iCanvas.getContext('2d');
+    let selectedNode = null;
 
-    // CANVAS SETUP
-    const canvas = document.getElementById('mainCanvas');
-    const container = document.getElementById('canvasContainer');
-    const ctx = canvas.getContext('2d');
+    function resizeInput() {
+        if (!iCanvas.parentElement) return;
+        iCanvas.width = iCanvas.parentElement.clientWidth;
+        iCanvas.height = iCanvas.parentElement.clientHeight;
+        drawInput();
+    }
+    window.addEventListener('resize', resizeInput);
 
-    let width, height;
-    let d3Nodes = [], d3Links = [];
-    let simulation;
-    let transform = d3.zoomIdentity;
+    // --- CANVAS INTERACTION ---
+    iCanvas.addEventListener('mousedown', e => {
+        const rect = iCanvas.getBoundingClientRect();
+        const x = e.clientX - rect.left; const y = e.clientY - rect.top;
+        const clicked = inputNodes.find(n => Math.hypot(n.x - x, n.y - y) < 20);
+        if (!clicked) {
+            inputNodes.push({ id: String(nextChar++), x, y });
+            selectedNode = null;
+        } else {
+            if (!selectedNode) selectedNode = clicked;
+            else if (selectedNode === clicked) selectedNode = null;
+            else {
+                const exist = inputEdges.find(e => (e.u === selectedNode.id && e.v === clicked.id) || (e.u === clicked.id && e.v === selectedNode.id));
+                if (!exist) {
+                    const w = Math.floor(Math.random() * 50) + 1;
+                    inputEdges.push({ u: selectedNode.id, v: clicked.id, w: w });
+                }
+                selectedNode = null;
+            }
+        }
+        drawInput(); updateUI();
+    });
 
-    // Animation State
-    let currentStep = 0;
-    let isPlaying = false;
-    let animationInterval;
-    let speed = 1000;
+    function drawInput() {
+        iCtx.clearRect(0, 0, iCanvas.width, iCanvas.height);
+        iCtx.strokeStyle = "#f9f9f9"; iCtx.lineWidth = 1; iCtx.beginPath();
+        for (let i = 0; i < iCanvas.width; i += 20) { iCtx.moveTo(i, 0); iCtx.lineTo(i, iCanvas.height); }
+        for (let i = 0; i < iCanvas.height; i += 20) { iCtx.moveTo(0, i); iCtx.lineTo(iCanvas.width, i); }
+        iCtx.stroke();
 
-    // INIT
-    function init() {
-        resizeCanvas();
-        window.addEventListener('resize', resizeCanvas);
+        inputEdges.forEach(e => {
+            const n1 = inputNodes.find(n => n.id === e.u); const n2 = inputNodes.find(n => n.id === e.v);
+            if (n1 && n2) {
+                iCtx.beginPath(); iCtx.moveTo(n1.x, n1.y); iCtx.lineTo(n2.x, n2.y);
+                iCtx.strokeStyle = "#B0BEC5"; iCtx.lineWidth = 2; iCtx.stroke();
+                const mx = (n1.x + n2.x) / 2, my = (n1.y + n2.y) / 2;
+                iCtx.fillStyle = "#fff"; iCtx.beginPath(); iCtx.arc(mx, my, 11, 0, Math.PI * 2); iCtx.fill();
+                iCtx.fillStyle = "#455A64"; iCtx.font = "bold 11px Nunito"; iCtx.textAlign = "center"; iCtx.textBaseline = "middle"; iCtx.fillText(e.w, mx, my);
+            }
+        });
 
-        if (rawNodes.length > 0) {
-            setupSimulation();
-            renderStepList();
-            document.getElementById('stepIndicator').innerText = `0 / ${steps.length}`;
+        inputNodes.forEach(n => {
+            iCtx.beginPath(); iCtx.arc(n.x, n.y, 16, 0, Math.PI * 2);
+            iCtx.fillStyle = (selectedNode === n) ? "#FFD54F" : "#fff";
+            iCtx.fill(); iCtx.strokeStyle = (selectedNode === n) ? "#FBC02D" : "#0288D1"; iCtx.lineWidth = (selectedNode === n) ? 3 : 2; iCtx.stroke();
+            iCtx.fillStyle = "#333"; iCtx.font = "bold 12px Nunito"; iCtx.textAlign = "center"; iCtx.textBaseline = "middle"; iCtx.fillText(n.id, n.x, n.y);
+        });
+    }
+
+    // --- LOGIC SINH DỮ LIỆU ---
+    function updateModeInfo() {
+        const mode = document.getElementById('graphMode').value;
+        const lbl = document.getElementById('modeInfo');
+        const benchConfig = document.getElementById('benchmarkConfig');
+        if (mode === 'sparse') {
+            lbl.innerText = "* Mật độ thấp (~1.5n). Kruskal rất nhanh.";
+            benchConfig.innerText = "Test: [10, 50, 100, 200] Nodes. Mật độ Thưa.";
+        } else if (mode === 'fair') {
+            lbl.innerText = "* Mật độ trung bình (~20%). Cuộc đua gay cấn.";
+            benchConfig.innerText = "Test: [10, 50, 100, 200] Nodes. Mật độ 20%.";
+        } else {
+            lbl.innerText = "* Mật độ cao (~80%). Prim phát huy thế mạnh.";
+            benchConfig.innerText = "Test: [10, 30, 60, 100] Nodes (Giảm size vì rất nặng). Mật độ 80%.";
         }
     }
 
-    function resizeCanvas() {
-        width = container.clientWidth;
-        height = container.clientHeight;
-        canvas.width = width;
-        canvas.height = height;
-        if(simulation) simulation.alpha(0.3).restart(); // Wake up sim
+    function genRandom(n) {
+        clearCanvas();
+        const mode = document.getElementById('graphMode').value;
+        const centerX = iCanvas.width / 2; const centerY = iCanvas.height / 2;
+        const radius = Math.min(centerX, centerY) - 50;
+
+        for (let i = 0; i < n; i++) {
+            let x, y;
+            if (mode === 'dense' && n > 20) {
+                x = 40 + Math.random() * (iCanvas.width - 80);
+                y = 40 + Math.random() * (iCanvas.height - 80);
+            } else {
+                const angle = (i / n) * 2 * Math.PI;
+                x = centerX + radius * Math.cos(angle);
+                y = centerY + radius * Math.sin(angle);
+            }
+            inputNodes.push({ id: String(i), x: x, y: y });
+        }
+        nextChar = n;
+
+        // Cây khung
+        for (let i = 0; i < n - 1; i++) {
+            inputEdges.push({ u: inputNodes[i].id, v: inputNodes[i + 1].id, w: Math.floor(Math.random() * 90) + 10 });
+        }
+
+        // Thêm cạnh theo chế độ
+        if (mode === 'sparse') {
+            let extra = Math.floor(n * 0.8);
+            addRandomEdges(n, extra);
+        } else if (mode === 'fair') {
+            addDenseEdges(n, 0.2);
+        } else { // dense
+            addDenseEdges(n, 0.8);
+        }
+        drawInput(); updateUI();
     }
 
-    function setupSimulation() {
-        // Clone data for D3
-        d3Nodes = rawNodes.map(n => ({ id: n.Name, ...n }));
-        d3Links = allEdges.map(e => ({ source: e.Src.Name, target: e.Destination.Name, weight: e.Weight }));
-
-        simulation = d3.forceSimulation(d3Nodes)
-            .force("link", d3.forceLink(d3Links).id(d => d.id).distance(150))
-            .force("charge", d3.forceManyBody().strength(-500))
-            .force("center", d3.forceCenter(width / 2, height / 2))
-            .force("collide", d3.forceCollide(40))
-            .on("tick", draw);
-
-        // Zoom & Drag behavior using D3
-        const d3Canvas = d3.select(canvas);
-
-        d3Canvas.call(d3.drag()
-            .subject(event => {
-                const [x, y] = d3.pointer(event);
-                const tx = transform.invertX(x), ty = transform.invertY(y);
-                return d3Nodes.find(n => Math.hypot(tx - n.x, ty - n.y) < 25);
-            })
-            .on("start", dragstarted)
-            .on("drag", dragged)
-            .on("end", dragended));
-
-        d3Canvas.call(d3.zoom()
-            .scaleExtent([0.1, 5])
-            .on("zoom", event => {
-                transform = event.transform;
-                draw();
-            }));
+    function addRandomEdges(n, count) {
+        let safety = 0;
+        while (count > 0 && safety < 10000) {
+            safety++;
+            let u = Math.floor(Math.random() * n);
+            let v = Math.floor(Math.random() * n);
+            if (u !== v && !isEdgeExist(String(u), String(v))) {
+                inputEdges.push({ u: String(u), v: String(v), w: Math.floor(Math.random() * 90) + 10 });
+                count--;
+            }
+        }
     }
 
-    // DRAW LOOP
-    function draw() {
-        ctx.save();
-        ctx.clearRect(0, 0, width, height);
-        ctx.translate(transform.x, transform.y);
-        ctx.scale(transform.k, transform.k);
-
-        // 1. Draw Links
-        d3Links.forEach(link => {
-            ctx.beginPath();
-            ctx.moveTo(link.source.x, link.source.y);
-            ctx.lineTo(link.target.x, link.target.y);
-            ctx.strokeStyle = "#BCAAA4";
-            ctx.lineWidth = 2;
-            ctx.stroke();
-
-            // Weight Label (nền trắng tròn)
-            const mx = (link.source.x + link.target.x) / 2;
-            const my = (link.source.y + link.target.y) / 2;
-
-            ctx.beginPath();
-            ctx.arc(mx, my, 12, 0, 2*Math.PI);
-            ctx.fillStyle = "#fff";
-            ctx.fill();
-            ctx.strokeStyle = "#EFEBE9";
-            ctx.lineWidth = 1;
-            ctx.stroke();
-
-            ctx.fillStyle = "#5D4037";
-            ctx.font = "bold 10px Nunito";
-            ctx.textAlign = "center";
-            ctx.textBaseline = "middle";
-            ctx.fillText(link.weight, mx, my);
-        });
-
-        // 2. Draw MST / Active Edges based on currentStep
-        if (currentStep > 0 && steps.length > 0) {
-            // Lấy danh sách cạnh MST tại bước hiện tại
-            // Lưu ý: steps[i] chứa danh sách MST tính đến lúc đó
-            const stepData = steps[currentStep - 1]; // steps index 0 is Step 1
-            const mstEdges = stepData.CurrentMSTEdges || [];
-
-            mstEdges.forEach(edge => {
-                const s = d3Nodes.find(n => n.id === edge.Src.Name);
-                const t = d3Nodes.find(n => n.id === edge.Destination.Name);
-                if (s && t) {
-                    ctx.beginPath();
-                    ctx.moveTo(s.x, s.y);
-                    ctx.lineTo(t.x, t.y);
-                    ctx.strokeStyle = activeColor;
-                    ctx.lineWidth = 5;
-                    ctx.lineCap = "round";
-                    ctx.stroke();
+    function addDenseEdges(n, prob) {
+        for (let i = 0; i < n; i++) {
+            for (let j = i + 2; j < n; j++) {
+                if (Math.random() < prob) {
+                    inputEdges.push({ u: String(i), v: String(j), w: Math.floor(Math.random() * 90) + 10 });
                 }
+            }
+        }
+    }
+
+    function isEdgeExist(u, v) {
+        return inputEdges.some(e => (e.u === u && e.v === v) || (e.u === v && e.v === u));
+    }
+
+    function clearCanvas() { inputNodes = []; inputEdges = []; nextChar = 0; selectedNode = null; drawInput(); updateUI(); }
+    function updateUI() { document.getElementById('nodeCount').innerText = inputNodes.length + " Nodes"; }
+
+    // --- API CALL ---
+    async function runAlgorithmsAsync() {
+        if (inputNodes.length < 2) return alert("Cần tối thiểu 2 đỉnh!");
+
+        const formData = new FormData();
+        formData.append('nodes', inputNodes.map(n => n.id).join(','));
+        inputEdges.forEach(e => { formData.append('src[]', e.u); formData.append('dest[]', e.v); formData.append('weight[]', e.w); });
+
+        document.body.style.cursor = 'wait';
+        try {
+            const res = await fetch('/MoPhong/RunDualApi', { method: 'POST', body: formData });
+            const data = await res.json();
+
+            if (data.success) {
+                lastResult = data;
+                renderStats(data); // Đã định nghĩa hàm này bên dưới
+
+                primDetailedSteps = simulatePrimSteps(data.graph.nodes, data.graph.edges);
+                kruskalDetailedSteps = simulateKruskalSteps(data.graph.nodes, data.graph.edges);
+
+                setupSlider('primSlider', primDetailedSteps.length);
+                setupSlider('kruskalSlider', kruskalDetailedSteps.length);
+
+                primSvgGroups = initD3Graph('primViz', data.graph, '#2E7D32');
+                kruskalSvgGroups = initD3Graph('kruskalViz', data.graph, '#D84315');
+
+                renderFullLog('primLog', primDetailedSteps);
+                renderFullLog('kruskalLog', kruskalDetailedSteps);
+
+                document.getElementById('primSlider').value = primDetailedSteps.length;
+                updateTimeTravel('Prim', primDetailedSteps.length);
+                document.getElementById('kruskalSlider').value = kruskalDetailedSteps.length;
+                updateTimeTravel('Kruskal', kruskalDetailedSteps.length);
+
+            } else { alert(data.message); }
+        } catch (e) { console.error(e); alert("Lỗi kết nối Server! Xem Console để biết chi tiết."); }
+        finally { document.body.style.cursor = 'default'; }
+    }
+
+    // --- BENCHMARK ---
+    // --- 4. BENCHMARK FIXED (GỌI SERVER 1 LẦN DUY NHẤT) ---
+    async function runBenchmark() {
+        const mode = document.getElementById('graphMode').value;
+        const btn = document.getElementById('btnBenchmark');
+        const status = document.getElementById('benchStatus');
+
+        // Cấu hình bài test
+        let maxNodes = 200;
+        let step = 50;
+
+        // Điều chỉnh cấu hình tùy mode
+        if (mode === 'dense') {
+            maxNodes = 150; // Dense rất nặng (O(N^2)), giảm N xuống để không đợi lâu
+            step = 30;
+        } else if (mode === 'sparse') {
+            maxNodes = 1000; // Sparse rất nhẹ, tăng N lên để thấy rõ
+            step = 200;
+        }
+
+        btn.disabled = true;
+        status.innerHTML = `Đang chạy Benchmark [${mode}] (Max N=${maxNodes})... <i class="fas fa-spinner fa-spin"></i>`;
+
+        // Gửi thông số xuống Server
+        const formData = new FormData();
+        formData.append('maxNodes', maxNodes);
+        formData.append('step', step);
+        formData.append('mode', mode);
+
+        try {
+            // Gọi Action RunBenchmark mới trong Controller
+            const res = await fetch('/MoPhong/RunBenchmark', { method: 'POST', body: formData });
+
+            if (!res.ok) throw new Error(`Lỗi HTTP: ${res.status}`);
+
+            const resp = await res.json();
+
+            if (resp.success) {
+                // Vẽ biểu đồ từ dữ liệu Server trả về
+                const labels = resp.data.map(d => `N=${d.n}`);
+                const pTimes = resp.data.map(d => d.prim);
+                const kTimes = resp.data.map(d => d.kruskal);
+
+                renderChart(labels, pTimes, kTimes);
+                status.innerText = "Hoàn tất!";
+            } else {
+                status.innerText = "Lỗi Server: " + resp.message;
+            }
+        } catch (e) {
+            console.error(e);
+            status.innerText = "Lỗi kết nối hoặc Timeout!";
+        }
+
+        btn.disabled = false;
+    }
+    function renderChart(labels, pData, kData) {
+        const ctx = document.getElementById('benchChart').getContext('2d');
+        if (window.benchChartInstance) window.benchChartInstance.destroy();
+
+        window.benchChartInstance = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [
+                    { label: 'Prim Time (ms)', data: pData, borderColor: '#2E7D32', backgroundColor: 'rgba(46, 125, 50, 0.2)', borderWidth: 3, tension: 0.3, fill: true },
+                    { label: 'Kruskal Time (ms)', data: kData, borderColor: '#D84315', backgroundColor: 'rgba(216, 67, 21, 0.2)', borderWidth: 3, tension: 0.3, fill: true }
+                ]
+            },
+            options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true } } }
+        });
+    }
+
+    // --- HÀM RENDER & HELPERS ---
+
+    // ĐỊNH NGHĨA HÀM RENDER STATS (Để sửa lỗi JS cũ)
+    function renderStats(data) {
+        document.getElementById('p-cost').innerText = data.prim.cost;
+        document.getElementById('k-cost').innerText = data.kruskal.cost;
+        document.getElementById('p-time').innerText = data.prim.time.toFixed(4);
+        document.getElementById('k-time').innerText = data.kruskal.time.toFixed(4);
+        document.getElementById('p-steps').innerText = data.prim.steps;
+        document.getElementById('k-steps').innerText = data.kruskal.steps;
+    }
+
+    function simulatePrimSteps(nodes, edges) {
+        let steps = []; let visited = new Set(); let mstEdges = [];
+        let startNode = nodes[0].id; visited.add(startNode);
+        steps.push({ type: 'start', msg: `Bắt đầu: ${startNode}`, edges: [] });
+
+        while (visited.size < nodes.length) {
+            let candidates = [];
+            edges.forEach(e => {
+                let uIn = visited.has(e.source), vIn = visited.has(e.target);
+                if (uIn !== vIn) candidates.push(e);
             });
-
-            // Highlight cạnh vừa xét (nếu có trong description)
-            // Logic này có thể phức tạp, tạm thời ta chỉ vẽ MST đã
+            if (candidates.length === 0) break;
+            candidates.sort((a, b) => a.weight - b.weight);
+            let bestEdge = candidates[0];
+            mstEdges.push(bestEdge);
+            visited.add(visited.has(bestEdge.source) ? bestEdge.target : bestEdge.source);
+            steps.push({ type: 'select', msg: `Chọn ${bestEdge.source}-${bestEdge.target}`, weight: bestEdge.weight, edges: [...mstEdges] });
         }
+        return steps;
+    }
 
-        // 3. Draw Nodes
-        d3Nodes.forEach(node => {
-            // Check if visited
-            let isVisited = false;
-            if (currentStep > 0 && steps[currentStep - 1].VisitedNodes) {
-                // Mapping ID -> Name hoặc ID -> ID tùy vào logic backend
-                // Ở đây giả sử VisitedNodes chứa ID int, ta cần map về node object
-                // Code đơn giản: Tô màu tất cả nếu nằm trong MST
-                // Thực tế nên check ID chính xác.
+    function simulateKruskalSteps(nodes, edges) {
+        let steps = [];
+        let sorted = [...edges].sort((a, b) => a.weight - b.weight);
+        steps.push({ type: 'info', msg: `Sort ${sorted.length} cạnh`, edges: [] });
+        let parent = {}; nodes.forEach(n => parent[n.id] = n.id);
+        function find(i) { if (parent[i] === i) return i; return find(parent[i]); }
+        function union(i, j) { let ri = find(i), rj = find(j); if (ri !== rj) parent[ri] = rj; return ri !== rj; }
+
+        let mst = []; let count = 0;
+        for (let e of sorted) {
+            if (union(e.source, e.target)) {
+                mst.push(e); count++;
+                steps.push({ type: 'select', msg: `Chọn ${e.source}-${e.target}`, weight: e.weight, edges: [...mst] });
+            } else {
+                steps.push({ type: 'reject', msg: `Bỏ qua ${e.source}-${e.target}`, weight: e.weight, edges: [...mst] });
             }
+            if (count >= nodes.length - 1) break;
+        }
+        return steps;
+    }
 
-            ctx.beginPath();
-            ctx.arc(node.x, node.y, 20, 0, 2 * Math.PI);
-            ctx.fillStyle = "#fff";
-            ctx.fill();
-            ctx.strokeStyle = "#5D4037"; // Coffee border
-            ctx.lineWidth = 2;
-            ctx.stroke();
+    function initD3Graph(containerId, graphData, color) {
+        const container = document.getElementById(containerId);
+        container.innerHTML = "";
+        const width = container.clientWidth; const height = container.clientHeight;
+        const nodes = graphData.nodes.map(d => ({ ...d }));
+        const links = graphData.edges.map(d => ({ ...d }));
 
-            ctx.fillStyle = "#3E2723";
-            ctx.font = "bold 14px Quicksand";
-            ctx.textAlign = "center";
-            ctx.textBaseline = "middle";
-            ctx.fillText(node.id, node.x, node.y);
+        const svg = d3.select("#" + containerId).append("svg").attr("width", width).attr("height", height)
+            .call(d3.zoom().on("zoom", (e) => g.attr("transform", e.transform))).append("g");
+        const g = svg;
+        const simulation = d3.forceSimulation(nodes)
+            .force("link", d3.forceLink(links).id(d => d.id).distance(80))
+            .force("charge", d3.forceManyBody().strength(-200))
+            .force("center", d3.forceCenter(width / 2, height / 2));
+
+        const link = g.append("g").selectAll("line").data(links).enter().append("line").attr("stroke", "#eee").attr("stroke-width", 2);
+        const mstLink = g.append("g").selectAll("line").data(links).enter().append("line").attr("stroke", color).attr("stroke-width", 0).attr("opacity", 0);
+        const node = g.append("g").selectAll("circle").data(nodes).enter().append("circle").attr("r", 15).attr("fill", "#fff").attr("stroke", "#333").attr("stroke-width", 2)
+            .call(d3.drag().on("start", (e, d) => { if (!e.active) simulation.alphaTarget(0.3).restart(); d.fx = d.x; d.fy = d.y; }).on("drag", (e, d) => { d.fx = e.x; d.fy = e.y; }).on("end", (e, d) => { if (!e.active) simulation.alphaTarget(0); d.fx = null; d.fy = null; }));
+        const label = g.append("g").selectAll("text").data(nodes).enter().append("text").text(d => d.id).attr("dy", 4).attr("text-anchor", "middle").attr("font-weight", "bold").attr("font-size", "11px");
+
+        simulation.on("tick", () => {
+            link.attr("x1", d => d.source.x).attr("y1", d => d.source.y).attr("x2", d => d.target.x).attr("y2", d => d.target.y);
+            mstLink.attr("x1", d => d.source.x).attr("y1", d => d.source.y).attr("x2", d => d.target.x).attr("y2", d => d.target.y);
+            node.attr("cx", d => d.x).attr("cy", d => d.y);
+            label.attr("x", d => d.x).attr("y", d => d.y);
         });
-
-        ctx.restore();
+        return { mstLink };
     }
 
-    // DRAG HANDLERS
-    function dragstarted(event) { if (!event.active) simulation.alphaTarget(0.3).restart(); event.subject.fx = event.subject.x; event.subject.fy = event.subject.y; }
-    function dragged(event) { event.subject.fx = transform.invertX(event.x); event.subject.fy = transform.invertY(event.y); }
-    function dragended(event) { if (!event.active) simulation.alphaTarget(0); event.subject.fx = null; event.subject.fy = null; }
-
-    // RENDER LIST
-    function renderStepList() {
-        const list = document.getElementById('stepList');
-        if (steps.length === 0) return;
-
-        list.innerHTML = steps.map((s, i) => `
-            <div class="step-card" id="step-card-${i + 1}">
-                <span class="step-number">#${s.StepNumber}</span>
-                <span class="step-desc">${s.Description}</span>
-            </div>
-        `).join('');
-    }
-
-    // PLAYBACK LOGIC
-    function setStep(step) {
-        if (step < 0) step = 0;
-        if (step > steps.length) step = steps.length;
-        currentStep = step;
-
-        // Update Indicator
-        document.getElementById('stepIndicator').innerText = `${currentStep} / ${steps.length}`;
-
-        // Highlight List
-        document.querySelectorAll('.step-card').forEach(el => el.className = 'step-card');
-        if (currentStep > 0) {
-            const card = document.getElementById(`step-card-${currentStep}`);
-            if (card) {
-                card.classList.add(activeClass);
-                card.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            }
+    function setupSlider(id, max) { document.getElementById(id).max = max; document.getElementById(id).disabled = false; document.getElementById(id.replace('Slider', 'TotalLbl')).innerText = max; }
+    function updateTimeTravel(algo, val) {
+        document.getElementById(algo.toLowerCase() + 'StepLbl').innerText = val;
+        const steps = algo === 'Prim' ? primDetailedSteps : kruskalDetailedSteps;
+        const vizObj = algo === 'Prim' ? primSvgGroups : kruskalSvgGroups;
+        if (!steps || !vizObj) return;
+        vizObj.mstLink.attr("stroke-width", 0).attr("opacity", 0);
+        if (val > 0) {
+            let activeEdges = steps[val - 1].edges || [];
+            activeEdges.forEach(e => {
+                vizObj.mstLink.filter(d => (d.source.id === e.source && d.target.id === e.target) || (d.source.id === e.target && d.target.id === e.source)).attr("stroke-width", 4).attr("opacity", 1);
+            });
         }
-
-        draw();
+        highlightTableRow(algo.toLowerCase() + 'Log', val);
+    }
+    function renderFullLog(tableId, steps) {
+        const tbody = document.querySelector(`#${tableId} tbody`);
+        tbody.innerHTML = steps.map((s, i) => {
+            let cls = s.type === 'select' ? 'log-step-select' : (s.type === 'reject' ? 'log-step-reject' : 'log-step-consider');
+            return `<tr class="${cls}" id="${tableId}-row-${i + 1}"><td>${i + 1}</td><td>${s.msg}</td><td><b>${s.weight || ''}</b></td></tr>`;
+        }).join('');
+    }
+    function highlightTableRow(tableId, index) {
+        document.querySelectorAll(`#${tableId} tr`).forEach(tr => tr.style.border = "none");
+        if (index > 0) document.getElementById(`${tableId}-row-${index}`)?.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
 
-    document.getElementById('playPauseBtn').onclick = () => {
-        if (isPlaying) {
-            clearInterval(animationInterval);
-            isPlaying = false;
-            document.getElementById('playPauseBtn').innerHTML = '<i class="fas fa-play"></i>';
-        } else {
-            if (currentStep === steps.length) currentStep = 0; // Restart
-            isPlaying = true;
-            document.getElementById('playPauseBtn').innerHTML = '<i class="fas fa-pause"></i>';
-            animationInterval = setInterval(() => {
-                if (currentStep < steps.length) {
-                    setStep(currentStep + 1);
-                } else {
-                    clearInterval(animationInterval);
-                    isPlaying = false;
-                    document.getElementById('playPauseBtn').innerHTML = '<i class="fas fa-play"></i>';
-                }
-            }, speed);
+    function genCustom() {
+        const n = parseInt(document.getElementById('customN').value);
+        if (n > 200) {
+            if (!confirm("Cảnh báo: Với N > 200, trình duyệt có thể bị treo do vẽ quá nhiều cạnh. Bạn có chắc muốn tiếp tục?")) return;
         }
-    };
-
-    // Speed Control (Đảo ngược: Giá trị càng nhỏ càng nhanh)
-    document.getElementById('speedRange').oninput = (e) => {
-        // Slider: 100 (Nhanh) -> 2000 (Chậm)
-        // Nhưng UI thường muốn Kéo phải = Nhanh.
-        // Ta để slider value là delay ms. Kéo phải (tăng) -> Chậm? Không logic.
-        // Logic tốt nhất: Value slider = Speed (1x, 2x). Ở đây để đơn giản giữ nguyên Delay.
-        speed = parseInt(e.target.value);
-        if (isPlaying) {
-            // Reset interval với tốc độ mới
-            clearInterval(animationInterval);
-            animationInterval = setInterval(() => {
-                if (currentStep < steps.length) setStep(currentStep + 1);
-                else { clearInterval(animationInterval); isPlaying = false; document.getElementById('playPauseBtn').innerHTML = '<i class="fas fa-play"></i>'; }
-            }, speed);
-        }
-    };
-
-    // Helper functions
-    function addEdgeRow() {
-        const div = document.createElement('div');
-        div.className = 'edge-row';
-        div.innerHTML = `<input type="text" name="src[]" placeholder="Từ" required>
-                         <input type="text" name="dest[]" placeholder="Đến" required>
-                         <input type="number" name="weight[]" placeholder="W" required>`;
-        document.getElementById('edgesContainer').appendChild(div);
+        genRandom(n);
     }
 
-    function loadSample(id) {
-        const nInput = document.getElementById('nodesInput');
-        const cContainer = document.getElementById('edgesContainer');
-        cContainer.innerHTML = ''; // Clear old
-
-        if(id === 1) {
-            nInput.value = "A,B,C,D,E";
-            addE("A","B",4); addE("A","C",2); addE("B","C",1); addE("B","D",5);
-            addE("C","D",8); addE("C","E",10); addE("D","E",2);
-        } else {
-            nInput.value = "1,2,3,4,5,6,7";
-            addE("1","2",2); addE("1","3",4); addE("1","4",1);
-            addE("2","4",3); addE("2","5",10); addE("3","4",2);
-            addE("3","6",5); addE("4","5",7); addE("4","6",8); addE("4","7",4);
-            addE("5","7",6); addE("6","7",1);
-        }
-    }
-
-    function addE(s,d,w) {
-        const div = document.createElement('div');
-        div.className = 'edge-row';
-        div.innerHTML = `<input type="text" name="src[]" value="${s}">
-                         <input type="text" name="dest[]" value="${d}">
-                         <input type="number" name="weight[]" value="${w}">`;
-        document.getElementById('edgesContainer').appendChild(div);
-    }
-
-    // Zoom control
-    function zoomCanvas(factor) {
-        const t = d3.zoomIdentity.translate(width/2, height/2).scale(transform.k * factor).translate(-width/2, -height/2);
-        // Cần gọi qua D3 behavior để update state nội bộ, nhưng ở đây hack nhanh bằng biến global
-        // Cách đúng: d3.select(canvas).call(zoom.transform, t);
-        // Để đơn giản, ta chỉ scale biến transform global dùng trong draw()
-        transform.k *= factor;
-        draw();
-    }
-    function resetCanvas() {
-        transform = { k: 1, x: 0, y: 0 };
-        if(simulation) simulation.force("center", d3.forceCenter(width/2, height/2)).alpha(0.3).restart();
-    }
-
-    init();
+    updateModeInfo();
+    setTimeout(resizeInput, 500);
 </script>

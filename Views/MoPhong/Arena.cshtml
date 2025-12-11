@@ -1,412 +1,420 @@
 ﻿@{
-    ViewBag.Title = "Algorithm Arena - Battle Mode";
+    ViewBag.Title = "Algorithm Arena - Pro Mode";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800&family=Quicksand:wght@600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700;900&family=JetBrains+Mono:wght@500;800&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
 <style>
     :root {
-        /* BẢNG MÀU NATURE ĐỒNG BỘ */
-        --bg-main: #F9F7F2;
-        --panel-bg: #FFFFFF;
-        --text-color: #4E342E;
-        --left-color: #2E7D32; /* Xanh Rừng (Prim/Kruskal) */
-        --right-color: #D84315; /* Cam Đất (Dijkstra/A*) */
-
-        --grid-line: #ECEFF1;
-        --shadow-soft: 0 10px 30px rgba(78, 52, 46, 0.1);
-        --radius: 20px;
+        --bg-body: #0F172A;
+        --card-glass: rgba(30, 41, 59, 0.7);
+        --border-glass: 1px solid rgba(255, 255, 255, 0.1);
+        --text-primary: #F8FAFC;
+        --color-prim: #00E676; /* Green Neon */
+        --color-path: #2979FF; /* Blue Neon */
+        --color-warn: #FF3D00; /* Red Neon */
     }
 
     body {
-        background-color: var(--bg-main);
-        background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23d7ccc8' fill-opacity='0.2'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
-        color: var(--text-color);
-        font-family: 'Nunito', sans-serif;
+        background-color: var(--bg-body);
+        background-image: radial-gradient(circle at 15% 50%, rgba(41, 121, 255, 0.08), transparent 25%), radial-gradient(circle at 85% 30%, rgba(0, 230, 118, 0.08), transparent 25%);
+        color: var(--text-primary);
+        font-family: 'Outfit', sans-serif;
+        overflow-x: hidden;
     }
 
-    /* === LAYOUT === */
+    /* === HEADER === */
     .arena-header {
         text-align: center;
-        margin-bottom: 30px;
-        position: relative;
+        padding: 30px 0;
     }
 
-    .arena-title {
-        font-family: 'Quicksand', sans-serif;
-        font-size: 2.5rem;
-        font-weight: 800;
-        background: -webkit-linear-gradient(45deg, var(--left-color), var(--right-color));
+    .brand-title {
+        font-size: 3rem;
+        font-weight: 900;
+        letter-spacing: -1px;
+        background: linear-gradient(to right, #fff, #94A3B8);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
     }
 
+    /* === MAIN ARENA === */
+    .arena-grid {
+        display: grid;
+        grid-template-columns: 1fr 80px 1fr;
+        gap: 20px;
+        padding: 0 40px;
+        max-width: 1600px;
+        margin: 0 auto 100px auto;
+        align-items: start;
+    }
+
     .vs-badge {
-        position: absolute;
-        left: 50%;
-        top: 55%;
-        transform: translate(-50%, -50%);
-        z-index: 10;
-        background: #fff;
-        border: 4px solid #fff;
-        color: #5D4037;
+        background: #000;
+        color: #fff;
+        font-family: 'JetBrains Mono';
+        font-weight: 800;
+        font-size: 1.5rem;
         width: 60px;
         height: 60px;
         border-radius: 50%;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-family: 'Quicksand';
-        font-weight: 900;
-        font-size: 1.5rem;
-        box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        border: 2px solid #334155;
+        margin: 150px auto 0 auto; /* Canh giữa theo chiều dọc tương đối */
+        box-shadow: 0 0 30px rgba(0,0,0,0.5);
+        z-index: 10;
     }
 
-    .arena-container {
-        display: flex;
-        gap: 40px;
-        justify-content: center;
-        align-items: stretch;
-        padding: 0 20px;
-        position: relative;
-    }
-
-    /* === PLAYER CARD === */
-    .player-card {
-        background: var(--panel-bg);
-        border-radius: var(--radius);
-        padding: 25px;
-        width: 48%;
-        max-width: 650px;
-        position: relative;
-        box-shadow: var(--shadow-soft);
-        border: 2px solid transparent;
+    /* === CARDS === */
+    .algo-card {
+        background: var(--card-glass);
+        backdrop-filter: blur(12px);
+        border: var(--border-glass);
+        border-radius: 24px;
+        padding: 24px;
         transition: 0.3s;
+        position: relative;
+    }
+
+        .algo-card.winner {
+            border-color: #FFD700;
+            box-shadow: 0 0 60px rgba(255, 215, 0, 0.15);
+            transform: translateY(-5px);
+        }
+
+    .card-header {
         display: flex;
-        flex-direction: column;
-    }
-
-    .card-left {
-        border-color: var(--left-color);
-    }
-
-    .card-right {
-        border-color: var(--right-color);
-    }
-
-    .card-header-select {
-        margin-bottom: 15px;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
     }
 
     .algo-select {
-        width: 100%;
-        padding: 12px;
-        border-radius: 12px;
-        font-family: 'Quicksand', sans-serif;
+        background: rgba(0,0,0,0.3);
+        color: #fff;
+        border: 1px solid rgba(255,255,255,0.2);
+        padding: 8px 16px;
+        border-radius: 8px;
+        font-family: 'Outfit';
         font-weight: 700;
-        font-size: 1.2rem;
-        border: 2px solid #EFEBE9;
-        background: #FAFAFA;
-        color: var(--text-color);
-        cursor: pointer;
-        transition: 0.2s;
         outline: none;
+        cursor: pointer;
     }
 
-    .card-left .algo-select:focus {
-        border-color: var(--left-color);
-    }
-
-    .card-right .algo-select:focus {
-        border-color: var(--right-color);
-    }
-
-    /* === MONITOR CANVAS === */
-    .monitor-frame {
+    /* === MONITOR SCREEN === */
+    .monitor-screen {
         width: 100%;
         aspect-ratio: 1;
-        background: #f1f5f9; /* Nền xám nhạt */
+        background: #000;
         border-radius: 16px;
-        overflow: hidden;
+        border: 1px solid #334155;
         position: relative;
-        background-image: radial-gradient(#CFD8DC 1px, transparent 1px);
-        background-size: 15px 15px;
-        border: 1px solid #E0E0E0;
+        overflow: hidden;
     }
 
     canvas {
         width: 100%;
         height: 100%;
-        image-rendering: pixelated;
         display: block;
-        mix-blend-mode: multiply;
+        image-rendering: pixelated;
     }
 
-    /* === STATS & OVERLAY === */
-    .stats-overlay {
-        margin-top: 15px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        background: #FAFAFA;
-        padding: 10px 15px;
-        border-radius: 12px;
-        border: 1px solid #EFEBE9;
+    /* === STATS === */
+    .stats-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 10px;
+        margin-top: 20px;
     }
 
     .stat-box {
+        background: rgba(255,255,255,0.03);
+        padding: 10px;
+        border-radius: 10px;
         text-align: center;
-    }
-
-    .stat-label {
-        font-size: 0.75rem;
-        color: #8D6E63;
-        font-weight: 700;
-        text-transform: uppercase;
+        border: 1px solid rgba(255,255,255,0.05);
     }
 
     .stat-val {
+        font-family: 'JetBrains Mono';
+        font-weight: 700;
         font-size: 1.2rem;
-        font-weight: 800;
-        font-family: 'Nunito';
-        color: var(--text-color);
     }
 
+    .stat-lbl {
+        font-size: 0.7rem;
+        color: #94A3B8;
+        text-transform: uppercase;
+        margin-top: 5px;
+    }
+
+    /* === CONTROL DOCK === */
+    .control-dock {
+        position: fixed;
+        bottom: 30px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: rgba(15, 23, 42, 0.9);
+        backdrop-filter: blur(16px);
+        padding: 15px 30px;
+        border-radius: 20px;
+        border: 1px solid rgba(255,255,255,0.15);
+        display: flex;
+        gap: 30px;
+        align-items: center;
+        box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+        z-index: 100;
+    }
+
+    .ctrl-group {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+    }
+
+    .ctrl-lbl {
+        font-size: 0.65rem;
+        color: #94A3B8;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    input[type=range] {
+        -webkit-appearance: none;
+        background: #334155;
+        height: 4px;
+        border-radius: 2px;
+    }
+
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 16px;
+            height: 16px;
+            background: #fff;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+    .btn-neon {
+        background: #fff;
+        color: #000;
+        border: none;
+        padding: 12px 40px;
+        border-radius: 12px;
+        font-weight: 800;
+        text-transform: uppercase;
+        cursor: pointer;
+        transition: 0.2s;
+        box-shadow: 0 0 20px rgba(255,255,255,0.2);
+    }
+
+        .btn-neon:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 30px rgba(255,255,255,0.4);
+        }
+
+        .btn-neon:disabled {
+            background: #475569;
+            color: #94A3B8;
+            box-shadow: none;
+            cursor: not-allowed;
+        }
+
+    /* Winner Overlay */
     .winner-overlay {
         position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(255,255,255,0.8);
-        backdrop-filter: blur(2px);
+        inset: 0;
+        background: rgba(0,0,0,0.8);
         display: flex;
         flex-direction: column;
         align-items: center;
         justify-content: center;
         opacity: 0;
+        transition: 0.5s;
         pointer-events: none;
-        transition: 0.4s;
-        z-index: 5;
     }
 
-    .player-card.winner .winner-overlay {
+    .algo-card.winner .winner-overlay {
         opacity: 1;
     }
 
-    .trophy-icon {
-        font-size: 4rem;
-        color: #FFD700;
-        margin-bottom: 10px;
-        filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1));
-    }
-
-    .win-text {
-        font-size: 2rem;
-        font-weight: 900;
-        color: #4E342E;
-        text-transform: uppercase;
-    }
-
-    /* === CONTROLS === */
-    .control-bar {
-        position: fixed;
-        bottom: 30px;
-        left: 50%;
-        transform: translateX(-50%);
-        background: #fff;
-        padding: 12px 30px;
+    .win-tag {
+        background: #FFD700;
+        color: #000;
+        padding: 5px 20px;
         border-radius: 50px;
-        display: flex;
-        gap: 20px;
-        align-items: center;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.15);
-        border: 1px solid #EFEBE9;
-        z-index: 100;
-    }
-
-    .btn-fight {
-        background: linear-gradient(135deg, var(--left-color), var(--right-color));
-        color: white;
-        border: none;
-        padding: 12px 35px;
-        font-weight: 800;
-        border-radius: 30px;
-        cursor: pointer;
-        font-size: 1.1rem;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-        transition: 0.2s;
-    }
-
-        .btn-fight:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-        }
-
-        .btn-fight:disabled {
-            background: #BCAAA4;
-            cursor: not-allowed;
-            transform: none;
-            box-shadow: none;
-        }
-
-    .input-size {
-        background: #FAFAFA;
-        border: 1px solid #D7CCC8;
-        color: #5D4037;
-        padding: 8px 12px;
-        border-radius: 12px;
-        text-align: center;
-        width: 90px;
-        font-weight: 700;
-        font-size: 1rem;
+        font-weight: 900;
+        font-size: 1.2rem;
+        box-shadow: 0 0 20px #FFD700;
     }
 </style>
 
-<div class="container" style="padding-top:20px; padding-bottom: 100px;">
-    <div class="arena-header">
-        <div class="arena-title">ALGORITHM ARENA</div>
-        <div style="font-size:0.9rem; color:#8D6E63">Đấu trường so sánh hiệu năng trực quan</div>
+<div class="arena-header">
+    <div class="brand-title">ALGO.ARENA <span style="font-size:1rem; vertical-align:middle; background:#334155; padding:4px 8px; border-radius:6px;">REAL-TIME</span></div>
+</div>
+
+<div class="arena-grid">
+    <div class="algo-card" id="cardLeft">
+        <div class="card-header">
+            <div style="font-size:1.5rem; font-weight:800; color:var(--color-prim)">MST SQUAD</div>
+            <select id="leftAlgo" class="algo-select">
+                <option value="Prim">Prim (Dense King)</option>
+                <option value="Kruskal">Kruskal (Sparse King)</option>
+            </select>
+        </div>
+        <div class="monitor-screen">
+            <canvas id="canvasLeft"></canvas>
+            <div class="winner-overlay" id="overlayLeft">
+                <div class="win-tag">VICTORY</div>
+                <div style="color:#CBD5E0; margin-top:5px" id="reasonLeft">Faster</div>
+            </div>
+        </div>
+        <div class="stats-row">
+            <div class="stat-box"><div class="stat-val" id="visLeft">0</div><div class="stat-lbl">Nodes</div></div>
+            <div class="stat-box"><div class="stat-val" style="color:var(--color-prim)" id="timeLeft">0ms</div><div class="stat-lbl">Real Time</div></div>
+            <div class="stat-box"><div class="stat-val" id="statusLeft" style="font-size:1rem; line-height:1.5rem">IDLE</div><div class="stat-lbl">State</div></div>
+        </div>
+        <div style="width:100%; height:4px; background:#334155; margin-top:20px; border-radius:2px; overflow:hidden">
+            <div id="progLeft" style="width:0%; height:100%; background:var(--color-prim); transition:width 0.1s linear"></div>
+        </div>
     </div>
 
-    <div class="arena-container">
-        <div class="vs-badge">VS</div>
+    <div class="vs-badge">VS</div>
 
-        <div class="player-card card-left" id="cardLeft">
-            <div class="card-header-select">
-                <label style="font-size:0.8rem; font-weight:700; color:var(--left-color)">ĐỘI MST (Loang phủ)</label>
-                <select id="leftAlgo" class="algo-select">
-                    <option value="Prim" selected>PRIM (Loang dầu)</option>
-                    <option value="Kruskal">KRUSKAL (Mưa rơi)</option>
-                </select>
-            </div>
-
-            <div class="monitor-frame">
-                <canvas id="canvasLeft"></canvas>
-                <div class="winner-overlay">
-                    <i class="fas fa-trophy trophy-icon"></i>
-                    <div class="win-text">WINNER!</div>
-                    <div style="font-weight:600; color:#2E7D32">Nhanh hơn đối thủ</div>
-                </div>
-            </div>
-
-            <div class="stats-overlay">
-                <div class="stat-box">
-                    <div class="stat-label">Ô Đã Duyệt</div>
-                    <div class="stat-val" id="visLeft">0</div>
-                </div>
-                <div class="stat-box">
-                    <div class="stat-label">Thời Gian Thực</div>
-                    <div class="stat-val" id="timeLeft" style="color:var(--left-color)">0ms</div>
-                </div>
-                <div class="stat-box">
-                    <div class="stat-label">Trạng Thái</div>
-                    <div class="stat-val" id="statusLeft" style="font-size:1rem">READY</div>
-                </div>
-            </div>
-            <div style="height:4px; width:0%; background:var(--left-color); transition: width 0.1s; margin-top:5px; border-radius:2px;" id="progLeft"></div>
+    <div class="algo-card" id="cardRight">
+        <div class="card-header">
+            <div style="font-size:1.5rem; font-weight:800; color:var(--color-path)">PATH SQUAD</div>
+            <select id="rightAlgo" class="algo-select">
+                <option value="A*">A* (Smart)</option>
+                <option value="Dijkstra">Dijkstra (Safe)</option>
+                <option value="BFS">BFS (Wide)</option>
+            </select>
         </div>
-
-        <div class="player-card card-right" id="cardRight">
-            <div class="card-header-select">
-                <label style="font-size:0.8rem; font-weight:700; color:var(--right-color)">ĐỘI TÌM ĐƯỜNG (A -> B)</label>
-                <select id="rightAlgo" class="algo-select">
-                    <option value="Dijkstra">DIJKSTRA (Loang kỹ)</option>
-                    <option value="A*" selected>A* (Thông minh)</option>
-                    <option value="BFS">BFS (Loang đều)</option>
-                </select>
+        <div class="monitor-screen">
+            <canvas id="canvasRight"></canvas>
+            <div class="winner-overlay" id="overlayRight">
+                <div class="win-tag">VICTORY</div>
+                <div style="color:#CBD5E0; margin-top:5px" id="reasonRight">Faster</div>
             </div>
-
-            <div class="monitor-frame">
-                <canvas id="canvasRight"></canvas>
-                <div class="winner-overlay">
-                    <i class="fas fa-trophy trophy-icon"></i>
-                    <div class="win-text">WINNER!</div>
-                    <div style="font-weight:600; color:#D84315">Nhanh hơn đối thủ</div>
-                </div>
-            </div>
-
-            <div class="stats-overlay">
-                <div class="stat-box">
-                    <div class="stat-label">Ô Đã Duyệt</div>
-                    <div class="stat-val" id="visRight">0</div>
-                </div>
-                <div class="stat-box">
-                    <div class="stat-label">Thời Gian Thực</div>
-                    <div class="stat-val" id="timeRight" style="color:var(--right-color)">0ms</div>
-                </div>
-                <div class="stat-box">
-                    <div class="stat-label">Trạng Thái</div>
-                    <div class="stat-val" id="statusRight" style="font-size:1rem">READY</div>
-                </div>
-            </div>
-            <div style="height:4px; width:0%; background:var(--right-color); transition: width 0.1s; margin-top:5px; border-radius:2px;" id="progRight"></div>
+        </div>
+        <div class="stats-row">
+            <div class="stat-box"><div class="stat-val" id="visRight">0</div><div class="stat-lbl">Nodes</div></div>
+            <div class="stat-box"><div class="stat-val" style="color:var(--color-path)" id="timeRight">0ms</div><div class="stat-lbl">Real Time</div></div>
+            <div class="stat-box"><div class="stat-val" id="statusRight" style="font-size:1rem; line-height:1.5rem">IDLE</div><div class="stat-lbl">State</div></div>
+        </div>
+        <div style="width:100%; height:4px; background:#334155; margin-top:20px; border-radius:2px; overflow:hidden">
+            <div id="progRight" style="width:0%; height:100%; background:var(--color-path); transition:width 0.1s linear"></div>
         </div>
     </div>
 </div>
 
-<div class="control-bar">
-    <div style="display:flex; align-items:center; gap:10px; font-weight:700; color:#5D4037">
-        <i class="fas fa-th"></i>
-        <span>Kích thước:</span>
-        <input type="number" id="nodeCount" class="input-size" value="1600" step="100" min="100" max="2500">
+<div class="control-dock">
+    <div class="ctrl-group">
+        <div class="ctrl-lbl">Grid Size (Nodes)</div>
+        <div style="display:flex; gap:10px; align-items:center">
+            <input type="range" id="sizeRange" min="20" max="60" value="40" oninput="updateMeta()">
+            <span id="sizeVal" style="font-family:'JetBrains Mono'; font-weight:bold; color:#fff">1600</span>
+        </div>
     </div>
-    <button id="btnFight" class="btn-fight"><i class="fas fa-play"></i> BẮT ĐẦU ĐUA</button>
+
+    <div class="ctrl-group" style="border-left:1px solid rgba(255,255,255,0.2); padding-left:20px;">
+        <div class="ctrl-lbl">Complexity (Density)</div>
+        <select id="densityMode" style="background:#1E293B; color:white; border:none; padding:4px; border-radius:4px; font-size:0.8rem">
+            <option value="sparse">Thưa (Sparse - Kruskal Win)</option>
+            <option value="fair" selected>Trung bình (Fair)</option>
+            <option value="dense">Dày (Dense - Prim Win)</option>
+        </select>
+    </div>
+
+    <div class="ctrl-group" style="border-left:1px solid rgba(255,255,255,0.2); padding-left:20px;">
+        <div class="ctrl-lbl">Time Dilation (Speed)</div>
+        <div style="display:flex; gap:10px; align-items:center">
+            <span style="font-size:0.8rem">⚡</span>
+            <input type="range" id="speedRange" min="1" max="100" value="10">
+            <span style="font-size:0.8rem">🐢</span>
+        </div>
+    </div>
+    <button id="btnRun" class="btn-neon"><i class="fas fa-play"></i> BATTLE</button>
 </div>
 
 <script>
-    let leftCtx, rightCtx, gridSize, cellSize, canvasSize;
+    // --- VARIABLES ---
+    let leftCtx, rightCtx, gridSize, cellSize;
+    // Bảng màu: Xanh (Đầu) -> Vàng -> Đỏ (Cuối)
+    const heatGradient = [[0, 230, 118], [255, 235, 59], [255, 61, 0]];
 
     document.addEventListener('DOMContentLoaded', () => {
+        updateMeta();
         initCanvases();
     });
 
+    function updateMeta() {
+        const s = parseInt(document.getElementById('sizeRange').value);
+        gridSize = s;
+        document.getElementById('sizeVal').innerText = (s * s);
+    }
+
     function initCanvases() {
-        const size = parseInt(document.getElementById('nodeCount').value);
-        gridSize = Math.ceil(Math.sqrt(size));
-        cellSize = 10;
-        canvasSize = gridSize * cellSize;
+        const container = document.querySelector('.monitor-screen');
+        const w = container.clientWidth;
+        const h = w;
+        const dpr = window.devicePixelRatio || 1;
+        cellSize = w / gridSize;
 
         ['canvasLeft', 'canvasRight'].forEach(id => {
             const c = document.getElementById(id);
-            c.width = canvasSize; c.height = canvasSize;
             const ctx = c.getContext('2d');
+            c.width = w * dpr; c.height = h * dpr;
+            c.style.width = w + 'px'; c.style.height = h + 'px';
+            ctx.scale(dpr, dpr);
 
-            // Xóa nền (để hiện background CSS)
-            ctx.clearRect(0, 0, canvasSize, canvasSize);
+            // Vẽ nền đen + Grid mờ
+            ctx.fillStyle = "#000"; ctx.fillRect(0, 0, w, h);
+            ctx.strokeStyle = "rgba(255,255,255,0.05)"; ctx.lineWidth = 1;
+            ctx.beginPath();
+            for (let i = 0; i <= gridSize; i++) {
+                let p = i * cellSize;
+                ctx.moveTo(p, 0); ctx.lineTo(p, h); ctx.moveTo(0, p); ctx.lineTo(w, p);
+            }
+            ctx.stroke();
 
-            // Vẽ điểm Start/End
-            drawStartEnd(ctx);
+            // Vẽ Start/End
+            drawDot(ctx, 0, 0, '#00E676');
+            drawDot(ctx, gridSize - 1, gridSize - 1, '#F50057');
         });
 
         leftCtx = document.getElementById('canvasLeft').getContext('2d');
         rightCtx = document.getElementById('canvasRight').getContext('2d');
     }
 
-    function drawStartEnd(ctx) {
-        // Start (Góc trái trên) - Màu Xanh Lá mạ
-        ctx.fillStyle = "#76FF03";
-        ctx.fillRect(0, 0, cellSize, cellSize);
-
-        // End (Góc phải dưới) - Màu Đỏ Cờ
-        ctx.fillStyle = "#F50057";
-        ctx.fillRect((gridSize - 1) * cellSize, (gridSize - 1) * cellSize, cellSize, cellSize);
+    function drawDot(ctx, gx, gy, color) {
+        let x = gx * cellSize + cellSize / 2;
+        let y = gy * cellSize + cellSize / 2;
+        ctx.beginPath(); ctx.arc(x, y, cellSize * 0.3, 0, Math.PI * 2);
+        ctx.fillStyle = color; ctx.fill();
+        ctx.shadowBlur = 15; ctx.shadowColor = color; ctx.stroke(); ctx.shadowBlur = 0;
     }
 
-    document.getElementById('btnFight').onclick = async () => {
-        const btn = document.getElementById('btnFight');
-        btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> ĐANG CHẠY...';
+    // --- MAIN LOGIC ---
+    document.getElementById('btnRun').onclick = async () => {
+        const btn = document.getElementById('btnRun');
+        btn.disabled = true;
 
         // Reset UI
-        document.querySelectorAll('.player-card').forEach(c => c.classList.remove('winner'));
-        document.querySelectorAll('.winner-overlay').forEach(o => o.style.opacity = '0');
+        document.querySelectorAll('.algo-card').forEach(c => c.classList.remove('winner'));
         initCanvases();
 
-        // Get Data
+        const nodeCount = gridSize * gridSize;
+        const density = document.getElementById('densityMode').value;
+        const timeFactor = parseInt(document.getElementById('speedRange').value); // Hệ số nhân thời gian
+
         const formData = new FormData();
-        formData.append('nodeCount', document.getElementById('nodeCount').value);
+        formData.append('nodeCount', nodeCount);
+        formData.append('densityMode', density); // QUAN TRỌNG: Gửi Density để backend tính toán đúng Complexity
         formData.append('leftAlgo', document.getElementById('leftAlgo').value);
         formData.append('rightAlgo', document.getElementById('rightAlgo').value);
 
@@ -415,122 +423,127 @@
             const data = await res.json();
 
             if (data.success) {
-                startRace(data);
+                // Hiển thị thời gian thực tế từ Server (CPU Time)
+                document.getElementById('timeLeft').innerText = data.left.time.toFixed(3) + "ms";
+                document.getElementById('timeRight').innerText = data.right.time.toFixed(3) + "ms";
+
+                // --- REAL-TIME SCALING ---
+                // Tính toán thời gian animation dựa trên tỷ lệ thực tế
+                // Base: 1ms thực tế = (timeFactor * 10) ms animation
+                // Ví dụ: Prim 1ms, Kruskal 10ms -> Prim chạy trong 1s, Kruskal chạy trong 10s
+                const animScale = timeFactor * 20; // Magic number để visual dễ nhìn
+                const durLeft = Math.max(500, data.left.time * animScale);
+                const durRight = Math.max(500, data.right.time * animScale);
+
+                let leftDone = false, rightDone = false;
+
+                const checkWin = () => {
+                    if (leftDone && rightDone) {
+                        btn.disabled = false;
+                        const tL = data.left.time;
+                        const tR = data.right.time;
+
+                        if (tL < tR) endGame('cardLeft', 'cardRight', `Nhanh gấp ${(tR / tL).toFixed(1)}x`);
+                        else endGame('cardRight', 'cardLeft', `Nhanh gấp ${(tL / tR).toFixed(1)}x`);
+                    }
+                };
+
+                // Chạy Animation dựa trên thời gian
+                runProAnim(leftCtx, data.left, durLeft, 'progLeft', 'visLeft', 'statusLeft', () => { leftDone = true; checkWin(); });
+                runProAnim(rightCtx, data.right, durRight, 'progRight', 'visRight', 'statusRight', () => { rightDone = true; checkWin(); });
             }
         } catch (e) {
-            alert("Lỗi: " + e);
-            btn.disabled = false; btn.innerText = "START RACE";
+            console.error(e);
+            alert("Lỗi server hoặc timeout.");
+            btn.disabled = false;
         }
     };
 
-    function startRace(data) {
-        const maxTime = Math.max(data.left.time, data.right.time, 1);
-        const BASE_DURATION = 8000; // 8s max
-
-        const durL = Math.max((data.left.time / maxTime) * BASE_DURATION, 600);
-        const durR = Math.max((data.right.time / maxTime) * BASE_DURATION, 600);
-
-        // Update Stats
-        document.getElementById('timeLeft').innerText = data.left.time.toFixed(2) + "ms";
-        document.getElementById('timeRight').innerText = data.right.time.toFixed(2) + "ms";
-        document.getElementById('visLeft').innerText = data.left.visited.length;
-        document.getElementById('visRight').innerText = data.right.visited.length;
-
-        let leftDone = false, rightDone = false;
-
-        // --- ĐÂY LÀ CHỖ ĐÃ FIX THỨ TỰ THAM SỐ CHO ĐÚNG VỚI HÀM RUNANIM BÊN DƯỚI ---
-        runAnim(leftCtx, data.left, '#2E7D32', durL, 'progLeft', 'statusLeft', () => {
-            leftDone = true; checkWinner('cardLeft', 'cardRight');
-        });
-
-        runAnim(rightCtx, data.right, '#D84315', durR, 'progRight', 'statusRight', () => {
-            rightDone = true; checkWinner('cardRight', 'cardLeft');
-        });
+    function endGame(winId, loseId, reason) {
+        document.getElementById(winId).classList.add('winner');
+        const overlayId = winId === 'cardLeft' ? 'reasonLeft' : 'reasonRight';
+        document.getElementById(overlayId).innerText = reason;
+        confetti({ particleCount: 200, spread: 100, origin: { y: 0.6 }, colors: ['#00E676', '#FFD700'] });
     }
 
-    let hasWinner = false;
-    function checkWinner(winnerId, loserId) {
-        if (!hasWinner) {
-            hasWinner = true;
-            document.getElementById(winnerId).classList.add('winner');
-            confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
-
-            const btn = document.getElementById('btnFight');
-            btn.innerText = "ĐUA LẠI";
-            btn.disabled = false;
-        }
-    }
-
-    // --- HÀM ANIMATION ĐÃ ĐƯỢC CHUẨN HÓA THAM SỐ ---
-    function runAnim(ctx, data, color, duration, progId, statusId, onComplete) {
+    // --- ANIMATION ENGINE (TIME-BASED) ---
+    function runProAnim(ctx, data, durationMs, progId, visId, statusId, onDone) {
+        const visited = data.visited;
+        const total = visited.length;
         let startTime = null;
-        const totalV = data.visited.length;
-        // Kiểm tra xem có path không (Prim/Kruskal sẽ không có, Pathfinding sẽ có)
-        const totalP = data.path ? data.path.length : 0;
-        const hasPath = totalP > 0;
 
-        document.getElementById(statusId).innerText = "RUNNING";
-        document.getElementById(statusId).style.color = "#FFC107"; // Amber
+        document.getElementById(statusId).innerText = "COMPUTING...";
+        document.getElementById(statusId).style.color = "#FFC107";
 
-        function frame(ts) {
-            if (!startTime) startTime = ts;
-            const progress = Math.min((ts - startTime) / duration, 1.0);
+        let drawnIndex = 0;
 
-            let drawVisLimit = 0;
-            let drawPathLimit = 0;
+        function frame(timestamp) {
+            if (!startTime) startTime = timestamp;
+            const elapsed = timestamp - startTime;
 
-            if (hasPath) {
-                // Chia giai đoạn: 80% vẽ loang, 20% vẽ đường
-                if (progress < 0.8) {
-                    const vProg = progress / 0.8;
-                    drawVisLimit = Math.floor(vProg * totalV);
-                } else {
-                    drawVisLimit = totalV;
-                    const pProg = (progress - 0.8) / 0.2;
-                    drawPathLimit = Math.floor(pProg * totalP);
+            // Tính toán % tiến độ dựa trên thời gian thực
+            let progress = Math.min(elapsed / durationMs, 1.0);
+
+            // Số lượng node cần vẽ tính đến thời điểm này
+            const targetIndex = Math.floor(progress * total);
+
+            // Batch Draw: Vẽ tất cả các node từ lần vẽ trước đến hiện tại
+            if (targetIndex > drawnIndex) {
+                for (let i = drawnIndex; i < targetIndex; i++) {
+                    const n = visited[i];
+                    // Heatmap color logic
+                    const color = getHeatColor(i / total);
+
+                    ctx.fillStyle = `rgb(${color.r},${color.g},${color.b})`;
+                    // Vẽ pixel nhỏ hơn 1 chút để tạo hiệu ứng Grid
+                    ctx.fillRect(n.x * cellSize + 0.5, n.y * cellSize + 0.5, cellSize - 1, cellSize - 1);
                 }
-            } else {
-                // Nếu không có đường (Prim/Kruskal), 100% thời gian để vẽ loang
-                drawVisLimit = Math.floor(progress * totalV);
+                drawnIndex = targetIndex;
             }
 
-            // Vẽ Visited
-            ctx.fillStyle = color;
-            // Tối ưu: Bước nhảy lớn để vẽ nhanh
-            const step = Math.ceil(totalV / 100) || 1;
-            for (let i = 0; i < drawVisLimit; i += step) {
-                const n = data.visited[i];
-                if (n) ctx.fillRect(n.x * cellSize, n.y * cellSize, cellSize, cellSize);
-            }
-            // Vẽ vét đuôi cho mượt
-            if (drawVisLimit > 0) {
-                const last = data.visited[drawVisLimit - 1];
-                if (last) ctx.fillRect(last.x * cellSize, last.y * cellSize, cellSize, cellSize);
-            }
-
-            // Vẽ Path
-            if (hasPath && drawPathLimit > 0) {
-                ctx.fillStyle = "#3E2723"; // Nâu đậm
-                for (let i = 0; i < drawPathLimit; i++) {
-                    const n = data.path[i];
-                    if (n) ctx.fillRect(n.x * cellSize, n.y * cellSize, cellSize, cellSize);
-                }
-            }
-
-            drawStartEnd(ctx);
-
-            // Update UI
+            // Update DOM Stats
+            document.getElementById(visId).innerText = drawnIndex;
             document.getElementById(progId).style.width = (progress * 100) + "%";
 
             if (progress < 1.0) {
                 requestAnimationFrame(frame);
             } else {
-                document.getElementById(statusId).innerText = "FINISHED";
-                document.getElementById(statusId).style.color = color;
-                onComplete();
+                // FINISH
+                document.getElementById(statusId).innerText = "COMPLETE";
+                document.getElementById(statusId).style.color = "#00E676";
+                drawDot(ctx, 0, 0, '#FFF'); // Redraw Start
+                drawDot(ctx, gridSize - 1, gridSize - 1, '#FFF'); // Redraw End
+
+                // Nếu có đường đi (Path) thì vẽ đè lên màu trắng
+                if (data.path && data.path.length > 0) {
+                    drawPath(ctx, data.path);
+                }
+                onDone();
             }
         }
-
         requestAnimationFrame(frame);
+    }
+
+    function drawPath(ctx, path) {
+        ctx.fillStyle = "#FFFFFF";
+        ctx.shadowBlur = 10; ctx.shadowColor = "#FFF";
+        path.forEach(n => {
+            ctx.fillRect(n.x * cellSize + 2, n.y * cellSize + 2, cellSize - 4, cellSize - 4);
+        });
+        ctx.shadowBlur = 0;
+    }
+
+    function getHeatColor(t) {
+        // Nội suy màu tuyến tính giữa 3 mốc (Green -> Yellow -> Red)
+        if (t < 0.5) return interpolate(heatGradient[0], heatGradient[1], t * 2);
+        return interpolate(heatGradient[1], heatGradient[2], (t - 0.5) * 2);
+    }
+
+    function interpolate(c1, c2, t) {
+        return {
+            r: Math.round(c1[0] + (c2[0] - c1[0]) * t),
+            g: Math.round(c1[1] + (c2[1] - c1[1]) * t),
+            b: Math.round(c1[2] + (c2[2] - c1[2]) * t)
+        };
     }
 </script>

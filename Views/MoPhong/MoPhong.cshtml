@@ -1,119 +1,201 @@
 ﻿@{
-    ViewBag.Title = "Advanced Algorithm Lab - Full Upgrade";
+    ViewBag.Title = "Mô Phỏng Thuật Toán - Giao Diện Cao Cấp";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 <script src="https://d3js.org/d3.v7.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
 <style>
+    /* --- 1. CORE THEME --- */
     :root {
-        --prim-color: #2E7D32;
-        --kruskal-color: #D84315;
-        --card-bg: #FFFFFF;
-        --bg-body: #ECEFF1;
-        --log-highlight: #FFF9C4;
-        --log-reject: #FFEBEE;
+        --prim-color: #2E7D32; /* Xanh lá */
+        --prim-bg: #E8F5E9;
+        --kruskal-color: #D84315; /* Cam đỏ */
+        --kruskal-bg: #FBE9E7;
+        --ai-color: #6A1B9A; /* Tím */
+        --ai-bg: #F3E5F5;
+        --bg-body: #F4F6F8;
+        --text-main: #37474F;
+        --radius: 12px;
     }
 
     body {
         background-color: var(--bg-body);
         font-family: 'Nunito', sans-serif;
-        overflow-y: auto !important;
-        min-height: 100vh;
+        color: var(--text-main);
     }
 
+    /* --- 2. LAYOUT GRID --- */
     .lab-container {
         display: grid;
-        grid-template-columns: 340px 1fr 1fr;
+        grid-template-columns: 360px 1fr 1fr;
         grid-template-rows: auto auto auto;
-        gap: 20px;
-        padding: 20px;
-        max-width: 100%;
-        margin-bottom: 50px;
+        gap: 24px;
+        padding: 24px;
+        max-width: 1800px;
+        margin: 0 auto 50px auto;
     }
 
+    /* --- 3. PANEL COMPONENT --- */
     .panel {
         background: white;
-        border-radius: 12px;
-        box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        border-radius: var(--radius);
+        box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+        border: 1px solid #ECEFF1;
+        overflow: hidden;
         display: flex;
         flex-direction: column;
-        border: 1px solid #CFD8DC;
-        overflow: hidden;
     }
 
     .panel-head {
-        padding: 15px;
+        padding: 16px 20px;
         font-weight: 800;
         text-transform: uppercase;
-        font-size: 0.95rem;
+        font-size: 0.9rem;
         display: flex;
         justify-content: space-between;
         align-items: center;
-        border-bottom: 2px solid #F5F5F5;
-        color: #37474F;
+        border-bottom: 1px solid #ECEFF1;
+        background: #fff;
+        color: #455A64;
     }
 
+    /* --- 4. CONTROLS & BUTTONS --- */
+    .control-group {
+        margin-bottom: 16px;
+    }
+
+    .control-label {
+        font-size: 0.75rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        color: #90A4AE;
+        margin-bottom: 6px;
+        display: block;
+    }
+
+    .form-select, .form-input {
+        width: 100%;
+        padding: 10px 12px;
+        border: 1px solid #CFD8DC;
+        border-radius: 8px;
+        font-family: inherit;
+        font-size: 0.95rem;
+        color: #37474F;
+        background-color: #FAFAFA;
+    }
+
+    .btn-tool {
+        border: none;
+        padding: 10px;
+        border-radius: 8px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: 0.2s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        font-size: 0.9rem;
+    }
+
+    .btn-gen {
+        background: #E1F5FE;
+        color: #0288D1;
+        font-weight: 600;
+    }
+
+    .btn-run {
+        background: linear-gradient(135deg, #FF7043, #D84315);
+        color: white;
+        width: 100%;
+        font-size: 1.1rem;
+        padding: 14px;
+        margin-top: 10px;
+        box-shadow: 0 4px 10px rgba(216, 67, 21, 0.3);
+    }
+
+    .btn-clear {
+        background: #FFEBEE;
+        color: #C62828;
+        width: 100%;
+    }
+
+    /* --- 5. VISUALIZATION & STATS --- */
     .canvas-area {
-        height: 450px;
+        height: 420px;
         position: relative;
         cursor: crosshair;
-        background: #fff;
-        border-bottom: 1px solid #eee;
+        background: #FAFAFA;
         overflow: hidden;
     }
 
-    .stats-row {
+    .stat-grid {
         display: grid;
-        grid-template-columns: 1fr 1fr 1fr;
-        gap: 10px;
-        padding: 10px;
-        background: #FAFAFA;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+        padding: 15px;
+        background: #fff;
+        border-top: 1px solid #ECEFF1;
     }
 
     .stat-card {
-        background: #fff;
-        padding: 8px;
+        background: #F5F7F8;
+        padding: 10px;
         border-radius: 8px;
         text-align: center;
-        border: 1px solid #E0E0E0;
+        border: 1px solid #ECEFF1;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
     }
 
     .stat-val {
-        font-size: 1.1rem;
+        font-size: 1.2rem;
         font-weight: 900;
-        margin-bottom: 3px;
-        color: #263238;
+        margin-bottom: 4px;
     }
 
     .stat-lbl {
-        font-size: 0.65rem;
+        font-size: 0.7rem;
         text-transform: uppercase;
-        color: #78909C;
+        color: #90A4AE;
         font-weight: 700;
     }
 
+    .theory-val {
+        color: #546E7A;
+        font-family: 'Consolas', monospace;
+    }
+
+    /* --- 6. LOGS & AI --- */
     .log-panel {
         grid-column: 2 / -1;
         display: grid;
         grid-template-columns: 1fr 1fr;
-        gap: 20px;
+        gap: 24px;
         padding: 0;
-        height: 500px;
-        background: #FAFAFA;
+        height: 400px;
+        background: transparent;
+        box-shadow: none;
+        border: none;
     }
 
     .log-col {
+        background: white;
+        border-radius: var(--radius);
+        box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+        border: 1px solid #ECEFF1;
         display: flex;
         flex-direction: column;
-        border-right: 1px solid #ddd;
-        background: #fff;
+        overflow: hidden;
     }
 
-    .log-table-wrapper {
+    .log-wrapper {
         flex: 1;
         overflow-y: auto;
     }
@@ -127,90 +209,66 @@
         table.log-table th {
             position: sticky;
             top: 0;
-            background: #f5f5f5;
-            padding: 8px;
+            background: #F5F5F5;
+            padding: 10px;
             text-align: left;
             font-weight: 700;
-            border-bottom: 2px solid #ddd;
+            color: #546E7A;
+            border-bottom: 1px solid #CFD8DC;
+            z-index: 2;
         }
 
         table.log-table td {
-            padding: 6px 8px;
-            border-bottom: 1px solid #f5f5f5;
+            padding: 8px 10px;
+            border-bottom: 1px solid #F5F5F5;
             color: #455A64;
         }
 
     .log-step-select {
-        background-color: #E8F5E9;
+        background-color: #E8F5E9 !important;
         border-left: 4px solid var(--prim-color);
     }
 
     .log-step-reject {
-        background-color: var(--log-reject);
-        color: #B71C1C;
-        opacity: 0.7;
+        background-color: #FFEBEE !important;
+        color: #C62828;
+        opacity: 0.8;
     }
 
-    .log-step-consider {
-        background-color: #E3F2FD;
+    .full-width-panel {
+        grid-column: 1 / -1;
     }
 
-    .btn-tool {
-        border: none;
-        padding: 10px 15px;
-        border-radius: 6px;
-        font-weight: 700;
-        cursor: pointer;
-        transition: 0.2s;
+    .ai-content {
+        padding: 25px;
+        font-size: 0.95rem;
+        line-height: 1.7;
+        color: #263238;
+        background: #fff;
     }
 
-    .btn-gen {
-        background: #E3F2FD;
-        color: #1565C0;
-        border: 1px solid #BBDEFB;
-        margin-right: 5px;
-        font-size: 0.8rem;
-    }
-
-        .btn-gen:hover {
-            background: #BBDEFB;
+        .ai-content h1, .ai-content h2 {
+            color: var(--ai-color);
+            margin-top: 0;
+            font-size: 1.1rem;
         }
 
-    .btn-run {
-        background: linear-gradient(135deg, #FF7043, #D84315);
-        color: white;
-        width: 100%;
-        font-size: 1.1rem;
-        padding: 15px;
-        margin-top: 15px;
-    }
-
-    .benchmark-panel {
-        grid-column: 1 / -1;
+    /* --- 7. BENCHMARK --- */
+    .benchmark-controls {
+        display: flex;
+        gap: 20px;
         padding: 20px;
-        display: grid;
-        grid-template-columns: 300px 1fr;
-        gap: 30px;
+        background: #FAFAFA;
+        border-bottom: 1px solid #eee;
+        align-items: flex-end;
     }
 
     .chart-container {
         position: relative;
-        height: 350px;
+        height: 500px;
         width: 100%;
-    }
-
-    .time-control {
-        padding: 10px 15px;
-        margin-top: -15px;
-        position: relative;
-        z-index: 5;
-        background: rgba(255,255,255,0.9);
-        border-bottom: 1px solid #eee;
-    }
-
-    input[type=range] {
-        width: 100%;
-        cursor: pointer;
+        padding: 15px;
+        background: #fff;
     }
 
     @@media (max-width: 1200px) {
@@ -219,167 +277,189 @@
         }
 
         .log-panel {
-            grid-column: auto;
-            height: auto;
             grid-template-columns: 1fr;
+            height: auto;
         }
 
         .log-col {
-            height: 300px;
-            border-right: none;
-        }
-
-        .benchmark-panel {
-            grid-template-columns: 1fr;
+            height: 350px;
         }
     }
 </style>
 
 <div class="lab-container">
+
     <div class="panel">
         <div class="panel-head">
-            <span><i class="fas fa-project-diagram"></i> Input Graph</span>
-            <span style="font-size:0.8rem; color:#1976D2" id="nodeCount">0 Nodes</span>
+            <span><i class="fas fa-network-wired"></i> Input Graph</span>
+            <span style="color: #0288D1; background: #E1F5FE; padding: 2px 8px; border-radius: 4px;" id="nodeCount">0 Nodes</span>
         </div>
 
-        <div style="padding: 15px; border-bottom: 1px solid #eee; background:#FAFAFA">
-            <div style="margin-bottom: 10px;">
-                <label style="font-weight:bold; color:#455A64; font-size:0.85rem;">1. Chọn Chế độ:</label>
-                <select id="graphMode" class="btn-tool" style="width:100%; border:1px solid #B0BEC5; margin-top:5px; background:white;" onchange="updateModeInfo()">
+        <div style="padding: 20px;">
+            <div class="control-group">
+                <span class="control-label">1. Chế độ Đồ thị</span>
+                <select id="graphMode" class="form-select" onchange="updateModeInfo()">
                     <option value="sparse">🔵 Thưa (Sparse - Kruskal Win)</option>
-                    <option value="fair">🟣 Trung Bình (Fair - Cân sức)</option>
+                    <option value="fair">🟣 Trung Bình (Fair - Balanced)</option>
                     <option value="dense">🔴 Dày (Dense - Prim Win)</option>
                 </select>
-                <div id="modeInfo" style="font-size:0.75rem; color:#E65100; margin-top:5px; font-style:italic;">* Mật độ thấp. Kruskal rất nhanh.</div>
+                <div id="modeInfo" style="color: #FF9800; font-size: 0.75rem; margin-top: 6px; font-style: italic;">* Mật độ cạnh thấp. Kruskal thường nhanh hơn.</div>
             </div>
 
-            <div style="margin-bottom:10px;">
-                <label style="font-weight:bold; color:#455A64; font-size:0.85rem; display:block; margin-bottom:5px">2. Tạo mẫu:</label>
-                <button class="btn-tool btn-gen" onclick="genRandom(10)">Nhỏ (10)</button>
-                <button class="btn-tool btn-gen" onclick="genRandom(30)">Vừa (30)</button>
-                <button class="btn-tool btn-gen" onclick="genRandom(50)">Lớn (50)</button>
-                <div style="margin-top:10px; border-top:1px dashed #ccc; padding-top:10px;">
-                    <label style="font-size:0.8rem; font-weight:bold;">Số lượng tùy ý:</label>
-                    <div style="display:flex; gap:5px;">
-                        <input type="number" id="customN" value="100" style="width:60px; padding:5px; border:1px solid #ccc; border-radius:4px;">
-                        <button class="btn-tool" style="background:#263238; color:white; flex:1;" onclick="genCustom()">
-                            Tạo
-                        </button>
-                    </div>
+            <div class="control-group">
+                <span class="control-label">2. Sinh dữ liệu mẫu</span>
+                <div style="display:flex; gap: 10px;">
+                    <button class="btn-tool btn-gen" style="flex:1" onclick="genRandom(10)">10</button>
+                    <button class="btn-tool btn-gen" style="flex:1" onclick="genRandom(30)">30</button>
+                    <button class="btn-tool btn-gen" style="flex:1" onclick="genRandom(50)">50</button>
+                </div>
+                <div style="margin-top: 10px; display:flex; gap: 10px;">
+                    <input type="number" id="customN" class="form-input" placeholder="Số lượng..." value="100" style="flex: 1;">
+                    <button class="btn-tool" style="background: #ECEFF1; color: #455A64; width: 80px;" onclick="genCustom()">Tạo</button>
                 </div>
             </div>
+
+            <div class="control-group" style="margin-top: 20px; padding-top: 15px; border-top: 1px dashed #CFD8DC;">
+                <span class="control-label" style="color: var(--prim-color);">3. Cấu trúc dữ liệu Prim</span>
+                <select id="primVariant" class="form-select" style="border: 1px solid var(--prim-color); color: var(--prim-color); font-weight: 600;">
+                    <option value="Standard">1. Standard [O(V²)]</option>
+                    <option value="Matrix">2. Matrix [O(V²)]</option>
+                    <option value="Heap">3. Binary Heap [O(E log V)]</option>
+                </select>
+            </div>
         </div>
 
-        <div class="canvas-area" style="height: 350px;">
-            <canvas id="inputCanvas"></canvas>
-        </div>
-        <div style="padding:15px;">
-            <button class="btn-tool" style="background:#FFEBEE; color:#C62828; width:100%; margin-bottom:10px;" onclick="clearCanvas()">
-                <i class="fas fa-trash"></i> Xóa Trắng
-            </button>
-            <button class="btn-tool btn-run" onclick="runAlgorithmsAsync()">
-                <i class="fas fa-play"></i> CHẠY SO SÁNH
-            </button>
+        <div class="canvas-area"><canvas id="inputCanvas"></canvas></div>
+
+        <div style="padding: 20px;">
+            <button class="btn-tool btn-clear" onclick="clearCanvas()"><i class="fas fa-trash-alt"></i> Xóa Trắng</button>
+            <button class="btn-tool btn-run" onclick="runAlgorithmsAsync()"><i class="fas fa-play"></i> CHẠY SO SÁNH</button>
         </div>
     </div>
 
-    <div class="panel" style="border-top: 4px solid var(--prim-color)">
-        <div class="panel-head">
-            <span style="color:var(--prim-color)">PRIM (Loang Dầu)</span>
-            <span id="p-status" style="font-size:0.7rem; background:#E8F5E9; padding:2px 6px; border-radius:4px;">Ready</span>
+    <div class="panel" style="border-top: 4px solid var(--prim-color);">
+        <div class="panel-head" style="background: var(--prim-bg);">
+            <span style="color: var(--prim-color);"><i class="fas fa-bezier-curve"></i> PRIM</span>
+            <span id="p-algo" style="background:white; padding:2px 8px; border-radius:12px; font-size:0.75rem; font-weight:bold; color:var(--prim-color)">O(V²)</span>
         </div>
         <div class="canvas-area" id="primViz"></div>
-        <div class="time-control">
-            <input type="range" id="primSlider" min="0" value="0" disabled oninput="updateTimeTravel('Prim', this.value)">
-            <div style="display:flex; justify-content:space-between; font-size:0.75rem; font-weight:700; color:#546E7A; margin-top:5px;">
+
+        <div style="padding: 10px 20px; background: #fff; border-bottom: 1px solid #eee;">
+            <input type="range" id="primSlider" min="0" value="0" disabled oninput="updateTimeTravel('Prim', this.value)" style="width:100%;">
+            <div style="display:flex; justify-content:space-between; font-size:0.75rem; font-weight:700; color:#90A4AE; margin-top:5px;">
                 <span>Start</span>
-                <span>Tiến độ: <span id="primStepLbl">0</span>/<span id="primTotalLbl">0</span></span>
+                <span style="color: var(--prim-color);">Step: <span id="primStepLbl">0</span>/<span id="primTotalLbl">0</span></span>
                 <span>End</span>
             </div>
         </div>
-        <div class="stats-row prim-stats">
-            <div class="stat-card">
-                <div class="stat-val" style="color:var(--prim-color)" id="p-cost">0</div>
-                <div class="stat-lbl">Chi Phí</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-val" id="p-time">0</div>
-                <div class="stat-lbl">Time (ms)</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-val" id="p-steps">0</div>
-                <div class="stat-lbl">Steps</div>
-            </div>
+
+        <div class="stat-grid">
+            <div class="stat-card"><div class="stat-val" id="p-time" style="color: var(--prim-color);">0 ms</div><div class="stat-lbl">Thời Gian Thực</div></div>
+            <div class="stat-card"><div class="stat-val theory-val" id="p-theory">0</div><div class="stat-lbl">Lý thuyết (Big-O)</div></div>
+            <div class="stat-card"><div class="stat-val" id="p-cost">0</div><div class="stat-lbl">Tổng Chi Phí</div></div>
+            <div class="stat-card"><div class="stat-val" id="p-steps-val">0</div><div class="stat-lbl">Tổng Số Bước</div></div>
         </div>
     </div>
 
-    <div class="panel" style="border-top: 4px solid var(--kruskal-color)">
-        <div class="panel-head">
-            <span style="color:var(--kruskal-color)">KRUSKAL (Rừng Cây)</span>
-            <span id="k-status" style="font-size:0.7rem; background:#FBE9E7; padding:2px 6px; border-radius:4px;">Ready</span>
+    <div class="panel" style="border-top: 4px solid var(--kruskal-color);">
+        <div class="panel-head" style="background: var(--kruskal-bg);">
+            <span style="color: var(--kruskal-color);"><i class="fas fa-tree"></i> KRUSKAL</span>
+            <span style="background:white; padding:2px 8px; border-radius:12px; font-size:0.75rem; font-weight:bold; color:var(--kruskal-color)">O(E log E)</span>
         </div>
         <div class="canvas-area" id="kruskalViz"></div>
-        <div class="time-control">
-            <input type="range" id="kruskalSlider" min="0" value="0" disabled oninput="updateTimeTravel('Kruskal', this.value)">
-            <div style="display:flex; justify-content:space-between; font-size:0.75rem; font-weight:700; color:#546E7A; margin-top:5px;">
+
+        <div style="padding: 10px 20px; background: #fff; border-bottom: 1px solid #eee;">
+            <input type="range" id="kruskalSlider" min="0" value="0" disabled oninput="updateTimeTravel('Kruskal', this.value)" style="width:100%;">
+            <div style="display:flex; justify-content:space-between; font-size:0.75rem; font-weight:700; color:#90A4AE; margin-top:5px;">
                 <span>Start</span>
-                <span>Tiến độ: <span id="kruskalStepLbl">0</span>/<span id="kruskalTotalLbl">0</span></span>
+                <span style="color: var(--kruskal-color);">Step: <span id="kruskalStepLbl">0</span>/<span id="kruskalTotalLbl">0</span></span>
                 <span>End</span>
             </div>
         </div>
-        <div class="stats-row kruskal-stats">
-            <div class="stat-card">
-                <div class="stat-val" style="color:var(--kruskal-color)" id="k-cost">0</div>
-                <div class="stat-lbl">Chi Phí</div>
+
+        <div class="stat-grid">
+            <div class="stat-card"><div class="stat-val" id="k-time" style="color: var(--kruskal-color);">0 ms</div><div class="stat-lbl">Thời Gian Thực</div></div>
+            <div class="stat-card"><div class="stat-val theory-val" id="k-theory">0</div><div class="stat-lbl">Lý thuyết (Big-O)</div></div>
+            <div class="stat-card"><div class="stat-val" id="k-cost">0</div><div class="stat-lbl">Tổng Chi Phí</div></div>
+            <div class="stat-card"><div class="stat-val" id="k-steps-val">0</div><div class="stat-lbl">Tổng Số Bước</div></div>
+        </div>
+    </div>
+
+    <div class="log-panel full-width-panel">
+        <div class="log-col" style="border-top: 4px solid var(--prim-color);">
+            <div class="panel-head">Nhật Ký Prim</div>
+            <div class="log-wrapper">
+                <table class="log-table" id="primLog">
+                    <thead><tr><th width="40px">#</th><th>Hành động</th><th width="60px">W</th></tr></thead>
+                    <tbody></tbody>
+                </table>
             </div>
-            <div class="stat-card">
-                <div class="stat-val" id="k-time">0</div>
-                <div class="stat-lbl">Time (ms)</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-val" id="k-steps">0</div>
-                <div class="stat-lbl">Steps</div>
+        </div>
+        <div class="log-col" style="border-top: 4px solid var(--kruskal-color);">
+            <div class="panel-head">Nhật Ký Kruskal</div>
+            <div class="log-wrapper">
+                <table class="log-table" id="kruskalLog">
+                    <thead><tr><th width="40px">#</th><th>Hành động</th><th width="60px">W</th></tr></thead>
+                    <tbody></tbody>
+                </table>
             </div>
         </div>
     </div>
 
-    <div class="panel log-panel">
-        <div class="log-col">
-            <div class="log-header" style="color:var(--prim-color)">Nhật Ký Prim</div>
-            <div class="log-table-wrapper">
-                <table class="log-table" id="primLog"><thead><tr><th>#</th><th>Hành động</th><th>W</th></tr></thead><tbody></tbody></table>
+    <div class="panel ai-panel full-width-panel" id="aiSimPanel" style="border-top: 4px solid var(--ai-color); display: none;">
+        <div class="panel-head" style="background: #F3E5F5;">
+            <span style="color: var(--ai-color);"><i class="fas fa-robot"></i> GEMINI AI NHẬN XÉT (MÔ PHỎNG)</span>
+        </div>
+        <div class="ai-content markdown-body" id="aiSimContent">Đang chờ chạy...</div>
+    </div>
+
+    <div class="panel full-width-panel">
+        <div class="panel-head">
+            <span><i class="fas fa-tachometer-alt"></i> Benchmark: Thực Tế (ms) vs Lý Thuyết (Big-O)</span>
+        </div>
+
+        <div class="benchmark-controls">
+            <div style="flex:1">
+                <label class="control-label">Start N</label>
+                <input type="number" id="bnStart" class="form-input" value="100" min="10">
+            </div>
+            <div style="flex:1">
+                <label class="control-label">End N</label>
+                <input type="number" id="bnEnd" class="form-input" value="1000" min="100">
+            </div>
+            <div style="flex:1">
+                <label class="control-label">Step</label>
+                <input type="number" id="bnStep" class="form-input" value="100" min="10">
+            </div>
+            <div style="flex:2">
+                <label class="control-label">&nbsp;</label>
+                <button class="btn-tool" style="background:#263238; color:white; width:100%" id="btnBenchmark" onclick="runBenchmark()">
+                    <i class="fas fa-rocket"></i> CHẠY TEST (5 Lần/Step)
+                </button>
             </div>
         </div>
-        <div class="log-col">
-            <div class="log-header" style="color:var(--kruskal-color)">Nhật Ký Kruskal</div>
-            <div class="log-table-wrapper">
-                <table class="log-table" id="kruskalLog"><thead><tr><th>#</th><th>Hành động</th><th>W</th></tr></thead><tbody></tbody></table>
-            </div>
+        <div id="benchStatus" style="text-align:center; padding: 10px; font-weight:bold; color: #D84315;"></div>
+
+        <div class="chart-container">
+            <canvas id="benchChart"></canvas>
         </div>
     </div>
 
-    <div class="panel benchmark-panel">
-        <div>
-            <h3 style="color:#263238; margin-top:0"><i class="fas fa-tachometer-alt"></i> Benchmark</h3>
-            <p style="font-size:0.9rem; color:#546E7A">Chạy ngầm so sánh hiệu năng theo Chế độ đã chọn.</p>
-            <div id="benchmarkConfig" style="font-size:0.85rem; color:#455A64; margin-bottom:15px; font-style:italic"></div>
-            <button id="btnBenchmark" class="btn-tool" style="background:#263238; color:#fff; width:100%" onclick="runBenchmark()">
-                <i class="fas fa-rocket"></i> BẮT ĐẦU TEST
-            </button>
-            <div id="benchStatus" style="margin-top:10px; font-size:0.8rem; text-align:center; color:#D84315; font-weight:bold; min-height:20px;"></div>
+    <div class="panel ai-panel full-width-panel" id="aiBenchPanel" style="border-top: 4px solid #37474F; display: none;">
+        <div class="panel-head" style="background: #ECEFF1;">
+            <span style="color: #37474F;"><i class="fas fa-chart-bar"></i> GEMINI AI NHẬN XÉT (BENCHMARK)</span>
         </div>
-        <div style="background:#fff; border-radius:8px; border:1px solid #eee; padding:10px;">
-            <div class="chart-container"><canvas id="benchChart"></canvas></div>
-        </div>
+        <div class="ai-content markdown-body" id="aiBenchContent">Chạy benchmark để xem phân tích...</div>
     </div>
 </div>
 
 <script>
-    // --- GLOBAL VARS ---
+    // ==========================================
+    // 1. GLOBAL VARIABLES
+    // ==========================================
     let inputNodes = [], inputEdges = [], nextChar = 0;
-    let lastResult = null;
-    let primSvgGroups = null, kruskalSvgGroups = null;
     let primDetailedSteps = [], kruskalDetailedSteps = [];
+    let primSvgGroups = null, kruskalSvgGroups = null;
 
     const iCanvas = document.getElementById('inputCanvas');
     const iCtx = iCanvas.getContext('2d');
@@ -393,11 +473,14 @@
     }
     window.addEventListener('resize', resizeInput);
 
-    // --- CANVAS INTERACTION ---
+    // ==========================================
+    // 2. CANVAS LOGIC
+    // ==========================================
     iCanvas.addEventListener('mousedown', e => {
         const rect = iCanvas.getBoundingClientRect();
         const x = e.clientX - rect.left; const y = e.clientY - rect.top;
         const clicked = inputNodes.find(n => Math.hypot(n.x - x, n.y - y) < 20);
+
         if (!clicked) {
             inputNodes.push({ id: String(nextChar++), x, y });
             selectedNode = null;
@@ -418,130 +501,87 @@
 
     function drawInput() {
         iCtx.clearRect(0, 0, iCanvas.width, iCanvas.height);
-        iCtx.strokeStyle = "#f9f9f9"; iCtx.lineWidth = 1; iCtx.beginPath();
+        iCtx.strokeStyle = "#ECEFF1"; iCtx.lineWidth = 1; iCtx.beginPath();
         for (let i = 0; i < iCanvas.width; i += 20) { iCtx.moveTo(i, 0); iCtx.lineTo(i, iCanvas.height); }
         for (let i = 0; i < iCanvas.height; i += 20) { iCtx.moveTo(0, i); iCtx.lineTo(iCanvas.width, i); }
         iCtx.stroke();
 
         inputEdges.forEach(e => {
-            const n1 = inputNodes.find(n => n.id === e.u); const n2 = inputNodes.find(n => n.id === e.v);
+            const n1 = inputNodes.find(n=>n.id===e.u), n2 = inputNodes.find(n=>n.id===e.v);
             if (n1 && n2) {
                 iCtx.beginPath(); iCtx.moveTo(n1.x, n1.y); iCtx.lineTo(n2.x, n2.y);
                 iCtx.strokeStyle = "#B0BEC5"; iCtx.lineWidth = 2; iCtx.stroke();
                 const mx = (n1.x + n2.x) / 2, my = (n1.y + n2.y) / 2;
-                iCtx.fillStyle = "#fff"; iCtx.beginPath(); iCtx.arc(mx, my, 11, 0, Math.PI * 2); iCtx.fill();
-                iCtx.fillStyle = "#455A64"; iCtx.font = "bold 11px Nunito"; iCtx.textAlign = "center"; iCtx.textBaseline = "middle"; iCtx.fillText(e.w, mx, my);
+                iCtx.fillStyle = "#fff"; iCtx.beginPath(); iCtx.arc(mx, my, 10, 0, Math.PI * 2); iCtx.fill();
+                iCtx.fillStyle = "#546E7A"; iCtx.font = "bold 10px Nunito"; iCtx.textAlign = "center"; iCtx.textBaseline = "middle"; iCtx.fillText(e.w, mx, my);
             }
         });
 
         inputNodes.forEach(n => {
-            iCtx.beginPath(); iCtx.arc(n.x, n.y, 16, 0, Math.PI * 2);
-            iCtx.fillStyle = (selectedNode === n) ? "#FFD54F" : "#fff";
-            iCtx.fill(); iCtx.strokeStyle = (selectedNode === n) ? "#FBC02D" : "#0288D1"; iCtx.lineWidth = (selectedNode === n) ? 3 : 2; iCtx.stroke();
-            iCtx.fillStyle = "#333"; iCtx.font = "bold 12px Nunito"; iCtx.textAlign = "center"; iCtx.textBaseline = "middle"; iCtx.fillText(n.id, n.x, n.y);
+            iCtx.beginPath(); iCtx.arc(n.x, n.y, 14, 0, Math.PI * 2);
+            iCtx.fillStyle = (selectedNode === n) ? "#FFF9C4" : "#E1F5FE";
+            iCtx.fill();
+            iCtx.strokeStyle = (selectedNode === n) ? "#FBC02D" : "#0288D1";
+            iCtx.lineWidth = (selectedNode === n) ? 3 : 2; iCtx.stroke();
+            iCtx.fillStyle = "#01579B"; iCtx.font = "bold 12px Nunito"; iCtx.textAlign = "center"; iCtx.textBaseline = "middle"; iCtx.fillText(n.id, n.x, n.y);
         });
     }
 
-    // --- LOGIC SINH DỮ LIỆU ---
-    function updateModeInfo() {
-        const mode = document.getElementById('graphMode').value;
-        const lbl = document.getElementById('modeInfo');
-        const benchConfig = document.getElementById('benchmarkConfig');
-        if (mode === 'sparse') {
-            lbl.innerText = "* Mật độ thấp (~1.5n). Kruskal rất nhanh.";
-            benchConfig.innerText = "Test: [10, 50, 100, 200] Nodes. Mật độ Thưa.";
-        } else if (mode === 'fair') {
-            lbl.innerText = "* Mật độ trung bình (~20%). Cuộc đua gay cấn.";
-            benchConfig.innerText = "Test: [10, 50, 100, 200] Nodes. Mật độ 20%.";
-        } else {
-            lbl.innerText = "* Mật độ cao (~80%). Prim phát huy thế mạnh.";
-            benchConfig.innerText = "Test: [10, 30, 60, 100] Nodes (Giảm size vì rất nặng). Mật độ 80%.";
-        }
-    }
-
+    // ==========================================
+    // 3. GENERATION LOGIC
+    // ==========================================
     function genRandom(n) {
-        clearCanvas();
-        const mode = document.getElementById('graphMode').value;
-        const centerX = iCanvas.width / 2; const centerY = iCanvas.height / 2;
-        const radius = Math.min(centerX, centerY) - 50;
+        inputNodes = []; inputEdges = []; nextChar = n;
+        const w = iCanvas.width, h = iCanvas.height;
+        for (let i = 0; i < n; i++) inputNodes.push({ id: String(i), x: Math.random() * (w - 60) + 30, y: Math.random() * (h - 60) + 30 });
+        for (let i = 0; i < n - 1; i++) inputEdges.push({ u: String(i), v: String(i + 1), w: Math.floor(Math.random() * 90) + 10 });
 
-        for (let i = 0; i < n; i++) {
-            let x, y;
-            if (mode === 'dense' && n > 20) {
-                x = 40 + Math.random() * (iCanvas.width - 80);
-                y = 40 + Math.random() * (iCanvas.height - 80);
-            } else {
-                const angle = (i / n) * 2 * Math.PI;
-                x = centerX + radius * Math.cos(angle);
-                y = centerY + radius * Math.sin(angle);
-            }
-            inputNodes.push({ id: String(i), x: x, y: y });
-        }
-        nextChar = n;
+        let mode = document.getElementById('graphMode').value;
+        let extra = mode === 'sparse' ? Math.floor(n*0.2) : (mode === 'fair' ? Math.floor(n*1.5) : Math.floor(n*n*0.1));
 
-        // Cây khung
-        for (let i = 0; i < n - 1; i++) {
-            inputEdges.push({ u: inputNodes[i].id, v: inputNodes[i + 1].id, w: Math.floor(Math.random() * 90) + 10 });
-        }
-
-        // Thêm cạnh theo chế độ
-        if (mode === 'sparse') {
-            let extra = Math.floor(n * 0.8);
-            addRandomEdges(n, extra);
-        } else if (mode === 'fair') {
-            addDenseEdges(n, 0.2);
-        } else { // dense
-            addDenseEdges(n, 0.8);
+        for (let k = 0; k < extra; k++) {
+            let u = Math.floor(Math.random() * n), v = Math.floor(Math.random() * n);
+            if (u !== v && !inputEdges.some(e => (e.u == u && e.v == v) || (e.u == v && e.v == u)))
+                inputEdges.push({ u: String(u), v: String(v), w: Math.floor(Math.random() * 90) + 10 });
         }
         drawInput(); updateUI();
     }
 
-    function addRandomEdges(n, count) {
-        let safety = 0;
-        while (count > 0 && safety < 10000) {
-            safety++;
-            let u = Math.floor(Math.random() * n);
-            let v = Math.floor(Math.random() * n);
-            if (u !== v && !isEdgeExist(String(u), String(v))) {
-                inputEdges.push({ u: String(u), v: String(v), w: Math.floor(Math.random() * 90) + 10 });
-                count--;
-            }
-        }
-    }
-
-    function addDenseEdges(n, prob) {
-        for (let i = 0; i < n; i++) {
-            for (let j = i + 2; j < n; j++) {
-                if (Math.random() < prob) {
-                    inputEdges.push({ u: String(i), v: String(j), w: Math.floor(Math.random() * 90) + 10 });
-                }
-            }
-        }
-    }
-
-    function isEdgeExist(u, v) {
-        return inputEdges.some(e => (e.u === u && e.v === v) || (e.u === v && e.v === u));
+    function genCustom() {
+        let val = prompt("Nhập số đỉnh (Max 200):", "50");
+        if(val) genRandom(parseInt(val));
     }
 
     function clearCanvas() { inputNodes = []; inputEdges = []; nextChar = 0; selectedNode = null; drawInput(); updateUI(); }
     function updateUI() { document.getElementById('nodeCount').innerText = inputNodes.length + " Nodes"; }
+    function updateModeInfo() {
+        const m = document.getElementById('graphMode').value;
+        const i = document.getElementById('modeInfo');
+        if(m=='sparse') i.innerText = "* Mật độ thấp. Kruskal thường nhanh hơn.";
+        else if(m=='fair') i.innerText = "* Cân bằng. Cạnh tranh khốc liệt.";
+        else i.innerText = "* Rất nhiều cạnh. Prim O(V²) lợi thế tuyệt đối.";
+    }
 
-    // --- API CALL ---
+    // ==========================================
+    // 4. API CALL (FIX LỖI URL)
+    // ==========================================
     async function runAlgorithmsAsync() {
         if (inputNodes.length < 2) return alert("Cần tối thiểu 2 đỉnh!");
-
         const formData = new FormData();
         formData.append('nodes', inputNodes.map(n => n.id).join(','));
         inputEdges.forEach(e => { formData.append('src[]', e.u); formData.append('dest[]', e.v); formData.append('weight[]', e.w); });
+        formData.append('primVariant', document.getElementById('primVariant').value);
 
-        document.body.style.cursor = 'wait';
+        document.getElementById('aiSimPanel').style.display = 'block';
+        document.getElementById('aiSimContent').innerHTML = '<div style="text-align:center; padding:20px; color:#6A1B9A"><i class="fas fa-spinner fa-spin fa-2x"></i><br>AI đang phân tích độ phức tạp...</div>';
+
         try {
-            const res = await fetch('/MoPhong/RunDualApi', { method: 'POST', body: formData });
+            // FIX: Dùng Url.Action để đảm bảo đường dẫn đúng
+            const res = await fetch('@Url.Action("RunDualApi", "MoPhong")', { method: 'POST', body: formData });
             const data = await res.json();
 
             if (data.success) {
-                lastResult = data;
-                renderStats(data); // Đã định nghĩa hàm này bên dưới
+                renderStats(data);
 
                 primDetailedSteps = simulatePrimSteps(data.graph.nodes, data.graph.edges);
                 kruskalDetailedSteps = simulateKruskalSteps(data.graph.nodes, data.graph.edges);
@@ -552,6 +592,7 @@
                 primSvgGroups = initD3Graph('primViz', data.graph, '#2E7D32');
                 kruskalSvgGroups = initD3Graph('kruskalViz', data.graph, '#D84315');
 
+                // FIX: Hàm này giờ sẽ tìm thấy table#primLog
                 renderFullLog('primLog', primDetailedSteps);
                 renderFullLog('kruskalLog', kruskalDetailedSteps);
 
@@ -560,100 +601,87 @@
                 document.getElementById('kruskalSlider').value = kruskalDetailedSteps.length;
                 updateTimeTravel('Kruskal', kruskalDetailedSteps.length);
 
+                if (data.analysis) document.getElementById('aiSimContent').innerHTML = marked.parse(data.analysis);
             } else { alert(data.message); }
-        } catch (e) { console.error(e); alert("Lỗi kết nối Server! Xem Console để biết chi tiết."); }
-        finally { document.body.style.cursor = 'default'; }
+        } catch (e) { console.error(e); alert("Lỗi kết nối Server! Vui lòng kiểm tra Console (F12)."); }
     }
 
-    // --- BENCHMARK ---
-    // --- 4. BENCHMARK FIXED (GỌI SERVER 1 LẦN DUY NHẤT) ---
     async function runBenchmark() {
+        const start = parseInt(document.getElementById('bnStart').value);
+        const end = parseInt(document.getElementById('bnEnd').value);
+        const step = parseInt(document.getElementById('bnStep').value);
         const mode = document.getElementById('graphMode').value;
         const btn = document.getElementById('btnBenchmark');
         const status = document.getElementById('benchStatus');
 
-        // Cấu hình bài test
-        let maxNodes = 200;
-        let step = 50;
-
-        // Điều chỉnh cấu hình tùy mode
-        if (mode === 'dense') {
-            maxNodes = 150; // Dense rất nặng (O(N^2)), giảm N xuống để không đợi lâu
-            step = 30;
-        } else if (mode === 'sparse') {
-            maxNodes = 1000; // Sparse rất nhẹ, tăng N lên để thấy rõ
-            step = 200;
-        }
-
         btn.disabled = true;
-        status.innerHTML = `Đang chạy Benchmark [${mode}] (Max N=${maxNodes})... <i class="fas fa-spinner fa-spin"></i>`;
+        status.innerHTML = `Đang chạy Benchmark (${start} -> ${end})... <i class="fas fa-cog fa-spin"></i>`;
 
-        // Gửi thông số xuống Server
+        document.getElementById('aiBenchPanel').style.display = 'block';
+        document.getElementById('aiBenchContent').innerHTML = '<div style="text-align:center; padding:20px; color:#37474F"><i class="fas fa-spinner fa-spin fa-2x"></i><br>AI đang phân tích xu hướng...</div>';
+
         const formData = new FormData();
-        formData.append('maxNodes', maxNodes);
-        formData.append('step', step);
-        formData.append('mode', mode);
+        formData.append('startN', start); formData.append('endN', end); formData.append('step', step); formData.append('mode', mode);
 
         try {
-            // Gọi Action RunBenchmark mới trong Controller
-            const res = await fetch('/MoPhong/RunBenchmark', { method: 'POST', body: formData });
-
-            if (!res.ok) throw new Error(`Lỗi HTTP: ${res.status}`);
-
+            const res = await fetch('@Url.Action("RunBenchmark", "MoPhong")', { method: 'POST', body: formData });
             const resp = await res.json();
-
             if (resp.success) {
-                // Vẽ biểu đồ từ dữ liệu Server trả về
-                const labels = resp.data.map(d => `N=${d.n}`);
-                const pTimes = resp.data.map(d => d.prim);
-                const kTimes = resp.data.map(d => d.kruskal);
-
-                renderChart(labels, pTimes, kTimes);
-                status.innerText = "Hoàn tất!";
-            } else {
-                status.innerText = "Lỗi Server: " + resp.message;
-            }
-        } catch (e) {
-            console.error(e);
-            status.innerText = "Lỗi kết nối hoặc Timeout!";
-        }
-
+                status.innerHTML = `<span style="color:#2E7D32"><i class="fas fa-check-circle"></i> Hoàn tất! Biểu đồ sử dụng 2 trục tung để hiển thị rõ.</span>`;
+                renderChart(resp.data);
+                if (resp.analysis) document.getElementById('aiBenchContent').innerHTML = marked.parse(resp.analysis);
+            } else status.innerText = "Lỗi Server: " + resp.message;
+        } catch (e) { status.innerText = "Lỗi kết nối!"; console.error(e); }
         btn.disabled = false;
     }
-    function renderChart(labels, pData, kData) {
+
+    function renderChart(data) {
         const ctx = document.getElementById('benchChart').getContext('2d');
         if (window.benchChartInstance) window.benchChartInstance.destroy();
 
         window.benchChartInstance = new Chart(ctx, {
             type: 'line',
             data: {
-                labels: labels,
+                labels: data.map(d => d.n),
                 datasets: [
-                    { label: 'Prim Time (ms)', data: pData, borderColor: '#2E7D32', backgroundColor: 'rgba(46, 125, 50, 0.2)', borderWidth: 3, tension: 0.3, fill: true },
-                    { label: 'Kruskal Time (ms)', data: kData, borderColor: '#D84315', backgroundColor: 'rgba(216, 67, 21, 0.2)', borderWidth: 3, tension: 0.3, fill: true }
+                    { label: 'Prim Time (ms)', data: data.map(d => d.primTime), borderColor: '#2E7D32', backgroundColor: '#2E7D32', borderWidth: 3, tension: 0.3, yAxisID: 'y' },
+                    { label: 'Kruskal Time (ms)', data: data.map(d => d.kruskalTime), borderColor: '#D84315', backgroundColor: '#D84315', borderWidth: 3, tension: 0.3, yAxisID: 'y' },
+                    { label: 'Prim Score (Theory)', data: data.map(d => d.primScore), borderColor: '#81C784', borderDash: [5, 5], pointRadius: 0, borderWidth: 1, tension: 0.3, yAxisID: 'y1' },
+                    { label: 'Kruskal Score (Theory)', data: data.map(d => d.kruskalScore), borderColor: '#FF8A65', borderDash: [5, 5], pointRadius: 0, borderWidth: 1, tension: 0.3, yAxisID: 'y1' }
                 ]
             },
-            options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true } } }
+            options: {
+                responsive: true, maintainAspectRatio: false,
+                scales: {
+                    x: { title: { display: true, text: 'Số lượng đỉnh (N)' } },
+                    y: { type: 'linear', display: true, position: 'left', title: { display:true, text: 'Thời gian (ms)', color: '#37474F' } },
+                    y1: { type: 'linear', display: true, position: 'right', title: { display:true, text: 'Điểm phức tạp (Ops)', color: '#78909C' }, grid: { drawOnChartArea: false } }
+                }
+            }
         });
     }
 
-    // --- HÀM RENDER & HELPERS ---
-
-    // ĐỊNH NGHĨA HÀM RENDER STATS (Để sửa lỗi JS cũ)
+    // ==========================================
+    // 6. HELPER FUNCTIONS
+    // ==========================================
     function renderStats(data) {
         document.getElementById('p-cost').innerText = data.prim.cost;
+        document.getElementById('p-time').innerText = data.prim.time.toFixed(4) + " ms";
+        document.getElementById('p-theory').innerText = "Score: " + formatNumber(data.prim.theoryScore);
+        document.getElementById('p-steps-val').innerText = data.prim.steps;
+        document.getElementById('p-algo').innerText = data.prim.complexity;
+
         document.getElementById('k-cost').innerText = data.kruskal.cost;
-        document.getElementById('p-time').innerText = data.prim.time.toFixed(4);
-        document.getElementById('k-time').innerText = data.kruskal.time.toFixed(4);
-        document.getElementById('p-steps').innerText = data.prim.steps;
-        document.getElementById('k-steps').innerText = data.kruskal.steps;
+        document.getElementById('k-time').innerText = data.kruskal.time.toFixed(4) + " ms";
+        document.getElementById('k-theory').innerText = "Score: " + formatNumber(data.kruskal.theoryScore);
+        document.getElementById('k-steps-val').innerText = data.kruskal.steps;
     }
+    function formatNumber(num) { return Math.round(num).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","); }
 
     function simulatePrimSteps(nodes, edges) {
         let steps = []; let visited = new Set(); let mstEdges = [];
         let startNode = nodes[0].id; visited.add(startNode);
         steps.push({ type: 'start', msg: `Bắt đầu: ${startNode}`, edges: [] });
-
         while (visited.size < nodes.length) {
             let candidates = [];
             edges.forEach(e => {
@@ -665,7 +693,7 @@
             let bestEdge = candidates[0];
             mstEdges.push(bestEdge);
             visited.add(visited.has(bestEdge.source) ? bestEdge.target : bestEdge.source);
-            steps.push({ type: 'select', msg: `Chọn ${bestEdge.source}-${bestEdge.target}`, weight: bestEdge.weight, edges: [...mstEdges] });
+            steps.push({ type: 'select', msg: `Chọn ${bestEdge.source}-${bestEdge.target} (W:${bestEdge.weight})`, edges: [...mstEdges] });
         }
         return steps;
     }
@@ -673,44 +701,39 @@
     function simulateKruskalSteps(nodes, edges) {
         let steps = [];
         let sorted = [...edges].sort((a, b) => a.weight - b.weight);
-        steps.push({ type: 'info', msg: `Sort ${sorted.length} cạnh`, edges: [] });
         let parent = {}; nodes.forEach(n => parent[n.id] = n.id);
         function find(i) { if (parent[i] === i) return i; return find(parent[i]); }
-        function union(i, j) { let ri = find(i), rj = find(j); if (ri !== rj) parent[ri] = rj; return ri !== rj; }
-
-        let mst = []; let count = 0;
+        function union(i, j) { let ri = find(i), rj = find(j); if (ri !== rj) { parent[ri] = rj; return true; } return false; }
+        let mst = [];
         for (let e of sorted) {
             if (union(e.source, e.target)) {
-                mst.push(e); count++;
-                steps.push({ type: 'select', msg: `Chọn ${e.source}-${e.target}`, weight: e.weight, edges: [...mst] });
+                mst.push(e);
+                steps.push({ type: 'select', msg: `Chọn ${e.source}-${e.target} (W:${e.weight})`, edges: [...mst] });
             } else {
-                steps.push({ type: 'reject', msg: `Bỏ qua ${e.source}-${e.target}`, weight: e.weight, edges: [...mst] });
+                steps.push({ type: 'reject', msg: `Bỏ ${e.source}-${e.target} (Chu trình)`, edges: [...mst] });
             }
-            if (count >= nodes.length - 1) break;
         }
         return steps;
     }
 
-    function initD3Graph(containerId, graphData, color) {
-        const container = document.getElementById(containerId);
-        container.innerHTML = "";
-        const width = container.clientWidth; const height = container.clientHeight;
-        const nodes = graphData.nodes.map(d => ({ ...d }));
-        const links = graphData.edges.map(d => ({ ...d }));
-
-        const svg = d3.select("#" + containerId).append("svg").attr("width", width).attr("height", height)
+    function initD3Graph(id, graph, color) {
+        const container = document.getElementById(id); container.innerHTML = "";
+        const w = container.clientWidth, h = 400;
+        const svg = d3.select("#" + id).append("svg").attr("width", w).attr("height", h)
             .call(d3.zoom().on("zoom", (e) => g.attr("transform", e.transform))).append("g");
         const g = svg;
+        const nodes = graph.nodes.map(d => ({ ...d })); const links = graph.edges.map(d => ({ ...d }));
+
         const simulation = d3.forceSimulation(nodes)
-            .force("link", d3.forceLink(links).id(d => d.id).distance(80))
-            .force("charge", d3.forceManyBody().strength(-200))
-            .force("center", d3.forceCenter(width / 2, height / 2));
+            .force("link", d3.forceLink(links).id(d => d.id).distance(60))
+            .force("charge", d3.forceManyBody().strength(-150))
+            .force("center", d3.forceCenter(w / 2, h / 2));
 
         const link = g.append("g").selectAll("line").data(links).enter().append("line").attr("stroke", "#eee").attr("stroke-width", 2);
         const mstLink = g.append("g").selectAll("line").data(links).enter().append("line").attr("stroke", color).attr("stroke-width", 0).attr("opacity", 0);
-        const node = g.append("g").selectAll("circle").data(nodes).enter().append("circle").attr("r", 15).attr("fill", "#fff").attr("stroke", "#333").attr("stroke-width", 2)
+        const node = g.append("g").selectAll("circle").data(nodes).enter().append("circle").attr("r", 9).attr("fill", "#fff").attr("stroke", "#546E7A").attr("stroke-width", 2)
             .call(d3.drag().on("start", (e, d) => { if (!e.active) simulation.alphaTarget(0.3).restart(); d.fx = d.x; d.fy = d.y; }).on("drag", (e, d) => { d.fx = e.x; d.fy = e.y; }).on("end", (e, d) => { if (!e.active) simulation.alphaTarget(0); d.fx = null; d.fy = null; }));
-        const label = g.append("g").selectAll("text").data(nodes).enter().append("text").text(d => d.id).attr("dy", 4).attr("text-anchor", "middle").attr("font-weight", "bold").attr("font-size", "11px");
+        const label = g.append("g").selectAll("text").data(nodes).enter().append("text").text(d => d.id).attr("dy", 3).attr("text-anchor", "middle").attr("font-size", "10px").attr("font-weight", "bold").attr("pointer-events", "none");
 
         simulation.on("tick", () => {
             link.attr("x1", d => d.source.x).attr("y1", d => d.source.y).attr("x2", d => d.target.x).attr("y2", d => d.target.y);
@@ -727,33 +750,42 @@
         const steps = algo === 'Prim' ? primDetailedSteps : kruskalDetailedSteps;
         const vizObj = algo === 'Prim' ? primSvgGroups : kruskalSvgGroups;
         if (!steps || !vizObj) return;
+
         vizObj.mstLink.attr("stroke-width", 0).attr("opacity", 0);
         if (val > 0) {
             let activeEdges = steps[val - 1].edges || [];
             activeEdges.forEach(e => {
-                vizObj.mstLink.filter(d => (d.source.id === e.source && d.target.id === e.target) || (d.source.id === e.target && d.target.id === e.source)).attr("stroke-width", 4).attr("opacity", 1);
+                vizObj.mstLink.filter(d => (d.source.id === e.source && d.target.id === e.target) || (d.source.id === e.target && d.target.id === e.source))
+                    .attr("stroke-width", 3).attr("opacity", 1);
             });
         }
         highlightTableRow(algo.toLowerCase() + 'Log', val);
     }
+
     function renderFullLog(tableId, steps) {
-        const tbody = document.querySelector(`#${tableId} tbody`);
+        const table = document.getElementById(tableId);
+        if (!table) { console.error("Table not found: " + tableId); return; }
+
+        let tbody = table.querySelector('tbody');
+        if (!tbody) {
+            tbody = document.createElement('tbody');
+            table.appendChild(tbody);
+        }
+
         tbody.innerHTML = steps.map((s, i) => {
-            let cls = s.type === 'select' ? 'log-step-select' : (s.type === 'reject' ? 'log-step-reject' : 'log-step-consider');
-            return `<tr class="${cls}" id="${tableId}-row-${i + 1}"><td>${i + 1}</td><td>${s.msg}</td><td><b>${s.weight || ''}</b></td></tr>`;
+            let cls = s.type === 'select' ? 'log-step-select' : (s.type === 'reject' ? 'log-step-reject' : '');
+            let w = s.edges && s.edges.length > 0 ? s.edges[s.edges.length - 1].weight : '';
+            if (!w && s.type === 'reject') {
+                let match = s.msg.match(/W:(\d+)/);
+                if (match) w = match[1];
+            }
+            return `<tr class="${cls}" id="${tableId}-row-${i + 1}"><td>${i + 1}</td><td>${s.msg}</td><td><b>${w}</b></td></tr>`;
         }).join('');
     }
+
     function highlightTableRow(tableId, index) {
         document.querySelectorAll(`#${tableId} tr`).forEach(tr => tr.style.border = "none");
         if (index > 0) document.getElementById(`${tableId}-row-${index}`)?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    }
-
-    function genCustom() {
-        const n = parseInt(document.getElementById('customN').value);
-        if (n > 200) {
-            if (!confirm("Cảnh báo: Với N > 200, trình duyệt có thể bị treo do vẽ quá nhiều cạnh. Bạn có chắc muốn tiếp tục?")) return;
-        }
-        genRandom(n);
     }
 
     updateModeInfo();

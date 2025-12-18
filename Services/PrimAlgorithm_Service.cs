@@ -8,17 +8,17 @@ namespace Prim_Kruskal_Web.Services
 {
     public class PrimAlgorithm_Services : IPrimAlgorithm_Service
     {
-        private const string ALGORITHM_NAME = "Prim's Algorithm (Optimized)";
-        private const string TIME_COMPLEXITY = "O(V²)";
-
-        public AlgorithmResult FindMST(Graph graph, int startNodeIndex)
+        // =================================================================================
+        // 1. PRIM STANDARD: DANH SÁCH KỀ (ADJACENCY LIST) + MẢNG (ARRAY)
+        // Độ phức tạp: O(V^2) - Tốt cho đồ thị Dày (Dense)
+        // =================================================================================
+        public AlgorithmResult FindMST(Graph graph, int startNodeId)
         {
-            // 1. Khởi động đồng hồ đo
             var sw = Stopwatch.StartNew();
             var result = new AlgorithmResult
             {
-                AlgorithmName = ALGORITHM_NAME,
-                TimeComplexity = TIME_COMPLEXITY,
+                AlgorithmName = "Prim (Standard - List)",
+                TimeComplexity = "O(V²)",
                 Steps = new List<AlgorithmStep>(),
                 MSTEdges = new List<Edge>()
             };
@@ -26,12 +26,10 @@ namespace Prim_Kruskal_Web.Services
             int n = graph.Nodes.Count;
             if (n == 0) { sw.Stop(); return result; }
 
-            // 2. Pre-processing: Chuyển Edge List sang Adjacency List (Mảng các List)
-            // Việc này giúp truy xuất O(1) thay vì O(E)
+            // 1. Pre-processing: Chuyển Edge List sang Adjacency List
             var adj = new List<Edge>[n];
             for (int i = 0; i < n; i++) adj[i] = new List<Edge>();
 
-            // Map ID -> Index để dùng mảng (nhanh hơn Dictionary)
             var idToIndex = new Dictionary<int, int>(n);
             for (int i = 0; i < n; i++) idToIndex[graph.Nodes[i].Id] = i;
 
@@ -44,31 +42,21 @@ namespace Prim_Kruskal_Web.Services
                 }
             }
 
-            // 3. Khởi tạo cấu trúc dữ liệu Prim
-            if (startNodeIndex < 0 || startNodeIndex >= n) startNodeIndex = 0;
-
+            // 2. Khởi tạo
             double[] key = new double[n];   // Khoảng cách ngắn nhất
             bool[] inMST = new bool[n];     // Đánh dấu đã thăm
             int[] parent = new int[n];      // Lưu vết cha con
 
-            // Khởi tạo giá trị (Dùng vòng lặp for thay vì Enumerable để nhanh hơn)
-            for (int i = 0; i < n; i++)
-            {
-                key[i] = double.MaxValue;
-                parent[i] = -1;
-            }
-            key[startNodeIndex] = 0;
+            for (int i = 0; i < n; i++) { key[i] = double.MaxValue; parent[i] = -1; }
 
-            // --- QUYẾT ĐỊNH CHẾ ĐỘ CHẠY ---
-            // Nếu N > 100: Chạy chế độ "Đua tốc độ" (Không ghi Log)
-            // Nếu N <= 100: Chạy chế độ "Mô phỏng" (Ghi Log đầy đủ để vẽ hình)
-            bool isBenchmarkMode = n > 100;
+            // Tìm index bắt đầu
+            int startIndex = idToIndex.ContainsKey(startNodeId) ? idToIndex[startNodeId] : 0;
+            key[startIndex] = 0;
 
-            // 4. VÒNG LẶP CHÍNH O(V^2)
+            // 3. Vòng lặp chính
             for (int count = 0; count < n; count++)
             {
-                // Bước 4a: Tìm đỉnh u có key nhỏ nhất chưa vào MST
-                // Đây là đoạn O(V) thuần túy
+                // 3a. Tìm đỉnh u có key nhỏ nhất (Linear Search - O(V))
                 double minVal = double.MaxValue;
                 int u = -1;
 
@@ -81,39 +69,18 @@ namespace Prim_Kruskal_Web.Services
                     }
                 }
 
-                if (u == -1) break; // Đồ thị ngắt quãng hoặc xong
-
+                if (u == -1) break;
                 inMST[u] = true;
 
-                // LOGGING (Chỉ chạy khi N nhỏ)
-                if (!isBenchmarkMode)
+                // 3b. Cập nhật lân cận
+                foreach (var edge in adj[u])
                 {
-                    // Lưu ý: Đoạn code này rất chậm vì tạo Object mới liên tục
-                    result.Steps.Add(new AlgorithmStep
-                    {
-                        StepNumber = count + 1,
-                        Description = $"Chọn đỉnh {u} (W: {minVal:F1})",
-                        // Copy danh sách chỉ để hiển thị (Rất tốn RAM/CPU)
-                        CurrentMSTEdges = new List<Edge>(result.MSTEdges)
-                    });
-                }
-
-                // Bước 4b: Cập nhật trọng số cho các đỉnh kề
-                // Duyệt qua danh sách kề adj[u] thay vì toàn bộ Edges
-                var neighbors = adj[u];
-                int neighborsCount = neighbors.Count;
-
-                for (int k = 0; k < neighborsCount; k++)
-                {
-                    var edge = neighbors[k];
-                    // Tìm index của đỉnh kia
                     int vDbId = (edge.SourceId == graph.Nodes[u].Id) ? edge.DestinationId : edge.SourceId;
                     int v = idToIndex[vDbId];
 
                     if (inMST[v]) continue;
 
                     double weight = edge.KhoangCach ?? edge.Cost ?? double.MaxValue;
-
                     if (weight < key[v])
                     {
                         key[v] = weight;
@@ -122,7 +89,206 @@ namespace Prim_Kruskal_Web.Services
                 }
             }
 
-            // 5. Tổng hợp kết quả (Reconstruct MST)
+            // 4. Tổng hợp kết quả
+            ReconstructMST(result, graph, parent, adj);
+
+            sw.Stop();
+            result.ExecutionTimeMs = sw.Elapsed.TotalMilliseconds;
+            result.StepCount = n;
+            return result;
+        }
+
+        // =================================================================================
+        // 2. PRIM MATRIX: MA TRẬN KỀ (ADJACENCY MATRIX)
+        // Độ phức tạp: O(V^2) - Nhanh nhất cho đồ thị siêu dày nhưng TỐN RAM (O(V^2))
+        // =================================================================================
+        public AlgorithmResult FindMST_Matrix(Graph graph, int startNodeId)
+        {
+            var sw = Stopwatch.StartNew();
+            var result = new AlgorithmResult
+            {
+                AlgorithmName = "Prim (Adjacency Matrix)",
+                TimeComplexity = "O(V²) - High Memory",
+                Steps = new List<AlgorithmStep>(),
+                MSTEdges = new List<Edge>()
+            };
+
+            int n = graph.Nodes.Count;
+            if (n == 0) { sw.Stop(); return result; }
+
+            // 1. Tạo Ma trận O(V^2) RAM
+            double[,] matrix = new double[n, n];
+            var idToIndex = new Dictionary<int, int>(n);
+            for (int i = 0; i < n; i++) idToIndex[graph.Nodes[i].Id] = i;
+
+            // Khởi tạo MaxValue
+            for (int i = 0; i < n; i++)
+                for (int j = 0; j < n; j++)
+                    matrix[i, j] = double.MaxValue;
+
+            // Điền trọng số
+            foreach (var edge in graph.Edges)
+            {
+                if (idToIndex.TryGetValue(edge.SourceId, out int u) && idToIndex.TryGetValue(edge.DestinationId, out int v))
+                {
+                    double w = edge.KhoangCach ?? edge.Cost ?? double.MaxValue;
+                    // Vô hướng nên điền 2 chiều
+                    matrix[u, v] = w;
+                    matrix[v, u] = w;
+                }
+            }
+
+            // 2. Thuật toán Prim trên Ma trận
+            double[] key = new double[n];
+            bool[] inMST = new bool[n];
+            int[] parent = new int[n];
+            for (int i = 0; i < n; i++) { key[i] = double.MaxValue; parent[i] = -1; }
+
+            int startIndex = idToIndex.ContainsKey(startNodeId) ? idToIndex[startNodeId] : 0;
+            key[startIndex] = 0;
+
+            for (int count = 0; count < n; count++)
+            {
+                // Tìm Min (O(V))
+                double min = double.MaxValue;
+                int u = -1;
+                for (int v = 0; v < n; v++)
+                    if (!inMST[v] && key[v] < min) { min = key[v]; u = v; }
+
+                if (u == -1) break;
+                inMST[u] = true;
+
+                // Duyệt lân cận trên Ma trận (O(V))
+                for (int v = 0; v < n; v++)
+                {
+                    if (matrix[u, v] != double.MaxValue && !inMST[v] && matrix[u, v] < key[v])
+                    {
+                        key[v] = matrix[u, v];
+                        parent[v] = u;
+                    }
+                }
+            }
+
+            // Tái tạo kết quả (Cần danh sách kề tạm để tìm lại object Edge gốc)
+            // (Đoạn này hơi tốn chút time nhưng cần thiết để trả về đúng Edge object)
+            var tempAdj = BuildAdjList(graph, n, idToIndex);
+            ReconstructMST(result, graph, parent, tempAdj);
+
+            sw.Stop();
+            result.ExecutionTimeMs = sw.Elapsed.TotalMilliseconds;
+            result.StepCount = n;
+            return result;
+        }
+
+        // =================================================================================
+        // 3. PRIM HEAP: BINARY HEAP (PRIORITY QUEUE)
+        // Độ phức tạp: O(E log V) - Tối ưu cho đồ thị THƯA (Thực tế)
+        // =================================================================================
+        public AlgorithmResult FindMST_Heap(Graph graph, int startNodeId)
+        {
+            var sw = Stopwatch.StartNew();
+            var result = new AlgorithmResult
+            {
+                AlgorithmName = "Prim (Binary Heap)",
+                TimeComplexity = "O(E log V)",
+                Steps = new List<AlgorithmStep>(),
+                MSTEdges = new List<Edge>()
+            };
+
+            int n = graph.Nodes.Count;
+            if (n == 0) { sw.Stop(); return result; }
+
+            // 1. Build Adj List
+            var idToIndex = new Dictionary<int, int>(n);
+            for (int i = 0; i < n; i++) idToIndex[graph.Nodes[i].Id] = i;
+            var adj = BuildAdjList(graph, n, idToIndex);
+
+            // 2. Init Heap & Visited
+            bool[] visited = new bool[n];
+            var pq = new MinHeap(); // Sử dụng Class MinHeap bạn đã thêm
+
+            int startIndex = idToIndex.ContainsKey(startNodeId) ? idToIndex[startNodeId] : 0;
+
+            // Add node đầu tiên: Trọng số 0, Index, Cha = -1
+            pq.Add(new HeapNode { Weight = 0, NodeIndex = startIndex, ParentIndex = -1 });
+
+            int edgesCount = 0;
+
+            // 3. Vòng lặp Heap
+            while (pq.Count > 0)
+            {
+                var minNode = pq.ExtractMin();
+                int u = minNode.NodeIndex;
+
+                if (visited[u]) continue;
+                visited[u] = true;
+
+                // Nếu có cha (không phải đỉnh đầu), thêm cạnh vào MST
+                if (minNode.ParentIndex != -1)
+                {
+                    // Tìm cạnh gốc nối (Parent -> u)
+                    var edgeObj = FindEdge(adj, minNode.ParentIndex, u, idToIndex, graph.Nodes);
+                    if (edgeObj != null)
+                    {
+                        result.MSTEdges.Add(edgeObj);
+                        result.TotalCost += minNode.Weight;
+                        edgesCount++;
+                    }
+                }
+
+                if (edgesCount == n - 1) break;
+
+                // Duyệt lân cận
+                foreach (var edge in adj[u])
+                {
+                    int vDbId = (edge.SourceId == graph.Nodes[u].Id) ? edge.DestinationId : edge.SourceId;
+                    int v = idToIndex[vDbId];
+
+                    if (!visited[v])
+                    {
+                        double w = edge.KhoangCach ?? edge.Cost ?? 0;
+                        pq.Add(new HeapNode { Weight = w, NodeIndex = v, ParentIndex = u });
+                    }
+                }
+            }
+
+            sw.Stop();
+            result.ExecutionTimeMs = sw.Elapsed.TotalMilliseconds;
+            result.StepCount = edgesCount;
+            return result;
+        }
+
+        // =================================================================================
+        // CÁC HÀM BỔ TRỢ (HELPER METHODS)
+        // =================================================================================
+
+        private List<Edge>[] BuildAdjList(Graph graph, int n, Dictionary<int, int> idToIndex)
+        {
+            var adj = new List<Edge>[n];
+            for (int i = 0; i < n; i++) adj[i] = new List<Edge>();
+            foreach (var edge in graph.Edges)
+            {
+                if (idToIndex.TryGetValue(edge.SourceId, out int u) && idToIndex.TryGetValue(edge.DestinationId, out int v))
+                {
+                    adj[u].Add(edge);
+                    adj[v].Add(edge);
+                }
+            }
+            return adj;
+        }
+
+        private Edge FindEdge(List<Edge>[] adj, int uIndex, int vIndex, Dictionary<int, int> idToIndex, List<Node> nodes)
+        {
+            int uId = nodes[uIndex].Id;
+            int vId = nodes[vIndex].Id;
+            return adj[uIndex].FirstOrDefault(e =>
+                (e.SourceId == uId && e.DestinationId == vId) ||
+                (e.SourceId == vId && e.DestinationId == uId));
+        }
+
+        private void ReconstructMST(AlgorithmResult result, Graph graph, int[] parent, List<Edge>[] adj)
+        {
+            int n = graph.Nodes.Count;
             for (int i = 0; i < n; i++)
             {
                 if (parent[i] != -1)
@@ -130,7 +296,6 @@ namespace Prim_Kruskal_Web.Services
                     int uDbId = graph.Nodes[parent[i]].Id;
                     int vDbId = graph.Nodes[i].Id;
 
-                    // Tìm lại reference cạnh gốc
                     var edge = adj[i].FirstOrDefault(e =>
                         (e.SourceId == uDbId && e.DestinationId == vDbId) ||
                         (e.SourceId == vDbId && e.DestinationId == uDbId));
@@ -142,11 +307,6 @@ namespace Prim_Kruskal_Web.Services
                     }
                 }
             }
-
-            sw.Stop();
-            result.ExecutionTimeMs = sw.Elapsed.TotalMilliseconds;
-            result.StepCount = n; // Tổng số bước = số đỉnh
-            return result;
         }
     }
 }

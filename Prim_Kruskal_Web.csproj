@@ -171,6 +171,7 @@
     <Compile Include="Models\GraphInputModel.cs" />
     <Compile Include="Models\LOCATION.cs" />
     <Compile Include="Models\LocationDTO.cs" />
+    <Compile Include="Models\MinHeap.cs" />
     <Compile Include="Models\Node.cs" />
     <Compile Include="Models\TINH_THANH.cs" />
     <Compile Include="Models\UnionFind.cs" />
@@ -260,7 +261,9 @@
     <Content Include="Views\UngDung\LienTinh.cshtml" />
     <Content Include="Views\UngDung\NoiTinh.cshtml" />
     <Content Include="Views\MoPhong\Compare.cshtml" />
-    <Content Include="Secrets.config" />
+    <Content Include="Secrets.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Views\MoPhong\Arena.cshtml" />
     <Content Include="Views\Home\Intro.cshtml" />
   </ItemGroup>

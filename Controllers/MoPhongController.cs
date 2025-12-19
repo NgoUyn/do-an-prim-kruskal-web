@@ -276,5 +276,164 @@ namespace Prim_Kruskal_Web.Controllers
 
         // Trang Arena (Optional)
         [HttpGet] public ActionResult Arena() { return View(); }
+
+        // --- THÊM VÀO CUỐI CONTROLLER ---
+
+        [HttpPost]
+        public ActionResult RunArena(int gridSize, string density, string algo1, string algo2)
+        {
+            // 1. Tạo bản đồ Grid chung
+            var solver = new GridSolver(gridSize);
+            solver.GenerateMaze(density); // sparse: 10%, fair: 25%, dense: 40%
+
+            // 2. Chạy 2 thuật toán
+            var t1 = Task.Run(() => solver.RunAlgorithm(algo1));
+            var t2 = Task.Run(() => solver.RunAlgorithm(algo2));
+            Task.WaitAll(t1, t2);
+
+            return Json(new
+            {
+                success = true,
+                res1 = t1.Result,
+                res2 = t2.Result
+            });
+        }
+
+        // --- CLASS HỖ TRỢ LOGIC GRID (Nested Class hoặc để file riêng) ---
+        public class GridSolver
+        {
+            private int Size;
+            private bool[,] Walls;
+            private Point Start, End;
+            private Random Rnd = new Random();
+
+            public GridSolver(int size)
+            {
+                Size = size;
+                Walls = new bool[size, size];
+                Start = new Point { x = 0, y = 0 };
+                End = new Point { x = size - 1, y = size - 1 };
+            }
+
+            public void GenerateMaze(string density)
+            {
+                double prob = density == "sparse" ? 0.1 : (density == "fair" ? 0.25 : 0.4);
+                for (int y = 0; y < Size; y++)
+                    for (int x = 0; x < Size; x++)
+                        if (Rnd.NextDouble() < prob && !(x == 0 && y == 0) && !(x == Size - 1 && y == Size - 1))
+                            Walls[x, y] = true;
+            }
+
+            public object RunAlgorithm(string algo)
+            {
+                var sw = Stopwatch.StartNew();
+                var visited = new List<Point>();
+                var path = new List<Point>();
+                double cost = 0;
+
+                // Giả lập logic tìm đường (Simplified for Demo)
+                // Trong thực tế bạn nên cài đặt PriorityQueue cho A*/Dijkstra chuẩn
+
+                // Đây là bộ khung chung cho các thuật toán Grid
+                var dist = new double[Size, Size];
+                var parent = new Point?[Size, Size];
+                for (int i = 0; i < Size; i++) for (int j = 0; j < Size; j++) dist[i, j] = double.MaxValue;
+
+                dist[Start.x, Start.y] = 0;
+                var pq = new List<Point> { Start }; // Simple List as PQ
+
+                while (pq.Any())
+                {
+                    // --- LOGIC CHỌN ĐỈNH (QUAN TRỌNG NHẤT) ---
+                    pq = SortQueue(pq, algo, dist);
+                    var u = pq[0]; pq.RemoveAt(0);
+
+                    visited.Add(u);
+                    if (u.x == End.x && u.y == End.y) break;
+
+                    // 4 Hướng (8 hướng nếu cần)
+                    int[] dx = { 0, 0, 1, -1 };
+                    int[] dy = { 1, -1, 0, 0 };
+
+                    for (int i = 0; i < 4; i++)
+                    {
+                        int nx = u.x + dx[i], ny = u.y + dy[i];
+                        if (nx >= 0 && nx < Size && ny >= 0 && ny < Size && !Walls[nx, ny])
+                        {
+                            double newDist = dist[u.x, u.y] + 1;
+                            if (newDist < dist[nx, ny])
+                            {
+                                dist[nx, ny] = newDist;
+                                parent[nx, ny] = u;
+                                // Tránh thêm trùng trong PQ đơn giản
+                                if (!pq.Any(p => p.x == nx && p.y == ny) && !visited.Any(p => p.x == nx && p.y == ny))
+                                    pq.Add(new Point { x = nx, y = ny });
+                            }
+                        }
+                    }
+                }
+
+                sw.Stop();
+
+                // Reconstruct Path
+                var curr = End;
+                if (dist[End.x, End.y] != double.MaxValue)
+                {
+                    while (curr.x != Start.x || curr.y != Start.y)
+                    {
+                        path.Add(curr);
+                        curr = parent[curr.x, curr.y].Value;
+                        cost++;
+                    }
+                    path.Add(Start);
+                    path.Reverse();
+                }
+
+                return new
+                {
+                    time = sw.Elapsed.TotalMilliseconds,
+                    visited = visited,
+                    path = path,
+                    walls = GetWallList(),
+                    cost = cost
+                };
+            }
+
+            private List<Point> SortQueue(List<Point> q, string algo, double[,] dist)
+            {
+                // Heuristic Functions
+                double Heuristic(Point p)
+                {
+                    double dx = Math.Abs(p.x - End.x);
+                    double dy = Math.Abs(p.y - End.y);
+                    switch (algo)
+                    {
+                        case "AStar": return Math.Sqrt(dx * dx + dy * dy); // Euclidean
+                        case "GreedyBestFirst": return Math.Sqrt(dx * dx + dy * dy);
+                        case "GreedyManhattan": return dx + dy;
+                        case "GreedyChebyshev": return Math.Max(dx, dy);
+                        default: return 0; // Dijkstra/Prim/Kruskal (BFS-like on unweighted grid)
+                    }
+                }
+
+                // Sorting Logic
+                if (algo.StartsWith("Greedy"))
+                    return q.OrderBy(p => Heuristic(p)).ToList(); // Chỉ xét H(n)
+
+                if (algo == "AStar")
+                    return q.OrderBy(p => dist[p.x, p.y] + Heuristic(p)).ToList(); // F(n) = G(n) + H(n)
+
+                return q.OrderBy(p => dist[p.x, p.y]).ToList(); // Dijkstra: Chỉ xét G(n)
+            }
+
+            private List<Point> GetWallList()
+            {
+                var list = new List<Point>();
+                for (int x = 0; x < Size; x++) for (int y = 0; y < Size; y++) if (Walls[x, y]) list.Add(new Point { x = x, y = y });
+                return list;
+            }
+
+            public struct Point { public int x, y; }
+        }
     }
 }

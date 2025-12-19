@@ -1,118 +1,104 @@
 ﻿@{
-    ViewBag.Title = "Algorithm Arena - Pro Mode";
+    ViewBag.Title = "Algorithm Arena - Academic Mode";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700;900&family=JetBrains+Mono:wght@500;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@400;500;600&family=Fira+Code:wght@500&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
 <style>
     :root {
-        --bg-body: #0F172A;
-        --card-glass: rgba(30, 41, 59, 0.7);
-        --border-glass: 1px solid rgba(255, 255, 255, 0.1);
-        --text-primary: #F8FAFC;
-        --color-prim: #00E676; /* Green Neon */
-        --color-path: #2979FF; /* Blue Neon */
-        --color-warn: #FF3D00; /* Red Neon */
+        /* EARTH TONES PALETTE */
+        --bg-body: #F9F7F2; /* Trắng gạo / Rice White */
+        --card-bg: #FFFFFF; /* Trắng tinh */
+        --text-primary: #3E2723; /* Nâu đậm / Espresso */
+        --text-secondary: #795548; /* Nâu nhạt / Earth */
+        --accent-1: #D84315; /* Đỏ gạch / Terracotta (Đại diện Pathfinding) */
+        --accent-2: #2E7D32; /* Xanh rêu / Sage Green (Đại diện MST) */
+        --accent-3: #F9A825; /* Vàng nghệ / Gold (Highlight) */
+        --border-color: #D7CCC8; /* Viền nâu nhạt */
+        --shadow: 0 4px 20px rgba(62, 39, 35, 0.08);
     }
 
     body {
         background-color: var(--bg-body);
-        background-image: radial-gradient(circle at 15% 50%, rgba(41, 121, 255, 0.08), transparent 25%), radial-gradient(circle at 85% 30%, rgba(0, 230, 118, 0.08), transparent 25%);
         color: var(--text-primary);
-        font-family: 'Outfit', sans-serif;
-        overflow-x: hidden;
+        font-family: 'Inter', sans-serif;
+        margin: 0;
+        padding: 0;
     }
 
     /* === HEADER === */
     .arena-header {
         text-align: center;
-        padding: 30px 0;
+        padding: 40px 0 20px 0;
     }
 
     .brand-title {
-        font-size: 3rem;
-        font-weight: 900;
-        letter-spacing: -1px;
-        background: linear-gradient(to right, #fff, #94A3B8);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
+        font-family: 'Playfair Display', serif;
+        font-size: 2.5rem;
+        color: var(--text-primary);
+        letter-spacing: -0.5px;
     }
 
-    /* === MAIN ARENA === */
-    .arena-grid {
+    .brand-subtitle {
+        color: var(--text-secondary);
+        font-size: 0.9rem;
+        margin-top: 5px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    /* === MAIN LAYOUT === */
+    .arena-container {
         display: grid;
-        grid-template-columns: 1fr 80px 1fr;
-        gap: 20px;
-        padding: 0 40px;
+        grid-template-columns: 1fr 1fr; /* Chia đôi màn hình */
+        gap: 30px;
         max-width: 1600px;
-        margin: 0 auto 100px auto;
-        align-items: start;
+        margin: 0 auto;
+        padding: 0 40px 120px 40px;
     }
 
-    .vs-badge {
-        background: #000;
-        color: #fff;
-        font-family: 'JetBrains Mono';
-        font-weight: 800;
-        font-size: 1.5rem;
-        width: 60px;
-        height: 60px;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        border: 2px solid #334155;
-        margin: 150px auto 0 auto; /* Canh giữa theo chiều dọc tương đối */
-        box-shadow: 0 0 30px rgba(0,0,0,0.5);
-        z-index: 10;
-    }
-
-    /* === CARDS === */
+    /* === ALGO CARD === */
     .algo-card {
-        background: var(--card-glass);
-        backdrop-filter: blur(12px);
-        border: var(--border-glass);
-        border-radius: 24px;
-        padding: 24px;
-        transition: 0.3s;
+        background: var(--card-bg);
+        border: 1px solid var(--border-color);
+        border-radius: 16px;
+        padding: 20px;
+        box-shadow: var(--shadow);
+        transition: transform 0.3s ease;
         position: relative;
     }
 
-        .algo-card.winner {
-            border-color: #FFD700;
-            box-shadow: 0 0 60px rgba(255, 215, 0, 0.15);
-            transform: translateY(-5px);
-        }
-
-    .card-header {
+    .card-head {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        margin-bottom: 20px;
+        margin-bottom: 15px;
+        border-bottom: 2px solid var(--bg-body);
+        padding-bottom: 15px;
     }
 
     .algo-select {
-        background: rgba(0,0,0,0.3);
-        color: #fff;
-        border: 1px solid rgba(255,255,255,0.2);
-        padding: 8px 16px;
+        border: 1px solid var(--border-color);
+        padding: 8px 12px;
         border-radius: 8px;
-        font-family: 'Outfit';
-        font-weight: 700;
-        outline: none;
+        font-family: 'Inter';
+        font-weight: 600;
+        color: var(--text-primary);
+        background: var(--bg-body);
         cursor: pointer;
+        min-width: 200px;
     }
 
-    /* === MONITOR SCREEN === */
-    .monitor-screen {
-        width: 100%;
-        aspect-ratio: 1;
-        background: #000;
-        border-radius: 16px;
-        border: 1px solid #334155;
-        position: relative;
+    /* CANVAS MONITOR */
+    .monitor-frame {
+        background: #F0F0F0;
+        border-radius: 12px;
         overflow: hidden;
+        aspect-ratio: 1;
+        position: relative;
+        border: 1px solid var(--border-color);
     }
 
     canvas {
@@ -122,428 +108,434 @@
         image-rendering: pixelated;
     }
 
-    /* === STATS === */
-    .stats-row {
+    /* STATS & INFO */
+    .stats-grid {
         display: grid;
-        grid-template-columns: 1fr 1fr 1fr;
+        grid-template-columns: repeat(3, 1fr);
         gap: 10px;
-        margin-top: 20px;
+        margin-top: 15px;
     }
 
-    .stat-box {
-        background: rgba(255,255,255,0.03);
+    .stat-item {
+        background: var(--bg-body);
         padding: 10px;
-        border-radius: 10px;
+        border-radius: 8px;
         text-align: center;
-        border: 1px solid rgba(255,255,255,0.05);
     }
 
     .stat-val {
-        font-family: 'JetBrains Mono';
+        font-family: 'Fira Code', monospace;
         font-weight: 700;
-        font-size: 1.2rem;
+        color: var(--text-primary);
     }
 
     .stat-lbl {
         font-size: 0.7rem;
-        color: #94A3B8;
+        color: var(--text-secondary);
         text-transform: uppercase;
-        margin-top: 5px;
+        margin-top: 4px;
     }
 
-    /* === CONTROL DOCK === */
-    .control-dock {
+    /* ACADEMIC INFO PANEL (NEW) */
+    .academic-panel {
+        margin-top: 15px;
+        background: #FAF8F5; /* Paper color */
+        padding: 15px;
+        border-radius: 8px;
+        border-left: 4px solid var(--text-secondary);
+        font-size: 0.85rem;
+        height: 300px;
+        overflow-y: auto;
+        line-height: 1.6;
+    }
+
+        .academic-panel h4 {
+            margin: 0 0 5px 0;
+            color: var(--accent-1);
+            font-family: 'Playfair Display';
+        }
+
+        .academic-panel table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        .academic-panel th {
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+            color: var(--text-primary);
+            font-size: 0.75rem;
+        }
+
+        .academic-panel td {
+            padding: 4px 0;
+            color: var(--text-secondary);
+        }
+
+    /* === CONTROL BAR === */
+    .control-bar {
         position: fixed;
         bottom: 30px;
         left: 50%;
         transform: translateX(-50%);
-        background: rgba(15, 23, 42, 0.9);
-        backdrop-filter: blur(16px);
-        padding: 15px 30px;
-        border-radius: 20px;
-        border: 1px solid rgba(255,255,255,0.15);
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        padding: 15px 40px;
+        border-radius: 50px;
+        box-shadow: 0 10px 40px rgba(62, 39, 35, 0.15);
+        border: 1px solid var(--border-color);
         display: flex;
-        gap: 30px;
+        gap: 40px;
         align-items: center;
-        box-shadow: 0 20px 50px rgba(0,0,0,0.5);
         z-index: 100;
     }
 
-    .ctrl-group {
-        display: flex;
-        flex-direction: column;
-        gap: 5px;
-    }
-
-    .ctrl-lbl {
-        font-size: 0.65rem;
-        color: #94A3B8;
-        font-weight: 700;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-    }
-
-    input[type=range] {
-        -webkit-appearance: none;
-        background: #334155;
-        height: 4px;
-        border-radius: 2px;
-    }
-
-        input[type=range]::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            width: 16px;
-            height: 16px;
-            background: #fff;
-            border-radius: 50%;
-            cursor: pointer;
-        }
-
-    .btn-neon {
-        background: #fff;
-        color: #000;
+    .btn-earth {
+        background: var(--text-primary);
+        color: white;
         border: none;
-        padding: 12px 40px;
-        border-radius: 12px;
-        font-weight: 800;
-        text-transform: uppercase;
+        padding: 14px 40px;
+        border-radius: 30px;
+        font-weight: 600;
+        letter-spacing: 1px;
         cursor: pointer;
         transition: 0.2s;
-        box-shadow: 0 0 20px rgba(255,255,255,0.2);
+        box-shadow: 0 4px 15px rgba(62, 39, 35, 0.3);
     }
 
-        .btn-neon:hover {
+        .btn-earth:hover {
             transform: translateY(-2px);
-            box-shadow: 0 0 30px rgba(255,255,255,0.4);
+            background: #5D4037;
         }
 
-        .btn-neon:disabled {
-            background: #475569;
-            color: #94A3B8;
-            box-shadow: none;
+        .btn-earth:disabled {
+            background: #BCAAA4;
             cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
         }
 
-    /* Winner Overlay */
-    .winner-overlay {
+    /* WINNER BADGE */
+    .win-badge {
         position: absolute;
-        inset: 0;
-        background: rgba(0,0,0,0.8);
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
+        top: 20px;
+        right: 20px;
+        background: var(--accent-3);
+        color: var(--text-primary);
+        padding: 5px 15px;
+        border-radius: 20px;
+        font-weight: 700;
+        font-size: 0.8rem;
         opacity: 0;
-        transition: 0.5s;
-        pointer-events: none;
+        transform: scale(0.8);
+        transition: 0.4s;
     }
 
-    .algo-card.winner .winner-overlay {
+    .winner .win-badge {
         opacity: 1;
+        transform: scale(1);
     }
 
-    .win-tag {
-        background: #FFD700;
-        color: #000;
-        padding: 5px 20px;
-        border-radius: 50px;
-        font-weight: 900;
-        font-size: 1.2rem;
-        box-shadow: 0 0 20px #FFD700;
+    .winner {
+        border-color: var(--accent-3);
+        box-shadow: 0 0 0 2px var(--accent-3);
     }
 </style>
 
 <div class="arena-header">
-    <div class="brand-title">ALGO.ARENA <span style="font-size:1rem; vertical-align:middle; background:#334155; padding:4px 8px; border-radius:6px;">REAL-TIME</span></div>
+    <div class="brand-title">Thuật Toán Đối Kháng</div>
+    <div class="brand-subtitle">Phân tích Hiệu năng & Đặc tính Kỹ thuật</div>
 </div>
 
-<div class="arena-grid">
+<div class="arena-container">
     <div class="algo-card" id="cardLeft">
-        <div class="card-header">
-            <div style="font-size:1.5rem; font-weight:800; color:var(--color-prim)">MST SQUAD</div>
-            <select id="leftAlgo" class="algo-select">
-                <option value="Prim">Prim (Dense King)</option>
-                <option value="Kruskal">Kruskal (Sparse King)</option>
+        <div class="win-badge">CHIẾN THẮNG</div>
+        <div class="card-head">
+            <span style="font-weight:700; color:var(--text-secondary)">ĐẤU THỦ 1</span>
+            <select id="leftAlgo" class="algo-select" onchange="updateInfo('left')">
+                <optgroup label="Cây khung (MST)">
+                    <option value="Prim">Prim (Dense)</option>
+                    <option value="Kruskal">Kruskal (Sparse)</option>
+                </optgroup>
+                <optgroup label="Tìm đường (Pathfinding)">
+                    <option value="Dijkstra">Dijkstra (Uniform Cost)</option>
+                    <option value="AStar">A* (Heuristic)</option>
+                </optgroup>
+                <optgroup label="Tham lam (Greedy Variants)">
+                    <option value="GreedyBestFirst">Greedy Best-First (Euclidean)</option>
+                    <option value="GreedyManhattan">Greedy Best-First (Manhattan)</option>
+                    <option value="GreedyChebyshev">Greedy (Chebyshev)</option>
+                </optgroup>
             </select>
         </div>
-        <div class="monitor-screen">
+
+        <div class="monitor-frame">
             <canvas id="canvasLeft"></canvas>
-            <div class="winner-overlay" id="overlayLeft">
-                <div class="win-tag">VICTORY</div>
-                <div style="color:#CBD5E0; margin-top:5px" id="reasonLeft">Faster</div>
-            </div>
         </div>
-        <div class="stats-row">
-            <div class="stat-box"><div class="stat-val" id="visLeft">0</div><div class="stat-lbl">Nodes</div></div>
-            <div class="stat-box"><div class="stat-val" style="color:var(--color-prim)" id="timeLeft">0ms</div><div class="stat-lbl">Real Time</div></div>
-            <div class="stat-box"><div class="stat-val" id="statusLeft" style="font-size:1rem; line-height:1.5rem">IDLE</div><div class="stat-lbl">State</div></div>
+
+        <div class="stats-grid">
+            <div class="stat-item"><div class="stat-val" id="visLeft">0</div><div class="stat-lbl">Đỉnh đã duyệt</div></div>
+            <div class="stat-item"><div class="stat-val" id="costLeft">0</div><div class="stat-lbl">Chi phí (Cost)</div></div>
+            <div class="stat-item"><div class="stat-val" id="timeLeft" style="color:var(--accent-1)">0ms</div><div class="stat-lbl">Thời gian thực</div></div>
         </div>
-        <div style="width:100%; height:4px; background:#334155; margin-top:20px; border-radius:2px; overflow:hidden">
-            <div id="progLeft" style="width:0%; height:100%; background:var(--color-prim); transition:width 0.1s linear"></div>
+
+        <div class="academic-panel markdown-body" id="descLeft">
         </div>
     </div>
-
-    <div class="vs-badge">VS</div>
 
     <div class="algo-card" id="cardRight">
-        <div class="card-header">
-            <div style="font-size:1.5rem; font-weight:800; color:var(--color-path)">PATH SQUAD</div>
-            <select id="rightAlgo" class="algo-select">
-                <option value="A*">A* (Smart)</option>
-                <option value="Dijkstra">Dijkstra (Safe)</option>
-                <option value="BFS">BFS (Wide)</option>
+        <div class="win-badge">CHIẾN THẮNG</div>
+        <div class="card-head">
+            <span style="font-weight:700; color:var(--text-secondary)">ĐẤU THỦ 2</span>
+            <select id="rightAlgo" class="algo-select" onchange="updateInfo('right')">
+                <option value="AStar" selected>A* (Heuristic)</option>
+                <option value="Dijkstra">Dijkstra</option>
+                <option value="Prim">Prim</option>
+                <option value="Kruskal">Kruskal</option>
+                <option value="GreedyBestFirst">Greedy Best-First</option>
+                <option value="GreedyManhattan">Greedy (Manhattan)</option>
+                <option value="GreedyChebyshev">Greedy (Chebyshev)</option>
             </select>
         </div>
-        <div class="monitor-screen">
+
+        <div class="monitor-frame">
             <canvas id="canvasRight"></canvas>
-            <div class="winner-overlay" id="overlayRight">
-                <div class="win-tag">VICTORY</div>
-                <div style="color:#CBD5E0; margin-top:5px" id="reasonRight">Faster</div>
-            </div>
         </div>
-        <div class="stats-row">
-            <div class="stat-box"><div class="stat-val" id="visRight">0</div><div class="stat-lbl">Nodes</div></div>
-            <div class="stat-box"><div class="stat-val" style="color:var(--color-path)" id="timeRight">0ms</div><div class="stat-lbl">Real Time</div></div>
-            <div class="stat-box"><div class="stat-val" id="statusRight" style="font-size:1rem; line-height:1.5rem">IDLE</div><div class="stat-lbl">State</div></div>
+
+        <div class="stats-grid">
+            <div class="stat-item"><div class="stat-val" id="visRight">0</div><div class="stat-lbl">Đỉnh đã duyệt</div></div>
+            <div class="stat-item"><div class="stat-val" id="costRight">0</div><div class="stat-lbl">Chi phí (Cost)</div></div>
+            <div class="stat-item"><div class="stat-val" id="timeRight" style="color:var(--accent-1)">0ms</div><div class="stat-lbl">Thời gian thực</div></div>
         </div>
-        <div style="width:100%; height:4px; background:#334155; margin-top:20px; border-radius:2px; overflow:hidden">
-            <div id="progRight" style="width:0%; height:100%; background:var(--color-path); transition:width 0.1s linear"></div>
+
+        <div class="academic-panel markdown-body" id="descRight">
         </div>
     </div>
 </div>
 
-<div class="control-dock">
-    <div class="ctrl-group">
-        <div class="ctrl-lbl">Grid Size (Nodes)</div>
-        <div style="display:flex; gap:10px; align-items:center">
-            <input type="range" id="sizeRange" min="20" max="60" value="40" oninput="updateMeta()">
-            <span id="sizeVal" style="font-family:'JetBrains Mono'; font-weight:bold; color:#fff">1600</span>
-        </div>
+<div class="control-bar">
+    <div>
+        <div class="stat-lbl">Kích thước lưới</div>
+        <input type="range" id="sizeRange" min="20" max="80" value="40" style="accent-color:var(--text-primary)">
+        <span id="sizeDisplay" style="font-weight:bold; margin-left:10px">40x40</span>
     </div>
 
-    <div class="ctrl-group" style="border-left:1px solid rgba(255,255,255,0.2); padding-left:20px;">
-        <div class="ctrl-lbl">Complexity (Density)</div>
-        <select id="densityMode" style="background:#1E293B; color:white; border:none; padding:4px; border-radius:4px; font-size:0.8rem">
-            <option value="sparse">Thưa (Sparse - Kruskal Win)</option>
+    <div>
+        <div class="stat-lbl">Mật độ chướng ngại</div>
+        <select id="densityMode" style="border:none; background:transparent; font-weight:bold; color:var(--text-primary); outline:none">
+            <option value="sparse">Thưa (Sparse)</option>
             <option value="fair" selected>Trung bình (Fair)</option>
-            <option value="dense">Dày (Dense - Prim Win)</option>
+            <option value="dense">Dày đặc (Dense)</option>
         </select>
     </div>
 
-    <div class="ctrl-group" style="border-left:1px solid rgba(255,255,255,0.2); padding-left:20px;">
-        <div class="ctrl-lbl">Time Dilation (Speed)</div>
-        <div style="display:flex; gap:10px; align-items:center">
-            <span style="font-size:0.8rem">⚡</span>
-            <input type="range" id="speedRange" min="1" max="100" value="10">
-            <span style="font-size:0.8rem">🐢</span>
-        </div>
-    </div>
-    <button id="btnRun" class="btn-neon"><i class="fas fa-play"></i> BATTLE</button>
+    <button id="btnRun" class="btn-earth">
+        <i class="fas fa-play"></i> CHẠY SO SÁNH
+    </button>
 </div>
 
 <script>
+    // --- DATABASE KIẾN THỨC HỌC THUẬT ---
+    const ALGO_DB = {
+        'Prim': {
+            name: "Prim's Algorithm",
+            desc: "Thuật toán tham lam tìm cây khung nhỏ nhất (MST). Phát triển từ một đỉnh khởi tạo giống như 'vết dầu loang'.",
+            complexity: "O(V²) hoặc O(E log V)",
+            pros: "Tối ưu cho đồ thị dày (Dense). Luôn tìm ra MST chính xác.",
+            cons: "Chậm trên đồ thị thưa nếu dùng Matrix. Khó cài đặt phân tán.",
+            type: "MST"
+        },
+        'Kruskal': {
+            name: "Kruskal's Algorithm",
+            desc: "Thuật toán tham lam dựa trên cạnh. Sắp xếp tất cả cạnh và nối các cây con rời rạc lại.",
+            complexity: "O(E log E)",
+            pros: "Tối ưu cho đồ thị thưa (Sparse). Dễ cài đặt với Union-Find.",
+            cons: "Chậm trên đồ thị dày do bước sắp xếp cạnh.",
+            type: "MST"
+        },
+        'Dijkstra': {
+            name: "Dijkstra",
+            desc: "Thuật toán tìm đường đi ngắn nhất từ một nguồn. Quét đều ra mọi hướng (như đường tròn).",
+            complexity: "O((V+E) log V)",
+            pros: "Đảm bảo đường đi ngắn nhất tuyệt đối. Xử lý tốt mọi trọng số dương.",
+            cons: "Lãng phí tài nguyên khi quét cả những vùng không hướng về đích.",
+            type: "Path"
+        },
+        'AStar': {
+            name: "A* (A-Star)",
+            desc: "Cải tiến của Dijkstra có sử dụng hàm Heuristic h(n) để ước lượng khoảng cách tới đích.",
+            complexity: "O(E) (Best case)",
+            pros: "Nhanh hơn Dijkstra rất nhiều nhờ định hướng. Tối ưu cho Point-to-Point.",
+            cons: "Hiệu năng phụ thuộc hoàn toàn vào hàm Heuristic. Tốn bộ nhớ.",
+            type: "Path"
+        },
+        'GreedyBestFirst': {
+            name: "Greedy Best-First (Euclidean)",
+            desc: "Thuật toán tham lam thuần túy. Luôn chọn đỉnh có khoảng cách chim bay tới đích gần nhất.",
+            complexity: "O(b^m)",
+            pros: "Tốc độ cực nhanh. Rất hiệu quả trong không gian mở ít vật cản.",
+            cons: "Không đảm bảo đường ngắn nhất (có thể bị kẹt hoặc đi vòng).",
+            type: "Greedy"
+        },
+        'GreedyManhattan': {
+            name: "Greedy (Manhattan)",
+            desc: "Giống Best-First nhưng dùng khoảng cách Manhattan (|x1-x2| + |y1-y2|).",
+            complexity: "O(b^m)",
+            pros: "Phù hợp cho bản đồ dạng lưới (Grid) 4 hướng.",
+            cons: "Đường đi thường gấp khúc, không mượt.",
+            type: "Greedy"
+        },
+        'GreedyChebyshev': {
+            name: "Greedy (Chebyshev)",
+            desc: "Sử dụng khoảng cách Chebyshev (Max(|dx|, |dy|)). Cho phép di chuyển chéo.",
+            complexity: "O(b^m)",
+            pros: "Tốt cho lưới 8 hướng (King's move trong cờ vua).",
+            cons: "Không tối ưu cho lưới chỉ có 4 hướng.",
+            type: "Greedy"
+        }
+    };
+
     // --- VARIABLES ---
-    let leftCtx, rightCtx, gridSize, cellSize;
-    // Bảng màu: Xanh (Đầu) -> Vàng -> Đỏ (Cuối)
-    const heatGradient = [[0, 230, 118], [255, 235, 59], [255, 61, 0]];
+    let ctxL, ctxR, gridSize;
+    const colorVisited = "rgba(215, 204, 200, 0.6)"; // Nâu nhạt mờ
+    const colorPath = "#D84315"; // Đỏ gạch
+    const colorWall = "#3E2723"; // Nâu đậm
 
     document.addEventListener('DOMContentLoaded', () => {
-        updateMeta();
-        initCanvases();
-    });
-
-    function updateMeta() {
-        const s = parseInt(document.getElementById('sizeRange').value);
-        gridSize = s;
-        document.getElementById('sizeVal').innerText = (s * s);
-    }
-
-    function initCanvases() {
-        const container = document.querySelector('.monitor-screen');
-        const w = container.clientWidth;
-        const h = w;
-        const dpr = window.devicePixelRatio || 1;
-        cellSize = w / gridSize;
-
-        ['canvasLeft', 'canvasRight'].forEach(id => {
-            const c = document.getElementById(id);
-            const ctx = c.getContext('2d');
-            c.width = w * dpr; c.height = h * dpr;
-            c.style.width = w + 'px'; c.style.height = h + 'px';
-            ctx.scale(dpr, dpr);
-
-            // Vẽ nền đen + Grid mờ
-            ctx.fillStyle = "#000"; ctx.fillRect(0, 0, w, h);
-            ctx.strokeStyle = "rgba(255,255,255,0.05)"; ctx.lineWidth = 1;
-            ctx.beginPath();
-            for (let i = 0; i <= gridSize; i++) {
-                let p = i * cellSize;
-                ctx.moveTo(p, 0); ctx.lineTo(p, h); ctx.moveTo(0, p); ctx.lineTo(w, p);
-            }
-            ctx.stroke();
-
-            // Vẽ Start/End
-            drawDot(ctx, 0, 0, '#00E676');
-            drawDot(ctx, gridSize - 1, gridSize - 1, '#F50057');
+        const s = document.getElementById('sizeRange');
+        s.addEventListener('input', () => {
+            document.getElementById('sizeDisplay').innerText = `${s.value}x${s.value}`;
+            initCanvas();
         });
 
-        leftCtx = document.getElementById('canvasLeft').getContext('2d');
-        rightCtx = document.getElementById('canvasRight').getContext('2d');
+        updateInfo('left');
+        updateInfo('right');
+        initCanvas();
+    });
+
+    function updateInfo(side) {
+        const algo = document.getElementById(`${side}Algo`).value;
+        const info = ALGO_DB[algo];
+        const el = document.getElementById(`desc${side.charAt(0).toUpperCase() + side.slice(1)}`);
+
+        const md = `
+#### ${info.name}
+* **Loại:** ${info.type}
+* **Độ phức tạp:** \`${info.complexity}\`
+* **Mô tả:** ${info.desc}
+
+| Đặc điểm | Chi tiết |
+| :--- | :--- |
+| **Ưu điểm** | ${info.pros} |
+| **Nhược điểm** | ${info.cons} |
+        `;
+        el.innerHTML = marked.parse(md);
     }
 
-    function drawDot(ctx, gx, gy, color) {
-        let x = gx * cellSize + cellSize / 2;
-        let y = gy * cellSize + cellSize / 2;
-        ctx.beginPath(); ctx.arc(x, y, cellSize * 0.3, 0, Math.PI * 2);
-        ctx.fillStyle = color; ctx.fill();
-        ctx.shadowBlur = 15; ctx.shadowColor = color; ctx.stroke(); ctx.shadowBlur = 0;
+    function initCanvas() {
+        gridSize = parseInt(document.getElementById('sizeRange').value);
+        ['canvasLeft', 'canvasRight'].forEach(id => {
+            const c = document.getElementById(id);
+            c.width = c.parentElement.clientWidth;
+            c.height = c.width;
+            const ctx = c.getContext('2d');
+
+            // Vẽ Grid
+            ctx.fillStyle = "#FFFFFF"; ctx.fillRect(0, 0, c.width, c.height);
+            ctx.strokeStyle = "#EFEBE9"; ctx.lineWidth = 1;
+            const cell = c.width / gridSize;
+
+            ctx.beginPath();
+            for (let i = 0; i <= gridSize; i++) {
+                ctx.moveTo(i * cell, 0); ctx.lineTo(i * cell, c.height);
+                ctx.moveTo(0, i * cell); ctx.lineTo(c.width, i * cell);
+            }
+            ctx.stroke();
+        });
+        ctxL = document.getElementById('canvasLeft').getContext('2d');
+        ctxR = document.getElementById('canvasRight').getContext('2d');
     }
 
-    // --- MAIN LOGIC ---
     document.getElementById('btnRun').onclick = async () => {
         const btn = document.getElementById('btnRun');
         btn.disabled = true;
-
-        // Reset UI
         document.querySelectorAll('.algo-card').forEach(c => c.classList.remove('winner'));
-        initCanvases();
 
-        const nodeCount = gridSize * gridSize;
-        const density = document.getElementById('densityMode').value;
-        const timeFactor = parseInt(document.getElementById('speedRange').value); // Hệ số nhân thời gian
+        // Clear Canvas but keep grid (simple repaint)
+        initCanvas();
 
         const formData = new FormData();
-        formData.append('nodeCount', nodeCount);
-        formData.append('densityMode', density); // QUAN TRỌNG: Gửi Density để backend tính toán đúng Complexity
-        formData.append('leftAlgo', document.getElementById('leftAlgo').value);
-        formData.append('rightAlgo', document.getElementById('rightAlgo').value);
+        formData.append('gridSize', gridSize);
+        formData.append('density', document.getElementById('densityMode').value);
+        formData.append('algo1', document.getElementById('leftAlgo').value);
+        formData.append('algo2', document.getElementById('rightAlgo').value);
 
         try {
+            // CALL BACKEND
             const res = await fetch('/MoPhong/RunArena', { method: 'POST', body: formData });
             const data = await res.json();
 
             if (data.success) {
-                // Hiển thị thời gian thực tế từ Server (CPU Time)
-                document.getElementById('timeLeft').innerText = data.left.time.toFixed(3) + "ms";
-                document.getElementById('timeRight').innerText = data.right.time.toFixed(3) + "ms";
+                // Update Time Stats
+                document.getElementById('timeLeft').innerText = data.res1.time.toFixed(3) + "ms";
+                document.getElementById('timeRight').innerText = data.res2.time.toFixed(3) + "ms";
 
-                // --- REAL-TIME SCALING ---
-                // Tính toán thời gian animation dựa trên tỷ lệ thực tế
-                // Base: 1ms thực tế = (timeFactor * 10) ms animation
-                // Ví dụ: Prim 1ms, Kruskal 10ms -> Prim chạy trong 1s, Kruskal chạy trong 10s
-                const animScale = timeFactor * 20; // Magic number để visual dễ nhìn
-                const durLeft = Math.max(500, data.left.time * animScale);
-                const durRight = Math.max(500, data.right.time * animScale);
+                document.getElementById('costLeft').innerText = data.res1.cost;
+                document.getElementById('costRight').innerText = data.res2.cost;
 
-                let leftDone = false, rightDone = false;
+                // Run Animation
+                const cell = ctxL.canvas.width / gridSize;
 
-                const checkWin = () => {
-                    if (leftDone && rightDone) {
-                        btn.disabled = false;
-                        const tL = data.left.time;
-                        const tR = data.right.time;
+                await Promise.all([
+                    animate(ctxL, data.res1, cell, 'visLeft'),
+                    animate(ctxR, data.res2, cell, 'visRight')
+                ]);
 
-                        if (tL < tR) endGame('cardLeft', 'cardRight', `Nhanh gấp ${(tR / tL).toFixed(1)}x`);
-                        else endGame('cardRight', 'cardLeft', `Nhanh gấp ${(tL / tR).toFixed(1)}x`);
-                    }
-                };
-
-                // Chạy Animation dựa trên thời gian
-                runProAnim(leftCtx, data.left, durLeft, 'progLeft', 'visLeft', 'statusLeft', () => { leftDone = true; checkWin(); });
-                runProAnim(rightCtx, data.right, durRight, 'progRight', 'visRight', 'statusRight', () => { rightDone = true; checkWin(); });
+                // Determine Winner
+                if (data.res1.time < data.res2.time) win('cardLeft');
+                else win('cardRight');
             }
         } catch (e) {
             console.error(e);
-            alert("Lỗi server hoặc timeout.");
-            btn.disabled = false;
+            alert("Lỗi xử lý mô phỏng!");
         }
+        btn.disabled = false;
     };
 
-    function endGame(winId, loseId, reason) {
-        document.getElementById(winId).classList.add('winner');
-        const overlayId = winId === 'cardLeft' ? 'reasonLeft' : 'reasonRight';
-        document.getElementById(overlayId).innerText = reason;
-        confetti({ particleCount: 200, spread: 100, origin: { y: 0.6 }, colors: ['#00E676', '#FFD700'] });
+    function win(id) {
+        document.getElementById(id).classList.add('winner');
+        confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 }, colors: ['#D84315', '#2E7D32', '#F9A825'] });
     }
 
-    // --- ANIMATION ENGINE (TIME-BASED) ---
-    function runProAnim(ctx, data, durationMs, progId, visId, statusId, onDone) {
-        const visited = data.visited;
-        const total = visited.length;
-        let startTime = null;
+    async function animate(ctx, data, cell, visId) {
+        // 1. Draw Obstacles
+        ctx.fillStyle = colorWall;
+        for (let w of data.walls) {
+            ctx.fillRect(w.x * cell, w.y * cell, cell, cell);
+        }
 
-        document.getElementById(statusId).innerText = "COMPUTING...";
-        document.getElementById(statusId).style.color = "#FFC107";
+        // 2. Animate Visited
+        ctx.fillStyle = colorVisited;
+        let count = 0;
+        const speed = data.visited.length > 1000 ? 1 : 5; // Fast mode for large data
 
-        let drawnIndex = 0;
-
-        function frame(timestamp) {
-            if (!startTime) startTime = timestamp;
-            const elapsed = timestamp - startTime;
-
-            // Tính toán % tiến độ dựa trên thời gian thực
-            let progress = Math.min(elapsed / durationMs, 1.0);
-
-            // Số lượng node cần vẽ tính đến thời điểm này
-            const targetIndex = Math.floor(progress * total);
-
-            // Batch Draw: Vẽ tất cả các node từ lần vẽ trước đến hiện tại
-            if (targetIndex > drawnIndex) {
-                for (let i = drawnIndex; i < targetIndex; i++) {
-                    const n = visited[i];
-                    // Heatmap color logic
-                    const color = getHeatColor(i / total);
-
-                    ctx.fillStyle = `rgb(${color.r},${color.g},${color.b})`;
-                    // Vẽ pixel nhỏ hơn 1 chút để tạo hiệu ứng Grid
-                    ctx.fillRect(n.x * cellSize + 0.5, n.y * cellSize + 0.5, cellSize - 1, cellSize - 1);
-                }
-                drawnIndex = targetIndex;
-            }
-
-            // Update DOM Stats
-            document.getElementById(visId).innerText = drawnIndex;
-            document.getElementById(progId).style.width = (progress * 100) + "%";
-
-            if (progress < 1.0) {
-                requestAnimationFrame(frame);
-            } else {
-                // FINISH
-                document.getElementById(statusId).innerText = "COMPLETE";
-                document.getElementById(statusId).style.color = "#00E676";
-                drawDot(ctx, 0, 0, '#FFF'); // Redraw Start
-                drawDot(ctx, gridSize - 1, gridSize - 1, '#FFF'); // Redraw End
-
-                // Nếu có đường đi (Path) thì vẽ đè lên màu trắng
-                if (data.path && data.path.length > 0) {
-                    drawPath(ctx, data.path);
-                }
-                onDone();
+        for (let i = 0; i < data.visited.length; i++) {
+            const v = data.visited[i];
+            ctx.fillRect(v.x * cell, v.y * cell, cell, cell);
+            if (i % speed === 0) {
+                document.getElementById(visId).innerText = ++count;
+                await new Promise(r => requestAnimationFrame(r));
             }
         }
-        requestAnimationFrame(frame);
-    }
 
-    function drawPath(ctx, path) {
-        ctx.fillStyle = "#FFFFFF";
-        ctx.shadowBlur = 10; ctx.shadowColor = "#FFF";
-        path.forEach(n => {
-            ctx.fillRect(n.x * cellSize + 2, n.y * cellSize + 2, cellSize - 4, cellSize - 4);
-        });
-        ctx.shadowBlur = 0;
-    }
-
-    function getHeatColor(t) {
-        // Nội suy màu tuyến tính giữa 3 mốc (Green -> Yellow -> Red)
-        if (t < 0.5) return interpolate(heatGradient[0], heatGradient[1], t * 2);
-        return interpolate(heatGradient[1], heatGradient[2], (t - 0.5) * 2);
-    }
-
-    function interpolate(c1, c2, t) {
-        return {
-            r: Math.round(c1[0] + (c2[0] - c1[0]) * t),
-            g: Math.round(c1[1] + (c2[1] - c1[1]) * t),
-            b: Math.round(c1[2] + (c2[2] - c1[2]) * t)
-        };
+        // 3. Draw Path
+        if (data.path) {
+            ctx.fillStyle = colorPath;
+            for (let p of data.path) {
+                ctx.fillRect(p.x * cell + 2, p.y * cell + 2, cell - 4, cell - 4);
+                await new Promise(r => setTimeout(r, 10));
+            }
+        }
     }
 </script>

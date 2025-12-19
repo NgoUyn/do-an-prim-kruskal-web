@@ -1,21 +1,285 @@
 ﻿@{
-    ViewBag.Title = "Contact";
+    ViewBag.Title = "Liên Hệ & Hợp Tác";
     Layout = "~/Views/Shared/_Layout.cshtml";
-
 }
-<main aria-labelledby="title">
-    <h2 id="title">@ViewBag.Title.</h2>
-    <h3>@ViewBag.Message</h3>
 
-    <address>
-        One Microsoft Way<br />
-        Redmond, WA 98052-6399<br />
-        <abbr title="Phone">P:</abbr>
-        425.555.0100
-    </address>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
-    <address>
-        <strong>Support:</strong>   <a href="mailto:Support@example.com">Support@example.com</a><br />
-        <strong>Marketing:</strong> <a href="mailto:Marketing@example.com">Marketing@example.com</a>
-    </address>
-</main>
+<style>
+    :root {
+        --bg-body: #F9F7F2;       /* Rice White */
+        --card-bg: #FFFFFF;
+        --text-primary: #3E2723;  /* Espresso */
+        --text-secondary: #795548;/* Earth */
+        --accent-color: #D84315;  /* Terracotta */
+        --border-color: #D7CCC8;
+        --input-bg: #FAFAFA;
+    }
+
+    body {
+        background-color: var(--bg-body);
+        color: var(--text-primary);
+        font-family: 'Inter', sans-serif;
+    }
+
+    /* === HEADER === */
+    .contact-header {
+        text-align: center;
+        padding: 60px 0 40px 0;
+    }
+    .page-title {
+        font-family: 'Playfair Display', serif;
+        font-size: 3rem;
+        color: var(--text-primary);
+        margin-bottom: 10px;
+    }
+    .page-subtitle {
+        color: var(--text-secondary);
+        font-size: 1.1rem;
+        max-width: 600px;
+        margin: 0 auto;
+        line-height: 1.6;
+    }
+
+    /* === LAYOUT === */
+    .contact-grid {
+        display: grid;
+        grid-template-columns: 1fr 1.5fr;
+        gap: 40px;
+        max-width: 1200px;
+        margin: 0 auto 80px auto;
+        padding: 0 20px;
+    }
+
+    /* === INFO CARDS === */
+    .info-card {
+        background: var(--card-bg);
+        border: 1px solid var(--border-color);
+        padding: 30px;
+        border-radius: 16px;
+        box-shadow: 0 4px 20px rgba(62, 39, 35, 0.05);
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+
+    .info-group { margin-bottom: 30px; }
+
+    .info-label {
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        color: var(--accent-color);
+        font-weight: 700;
+        margin-bottom: 10px;
+        display: block;
+    }
+
+    .info-content {
+        font-size: 1.1rem;
+        line-height: 1.6;
+        color: var(--text-primary);
+    }
+
+    .info-content i { width: 25px; color: var(--text-secondary); }
+    .info-content a {
+        color: var(--text-primary);
+        text-decoration: none;
+        border-bottom: 1px solid var(--border-color);
+        transition: 0.2s;
+    }
+    .info-content a:hover { color: var(--accent-color); border-color: var(--accent-color); }
+
+    /* === CONTACT FORM === */
+    .form-card {
+        background: var(--card-bg);
+        border: 1px solid var(--border-color);
+        padding: 40px;
+        border-radius: 16px;
+        box-shadow: 0 10px 30px rgba(62, 39, 35, 0.08);
+    }
+
+    .form-group { margin-bottom: 20px; }
+
+    .form-label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 600;
+        color: var(--text-primary);
+    }
+
+    .form-input {
+        width: 100%;
+        padding: 14px;
+        border: 1px solid var(--border-color);
+        border-radius: 8px;
+        background: var(--input-bg);
+        font-family: 'Inter', sans-serif;
+        font-size: 1rem;
+        color: var(--text-primary);
+        transition: 0.3s;
+    }
+
+    .form-input:focus {
+        outline: none;
+        border-color: var(--accent-color);
+        background: #fff;
+        box-shadow: 0 0 0 3px rgba(216, 67, 21, 0.1);
+    }
+
+    textarea.form-input { resize: vertical; min-height: 150px; }
+
+    .btn-submit {
+        background: var(--text-primary);
+        color: white;
+        border: none;
+        padding: 16px 40px;
+        border-radius: 30px;
+        font-weight: 600;
+        font-size: 1rem;
+        letter-spacing: 0.5px;
+        cursor: pointer;
+        transition: 0.3s;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        width: fit-content;
+    }
+
+    .btn-submit:hover {
+        background: #5D4037;
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(62, 39, 35, 0.2);
+    }
+
+    /* === RESPONSIVE === */
+    @@media (max-width: 768px) {
+        .contact-grid { grid-template-columns: 1fr; }
+        .page-title { font-size: 2rem; }
+    }
+</style>
+
+<div class="contact-header">
+    <h1 class="page-title">@ViewBag.Title</h1>
+    <p class="page-subtitle">
+        Chúng tôi luôn lắng nghe ý kiến đóng góp từ cộng đồng học thuật và các nhà phát triển.
+        Hãy kết nối để cùng phát triển dự án thuật toán tối ưu hơn.
+    </p>
+</div>
+
+<div class="contact-grid">
+    <div class="info-card">
+        <div>
+            <div class="info-group">
+                <span class="info-label">Trụ sở Nghiên Cứu</span>
+                <div class="info-content">
+                    <p style="margin:0"><strong>Viện Công Nghệ Phần Mềm</strong></p>
+                    <p style="margin:5px 0 0 0; color:var(--text-secondary)">
+                        One Microsoft Way<br>
+                        Redmond, WA 98052-6399<br>
+                        United States
+                    </p>
+                </div>
+            </div>
+
+            <div class="info-group">
+                <span class="info-label">Kênh Liên Lạc</span>
+                <div class="info-content">
+                    <p><i class="fas fa-phone-alt"></i> 425.555.0100</p>
+                    <p><i class="fas fa-envelope"></i> <a href="mailto:Support@example.com">Support@algo-arena.com</a></p>
+                    <p><i class="fas fa-briefcase"></i> <a href="mailto:Marketing@example.com">Partner@algo-arena.com</a></p>
+                </div>
+            </div>
+        </div>
+
+        <div style="border-top:1px solid var(--border-color); padding-top:20px;">
+            <span class="info-label">Giờ làm việc</span>
+            <div class="info-content" style="font-size:0.95rem">
+                <div style="display:flex; justify-content:space-between; margin-bottom:5px">
+                    <span>Thứ 2 - Thứ 6:</span>
+                    <strong>08:00 - 17:00</strong>
+                </div>
+                <div style="display:flex; justify-content:space-between; color:var(--accent-color)">
+                    <span>Thứ 7 - CN:</span>
+                    <strong>Nghỉ</strong>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-card">
+        <form id="contactForm" onsubmit="submitForm(event)">
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:20px;">
+                <div class="form-group">
+                    <label class="form-label">Họ và Tên</label>
+                    <input type="text" class="form-input" placeholder="Nguyễn Văn A" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Email</label>
+                    <input type="email" class="form-input" placeholder="email@example.com" required>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Chủ đề</label>
+                <select class="form-input">
+                    <option>Đóng góp thuật toán mới</option>
+                    <option>Báo lỗi hệ thống</option>
+                    <option>Hợp tác phát triển</option>
+                    <option>Khác</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Nội dung tin nhắn</label>
+                <textarea class="form-input" placeholder="Chia sẻ ý tưởng của bạn..."></textarea>
+            </div>
+
+            <button type="submit" class="btn-submit">
+                <i class="fas fa-paper-plane"></i> GỬI TIN NHẮN
+            </button>
+        </form>
+    </div>
+</div>
+
+<script>
+    function submitForm(e) {
+        e.preventDefault();
+
+        const btn = document.querySelector('.btn-submit');
+        const originalText = btn.innerHTML;
+
+        // Loading State
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> ĐANG GỬI...';
+        btn.style.background = '#795548';
+
+        setTimeout(() => {
+            // Success State
+            btn.innerHTML = '<i class="fas fa-check"></i> ĐÃ GỬI THÀNH CÔNG';
+            btn.style.background = '#2E7D32'; // Green
+
+            // Effect
+            confetti({
+                particleCount: 100,
+                spread: 70,
+                origin: { y: 0.6 },
+                colors: ['#3E2723', '#D84315', '#2E7D32']
+            });
+
+            // Reset form
+            document.getElementById('contactForm').reset();
+
+            // Reset Button after 3s
+            setTimeout(() => {
+                btn.disabled = false;
+                btn.innerHTML = originalText;
+                btn.style.background = 'var(--text-primary)';
+            }, 3000);
+
+        }, 1500);
+    }
+</script>

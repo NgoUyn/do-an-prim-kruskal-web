@@ -27,6 +27,10 @@ namespace Prim_Kruskal_Web.Controllers
         {
             return View();
         }
+        public ActionResult Contact()
+        {
+            return View();
+        }
 
 
 
